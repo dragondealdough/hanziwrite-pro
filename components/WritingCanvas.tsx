@@ -58,7 +58,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
     if (!writerRef.current) return;
     writerRef.current.quiz({
       quizStartStrokeNum: currentStrokeRef.current,
-      leniency: 0.8, // Strict leniency for Skritter-like precision
+      leniency: 1.0, // More forgiving for complex characters like 愛
       onCorrectStroke: () => {
         const nextIndex = currentStrokeRef.current + 1;
         currentStrokeRef.current = nextIndex;
