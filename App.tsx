@@ -319,17 +319,24 @@ const App: React.FC = () => {
           onSelectCategory={handleSelectCategory}
           onSearch={handleSearch}
           onSearchForPack={async (query: string) => {
+            // Normalize pinyin by removing tone marks
+            const normalizePinyin = (s: string) => s
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .toLowerCase();
+
             // First search local categories for matching characters
             const localResults: CharacterData[] = [];
-            const queryLower = query.toLowerCase();
+            const queryNorm = normalizePinyin(query);
 
             for (const cat of [...CATEGORIES, ...customPacks]) {
               for (const char of (cat.characters || [])) {
-                // Match by character, pinyin, meaning, or zhuyin
+                // Match by character, pinyin (normalized), meaning, or zhuyin
+                const pinyinNorm = normalizePinyin(char.pinyin || '');
                 if (
                   char.char === query ||
-                  char.pinyin?.toLowerCase().includes(queryLower) ||
-                  char.meaning?.toLowerCase().includes(queryLower) ||
+                  pinyinNorm.includes(queryNorm) ||
+                  char.meaning?.toLowerCase().includes(queryNorm) ||
                   char.zhuyin?.includes(query)
                 ) {
                   // Avoid duplicates
