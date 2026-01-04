@@ -6,7 +6,7 @@ import WritingCanvas from './components/WritingCanvas';
 import FreeCanvas from './components/FreeCanvas';
 import AIFeedback from './components/AIFeedback';
 import HomeScreen from './components/HomeScreen';
-import HomeworkMenu from './components/HomeworkMenu';
+import HomeworkMenu, { TestHintMode } from './components/HomeworkMenu';
 import LoginScreen from './components/LoginScreen';
 import ComponentPopup from './components/ComponentPopup';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
@@ -46,6 +46,7 @@ const App: React.FC = () => {
   const [sessionCharacters, setSessionCharacters] = useState<CharacterData[] | null>(null);
   const [combinedProgress, setCombinedProgress] = useState<Set<string>>(new Set());
   const [showComponentPopup, setShowComponentPopup] = useState(false);
+  const [testHintMode, setTestHintMode] = useState<TestHintMode | null>(null);
 
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
@@ -303,6 +304,7 @@ const App: React.FC = () => {
     setActiveCategory(null);
     setSessionCharacters(null);
     setIsSidebarOpen(false);
+    setTestHintMode(null);
   };
 
   if (!currentName || !currentPin) {
@@ -336,7 +338,10 @@ const App: React.FC = () => {
       <div className="min-h-screen w-full bg-[#fcfcfc] dark:bg-[#0d0f12] transition-colors duration-500">
         <HomeworkMenu
           category={activeCategory}
-          onSelectAssignment={(chars) => handleSelectCategory(activeCategory, 'individual', chars)}
+          onSelectAssignment={(chars, hintMode) => {
+            setTestHintMode(hintMode || null);
+            handleSelectCategory(activeCategory, 'individual', chars, hintMode ? AppMode.TEST : AppMode.PRACTICE);
+          }}
           onBack={goHome}
         />
       </div>
@@ -392,11 +397,19 @@ const App: React.FC = () => {
               <div className="flex flex-col items-center">
                 <div className="w-full mb-6 md:mb-10 flex flex-col items-center md:items-start">
                   <div className="h-40 md:h-52 flex items-center justify-center">
-                    <h1 className="text-8xl md:text-[10rem] font-medium text-slate-900 dark:text-slate-50 brush-font leading-none">{effectiveMode === AppMode.TEST ? '?' : activeCharData?.char}</h1>
+                    <h1 className="text-8xl md:text-[10rem] font-medium text-slate-900 dark:text-slate-50 brush-font leading-none">
+                      {testHintMode || effectiveMode === AppMode.TEST ? '?' : activeCharData?.char}
+                    </h1>
                   </div>
                   <div className="flex items-center gap-2.5 mt-4">
-                    <span className="px-5 py-2 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg shadow-rose-200 dark:shadow-none">{activeCharData?.pinyin}</span>
-                    <span className="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">{activeCharData?.zhuyin}</span>
+                    {/* Show pinyin only if not in test mode OR if audio-pinyin mode selected */}
+                    {(!testHintMode || testHintMode === 'audio-pinyin') && (
+                      <span className="px-5 py-2 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg shadow-rose-200 dark:shadow-none">{activeCharData?.pinyin}</span>
+                    )}
+                    {/* Show zhuyin only if not in test hint mode */}
+                    {!testHintMode && (
+                      <span className="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">{activeCharData?.zhuyin}</span>
+                    )}
                     <button
                       onClick={() => playAudio(activeCharData?.char, activeCharData?.pinyin)}
                       className="p-2.5 bg-white dark:bg-slate-800 text-rose-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-rose-50 dark:hover:bg-rose-900/10 active:scale-90 transition-all ml-1"
@@ -404,7 +417,8 @@ const App: React.FC = () => {
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
                     </button>
-                    {activeCharData?.components && activeCharData.components.length > 0 && (
+                    {/* Hide component popup in test mode */}
+                    {!testHintMode && activeCharData?.components && activeCharData.components.length > 0 && (
                       <button
                         onClick={() => setShowComponentPopup(true)}
                         className="p-2.5 bg-white dark:bg-slate-800 text-indigo-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/10 active:scale-90 transition-all ml-1"
