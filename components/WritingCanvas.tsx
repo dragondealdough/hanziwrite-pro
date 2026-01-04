@@ -58,7 +58,8 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
     if (!writerRef.current) return;
     writerRef.current.quiz({
       quizStartStrokeNum: currentStrokeRef.current,
-      leniency: 1.0, // More forgiving for complex characters like 愛
+      leniency: 1.2, // Extra forgiving - values above 1 give more tolerance
+      acceptBackwardsStrokes: true, // Accept strokes drawn in reverse direction
       onCorrectStroke: () => {
         const nextIndex = currentStrokeRef.current + 1;
         currentStrokeRef.current = nextIndex;
