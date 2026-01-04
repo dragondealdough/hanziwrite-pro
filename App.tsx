@@ -319,55 +319,58 @@ const App: React.FC = () => {
           onSelectCategory={handleSelectCategory}
           onSearch={handleSearch}
           onSearchForPack={async (query: string) => {
-            // Normalize pinyin by removing tone marks
-            const normalizePinyin = (s: string) => s
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '')
-              .toLowerCase();
+            try {
+              // Normalize pinyin by removing tone marks
+              const normalizePinyin = (s: string | undefined | null) => (s || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
 
-            // Helper to check if a character matches the query
-            const matchChar = (char: CharacterData, queryNorm: string, originalQuery: string) => {
-              const pinyinNorm = normalizePinyin(char.pinyin || '');
-              return (
-                char.char === originalQuery ||
-                pinyinNorm.includes(queryNorm) ||
-                char.meaning?.toLowerCase().includes(queryNorm) ||
-                char.zhuyin?.includes(originalQuery)
-              );
-            };
+              // Helper to check if a character matches the query
+              const matchChar = (char: CharacterData | null | undefined, queryNorm: string, originalQuery: string) => {
+                if (!char || !char.char) return false;
+                const pinyinNorm = normalizePinyin(char.pinyin);
+                return (
+                  char.char === originalQuery ||
+                  pinyinNorm.includes(queryNorm) ||
+                  (char.meaning?.toLowerCase() || '').includes(queryNorm) ||
+                  (char.zhuyin || '').includes(originalQuery)
+                );
+              };
 
-            // First search local categories for matching characters
-            const localResults: CharacterData[] = [];
-            const queryNorm = normalizePinyin(query);
+              // First search local categories for matching characters
+              const localResults: CharacterData[] = [];
+              const queryNorm = normalizePinyin(query);
 
-            for (const cat of [...CATEGORIES, ...customPacks]) {
-              // Search in direct characters
-              for (const char of (cat.characters || [])) {
-                if (matchChar(char, queryNorm, query)) {
-                  if (!localResults.some(r => r.char === char.char)) {
-                    localResults.push(char);
-                  }
-                }
-              }
-              // Also search in sequences (for special categories like Homework)
-              for (const seq of (cat.sequences || [])) {
-                for (const char of (seq.characters || [])) {
-                  if (matchChar(char, queryNorm, query)) {
+              for (const cat of [...CATEGORIES, ...customPacks]) {
+                if (!cat) continue;
+                // Search in direct characters
+                for (const char of (cat.characters || [])) {
+                  if (char && matchChar(char, queryNorm, query)) {
                     if (!localResults.some(r => r.char === char.char)) {
                       localResults.push(char);
                     }
                   }
                 }
+                // Also search in sequences (for special categories like Homework)
+                for (const seq of (cat.sequences || [])) {
+                  if (!seq) continue;
+                  for (const char of (seq.characters || [])) {
+                    if (char && matchChar(char, queryNorm, query)) {
+                      if (!localResults.some(r => r.char === char.char)) {
+                        localResults.push(char);
+                      }
+                    }
+                  }
+                }
               }
-            }
 
-            // If we found local results, return them
-            if (localResults.length > 0) {
-              return localResults;
-            }
+              // If we found local results, return them
+              if (localResults.length > 0) {
+                return localResults;
+              }
 
-            // Otherwise, try Gemini API search
-            try {
+              // Otherwise, try Gemini API search
               const results = await searchMandarin(query);
               return results || [];
             } catch (error) {
