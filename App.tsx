@@ -325,23 +325,37 @@ const App: React.FC = () => {
               .replace(/[\u0300-\u036f]/g, '')
               .toLowerCase();
 
+            // Helper to check if a character matches the query
+            const matchChar = (char: CharacterData, queryNorm: string, originalQuery: string) => {
+              const pinyinNorm = normalizePinyin(char.pinyin || '');
+              return (
+                char.char === originalQuery ||
+                pinyinNorm.includes(queryNorm) ||
+                char.meaning?.toLowerCase().includes(queryNorm) ||
+                char.zhuyin?.includes(originalQuery)
+              );
+            };
+
             // First search local categories for matching characters
             const localResults: CharacterData[] = [];
             const queryNorm = normalizePinyin(query);
 
             for (const cat of [...CATEGORIES, ...customPacks]) {
+              // Search in direct characters
               for (const char of (cat.characters || [])) {
-                // Match by character, pinyin (normalized), meaning, or zhuyin
-                const pinyinNorm = normalizePinyin(char.pinyin || '');
-                if (
-                  char.char === query ||
-                  pinyinNorm.includes(queryNorm) ||
-                  char.meaning?.toLowerCase().includes(queryNorm) ||
-                  char.zhuyin?.includes(query)
-                ) {
-                  // Avoid duplicates
+                if (matchChar(char, queryNorm, query)) {
                   if (!localResults.some(r => r.char === char.char)) {
                     localResults.push(char);
+                  }
+                }
+              }
+              // Also search in sequences (for special categories like Homework)
+              for (const seq of (cat.sequences || [])) {
+                for (const char of (seq.characters || [])) {
+                  if (matchChar(char, queryNorm, query)) {
+                    if (!localResults.some(r => r.char === char.char)) {
+                      localResults.push(char);
+                    }
                   }
                 }
               }
