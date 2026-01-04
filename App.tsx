@@ -319,8 +319,13 @@ const App: React.FC = () => {
           onSelectCategory={handleSelectCategory}
           onSearch={handleSearch}
           onSearchForPack={async (query: string) => {
-            const results = await searchMandarin(query);
-            return results || [];
+            try {
+              const results = await searchMandarin(query);
+              return results || [];
+            } catch (error) {
+              console.error('Search failed:', error);
+              return [];
+            }
           }}
           isSearching={isSearching}
           onCreatePack={createPack}

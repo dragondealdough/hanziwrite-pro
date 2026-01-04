@@ -57,11 +57,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     e.preventDefault();
     if (!packSearchQuery.trim() || !searchingPackId) return;
     setIsPackSearching(true);
+    setPackSearchResults([]);
     try {
       const results = await onSearchForPack(packSearchQuery.trim());
-      setPackSearchResults(results);
+      setPackSearchResults(results || []);
+      if (!results || results.length === 0) {
+        console.log('No results found for:', packSearchQuery);
+      }
     } catch (err) {
       console.error('Pack search failed:', err);
+      alert('Search failed. Please try again.');
     } finally {
       setIsPackSearching(false);
     }
