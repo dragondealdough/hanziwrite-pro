@@ -318,11 +318,16 @@ const App: React.FC = () => {
           categories={allCategories}
           onSelectCategory={handleSelectCategory}
           onSearch={handleSearch}
+          onSearchForPack={async (query: string) => {
+            const results = await searchMandarin(query);
+            return results || [];
+          }}
           isSearching={isSearching}
           onCreatePack={createPack}
           onDeletePack={deletePack}
           onImportPack={importPack}
           onExportLibrary={exportLibrary}
+          onAddCharToPack={toggleCharInPack}
           currentName={currentName}
           currentPin={currentPin}
           onLogout={handleLogout}
