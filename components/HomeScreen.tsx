@@ -223,7 +223,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                 )}
               </div>
               <div className="w-14 h-14 bg-slate-100 dark:bg-[#0d0f12] rounded-2xl flex items-center justify-center text-2xl mb-8 font-black text-rose-600 shadow-inner">
-                {cat.characters.length}
+                {cat.characters?.length || 0}
               </div>
               <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 tracking-tight">{cat.name}</h3>
               <div className="flex items-center gap-3 mb-6">
@@ -231,12 +231,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                 <button onClick={() => { navigator.clipboard.writeText(JSON.stringify(cat)); alert('Code Copied!'); }} className="text-[10px] font-black text-slate-400 hover:text-rose-600 uppercase tracking-widest border-b border-dotted border-slate-300 transition-colors">Copy Code</button>
               </div>
               {/* Show character previews */}
-              {cat.characters.length > 0 && (
+              {(cat.characters?.length || 0) > 0 && (
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {cat.characters.slice(0, 8).map(c => (
                     <span key={c.char} className="text-lg brush-font text-slate-600 dark:text-slate-400">{c.char}</span>
                   ))}
-                  {cat.characters.length > 8 && <span className="text-xs text-slate-400">+{cat.characters.length - 8}</span>}
+                  {(cat.characters?.length || 0) > 8 && <span className="text-xs text-slate-400">+{(cat.characters?.length || 0) - 8}</span>}
                 </div>
               )}
               <div className="mt-auto flex flex-col gap-3">
