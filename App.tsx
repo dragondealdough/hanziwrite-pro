@@ -10,6 +10,7 @@ import HomeworkMenu from './components/HomeworkMenu';
 import LoginScreen from './components/LoginScreen';
 import ComponentPopup from './components/ComponentPopup';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
+import { saveUserProgress, getUserProgress, saveSharedPacks, getSharedPacks } from './services/firebaseService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('HOME');
@@ -39,6 +40,7 @@ const App: React.FC = () => {
 
   const [currentName, setCurrentName] = useState<string | null>(localStorage.getItem('hanziwrite_login_name'));
   const [currentPin, setCurrentPin] = useState<string | null>(localStorage.getItem('hanziwrite_login_pin'));
+  const [displayName, setDisplayName] = useState<string | null>(localStorage.getItem('hanziwrite_display_name'));
 
   const [customPacks, setCustomPacks] = useState<Category[]>([]);
   const [sessionCharacters, setSessionCharacters] = useState<CharacterData[] | null>(null);
@@ -47,7 +49,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
-  }, [results]);
+    // Sync to cloud if logged in
+    if (currentName) {
+      saveUserProgress(currentName, results);
+    }
+  }, [results, currentName]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -57,33 +63,59 @@ const App: React.FC = () => {
     }
   }, [isDarkMode]);
 
+  // Load shared packs and user progress from cloud on login
   useEffect(() => {
-    const saved = localStorage.getItem('hanziwrite_all_packs');
-    if (saved) {
-      setCustomPacks(JSON.parse(saved));
-    }
-  }, []);
+    const loadCloudData = async () => {
+      // Load shared packs from cloud
+      const cloudPacks = await getSharedPacks();
+      if (cloudPacks.length > 0) {
+        setCustomPacks(cloudPacks);
+        localStorage.setItem('hanziwrite_all_packs', JSON.stringify(cloudPacks));
+      } else {
+        // Fall back to local storage
+        const saved = localStorage.getItem('hanziwrite_all_packs');
+        if (saved) {
+          setCustomPacks(JSON.parse(saved));
+        }
+      }
+
+      // Load user progress from cloud
+      if (currentName) {
+        const cloudProgress = await getUserProgress(currentName);
+        if (Object.keys(cloudProgress).length > 0) {
+          setResults(prev => ({ ...cloudProgress, ...prev }));
+        }
+      }
+    };
+    loadCloudData();
+  }, [currentName]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
-  const handleLogin = (name: string, pin: string) => {
+  const handleLogin = (name: string, pin: string, displayNameFromAuth: string) => {
     setCurrentName(name);
     setCurrentPin(pin);
+    setDisplayName(displayNameFromAuth);
     localStorage.setItem('hanziwrite_login_name', name);
     localStorage.setItem('hanziwrite_login_pin', pin);
+    localStorage.setItem('hanziwrite_display_name', displayNameFromAuth);
   };
 
   const handleLogout = () => {
     setCurrentName(null);
     setCurrentPin(null);
+    setDisplayName(null);
     localStorage.removeItem('hanziwrite_login_name');
     localStorage.removeItem('hanziwrite_login_pin');
+    localStorage.removeItem('hanziwrite_display_name');
     setView('HOME');
   };
 
   const savePacks = (packs: Category[]) => {
     setCustomPacks(packs);
     localStorage.setItem('hanziwrite_all_packs', JSON.stringify(packs));
+    // Sync to cloud for all users to see
+    saveSharedPacks(packs);
   };
 
   const allCategories = useMemo(() => [...CATEGORIES, ...customPacks], [customPacks]);
