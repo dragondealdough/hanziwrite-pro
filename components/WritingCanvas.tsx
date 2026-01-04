@@ -216,6 +216,15 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
 
         // Animate stroke by stroke so delays respond to speed changes mid-character
         for (let strokeIndex = 0; strokeIndex < strokeCount && isLoopingRef.current; strokeIndex++) {
+          // Check if speed changed since we created this writer - if so, recreate with new speed
+          // Previous strokes won't be visible but animation continues smoothly from here
+          if (animationSpeedRef.current !== lastUsedSpeedRef.current) {
+            lastUsedSpeedRef.current = animationSpeedRef.current;
+            containerRef.current!.innerHTML = '';
+            animWriter = createAnimWriter(animationSpeedRef.current);
+            writerRef.current = animWriter;
+          }
+
           // Animate this single stroke
           await writerRef.current.animateStroke(strokeIndex);
 
