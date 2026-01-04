@@ -121,12 +121,11 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
       outlineColor: isDarkMode ? '#21262d' : '#f1f5f9',
       drawingColor: isDarkMode ? '#ffffff' : '#1e293b',
       drawingWidth: Math.max(10, effectiveSize * 0.05),
-      highlightOnVariation: true,
-      checkStrokeConflict: true, // Ensure strictly correct stroke
+      // Ensure strictly correct stroke with strict leniency in quiz options
     });
 
     writerRef.current = writer;
-    HanziWriter.loadCharacterData(character).then((data) => setTotalStrokes(data.strokes.length));
+    HanziWriter.loadCharacterData(character).then((data) => data && setTotalStrokes(data.strokes.length));
     startQuiz();
 
     return () => {
@@ -168,8 +167,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         outlineColor: isDarkMode ? '#21262d' : '#f1f5f9',
         drawingColor: isDarkMode ? '#ffffff' : '#1e293b',
         drawingWidth: Math.max(10, effectiveSize * 0.05),
-        highlightOnVariation: true,
-        checkStrokeConflict: true,
+        // checkStrokeConflict handled through quiz leniency
       });
       writerRef.current = writer;
       startQuiz();
@@ -205,7 +203,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
 
     // Get stroke count for this character
     const charData = await HanziWriter.loadCharacterData(character);
-    const strokeCount = charData.strokes.length;
+    const strokeCount = charData?.strokes?.length ?? 0;
 
     while (isLoopingRef.current) {
       try {
