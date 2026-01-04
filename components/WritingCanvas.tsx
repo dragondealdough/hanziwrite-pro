@@ -58,7 +58,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
     if (!writerRef.current) return;
     writerRef.current.quiz({
       quizStartStrokeNum: currentStrokeRef.current,
-      leniency: 1.2, // Extra forgiving - values above 1 give more tolerance
+      leniency: 2.0, // Very forgiving for tricky strokes like 吃's last stroke
       acceptBackwardsStrokes: true, // Accept strokes drawn in reverse direction
       onCorrectStroke: () => {
         const nextIndex = currentStrokeRef.current + 1;
@@ -121,7 +121,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
       strokeColor: isDarkMode ? '#ff4d6d' : '#e11d48',
       outlineColor: isDarkMode ? '#21262d' : '#f1f5f9',
       drawingColor: isDarkMode ? '#ffffff' : '#1e293b',
-      drawingWidth: Math.max(10, effectiveSize * 0.05),
+      drawingWidth: Math.max(16, effectiveSize * 0.06),
       // Ensure strictly correct stroke with strict leniency in quiz options
     });
 
