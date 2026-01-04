@@ -7,13 +7,14 @@ interface WritingCanvasProps {
   mode: AppMode;
   onComplete: (result: QuizResult) => void;
   onMistake?: () => void;
+  onSkipTracing?: () => void;
   canvasSize?: number;
   isDarkMode?: boolean;
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, canvasSize: propSize, isDarkMode }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -311,6 +312,14 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
             >
               Hint
             </button>
+            {onSkipTracing && (
+              <button
+                onClick={onSkipTracing}
+                className="flex-1 max-w-[120px] py-4 bg-violet-100 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-violet-200 dark:border-violet-800/30 active:scale-95 transition-all"
+              >
+                Skip →
+              </button>
+            )}
           </>
         )}
       </div>

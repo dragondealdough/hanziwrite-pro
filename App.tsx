@@ -422,6 +422,10 @@ const App: React.FC = () => {
                   mode={effectiveMode}
                   onComplete={handleCompleteIndividual}
                   onMistake={handleCanvasMistake}
+                  onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
+                    setPracticeStage('MEMORY');
+                    setRetryCount(prev => prev + 1);
+                  } : undefined}
                   isDarkMode={isDarkMode}
                 />
 

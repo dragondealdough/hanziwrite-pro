@@ -1,15 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, get, set, child } from 'firebase/database';
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-    apiKey: "AIzaSyDc50uzEtXPUsFaLTbCrnjvkJ3SWPEweoo",
-    authDomain: "hanziwrite-f657d.firebaseapp.com",
-    databaseURL: "https://hanziwrite-f657d-default-rtdb.firebaseio.com",
-    projectId: "hanziwrite-f657d",
-    storageBucket: "hanziwrite-f657d.firebasestorage.app",
-    messagingSenderId: "105040184992",
-    appId: "1:105040184992:web:ba07c4e28e735753cc6bc5"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
