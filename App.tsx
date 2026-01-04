@@ -319,6 +319,33 @@ const App: React.FC = () => {
           onSelectCategory={handleSelectCategory}
           onSearch={handleSearch}
           onSearchForPack={async (query: string) => {
+            // First search local categories for matching characters
+            const localResults: CharacterData[] = [];
+            const queryLower = query.toLowerCase();
+
+            for (const cat of [...CATEGORIES, ...customPacks]) {
+              for (const char of (cat.characters || [])) {
+                // Match by character, pinyin, meaning, or zhuyin
+                if (
+                  char.char === query ||
+                  char.pinyin?.toLowerCase().includes(queryLower) ||
+                  char.meaning?.toLowerCase().includes(queryLower) ||
+                  char.zhuyin?.includes(query)
+                ) {
+                  // Avoid duplicates
+                  if (!localResults.some(r => r.char === char.char)) {
+                    localResults.push(char);
+                  }
+                }
+              }
+            }
+
+            // If we found local results, return them
+            if (localResults.length > 0) {
+              return localResults;
+            }
+
+            // Otherwise, try Gemini API search
             try {
               const results = await searchMandarin(query);
               return results || [];
