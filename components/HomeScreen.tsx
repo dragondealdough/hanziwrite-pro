@@ -297,7 +297,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               {packSearchResults.length > 0 ? (
                 packSearchResults.map((char) => {
                   const currentPack = categories.find(c => c.id === searchingPackId);
-                  const alreadyAdded = currentPack?.characters.some(c => c.char === char.char);
+                  const alreadyAdded = (currentPack?.characters || []).some(c => c?.char === char.char);
                   return (
                     <div key={char.char} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-2xl border border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-4">
