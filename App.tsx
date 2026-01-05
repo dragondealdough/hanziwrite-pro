@@ -252,12 +252,13 @@ const App: React.FC = () => {
   const toggleCharInPack = (packId: string, charData: CharacterData) => {
     const updated = customPacks.map(p => {
       if (p.id === packId) {
-        const exists = p.characters.some(c => c.char === charData.char);
+        const chars = p.characters || [];
+        const exists = chars.some(c => c?.char === charData.char);
         return {
           ...p,
           characters: exists
-            ? p.characters.filter(c => c.char !== charData.char)
-            : [...p.characters, charData]
+            ? chars.filter(c => c?.char !== charData.char)
+            : [...chars, charData]
         };
       }
       return p;
