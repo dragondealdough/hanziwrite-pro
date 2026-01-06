@@ -49,6 +49,7 @@ const App: React.FC = () => {
   const [testHintMode, setTestHintMode] = useState<TestHintMode | null>(null);
 
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
+  const [showModeMenu, setShowModeMenu] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
@@ -310,6 +311,13 @@ const App: React.FC = () => {
     setTestHintMode(null);
   };
 
+  const handleSwitchMode = (newHintMode: TestHintMode | null) => {
+    setTestHintMode(newHintMode);
+    setMode(newHintMode ? AppMode.TEST : AppMode.PRACTICE);
+    if (!newHintMode) setPracticeStage('GUIDED');
+    setShowModeMenu(false);
+  };
+
   if (!currentName || !currentPin) {
     return <LoginScreen onLogin={handleLogin} />;
   }
@@ -448,10 +456,79 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <button onClick={goHome} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowModeMenu(true)} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+            </button>
+            <button onClick={goHome} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mode Switching Modal */}
+        {showModeMenu && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setShowModeMenu(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[3rem] p-10 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Switch Mode</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Change how you practice right now.</p>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => handleSwitchMode('audio-only')}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-only' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">🔊</span>
+                    <div className="text-left">
+                      <div className={testHintMode === 'audio-only' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio Only</div>
+                      <div className={testHintMode === 'audio-only' ? 'text-rose-100' : 'text-slate-400'}>Hardcore mode</div>
+                    </div>
+                  </div>
+                  {testHintMode === 'audio-only' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+
+                <button
+                  onClick={() => handleSwitchMode('audio-pinyin')}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-pinyin' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">🔊📝</span>
+                    <div className="text-left">
+                      <div className={testHintMode === 'audio-pinyin' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio + Pinyin</div>
+                      <div className={testHintMode === 'audio-pinyin' ? 'text-rose-100' : 'text-slate-400'}>Standard test</div>
+                    </div>
+                  </div>
+                  {testHintMode === 'audio-pinyin' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+
+                <button
+                  onClick={() => handleSwitchMode(null)}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${!testHintMode ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">👁️</span>
+                    <div className="text-left">
+                      <div className={!testHintMode ? 'text-white' : 'text-slate-900 dark:text-white'}>Practice</div>
+                      <div className={!testHintMode ? 'text-rose-100' : 'text-slate-400'}>See everything</div>
+                    </div>
+                  </div>
+                  {!testHintMode && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowModeMenu(false)}
+                className="mt-8 w-full py-3 text-slate-400 dark:text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="w-full max-w-6xl px-4 md:px-8 py-4 lg:py-10">
           {quizType !== 'combined' ? (
