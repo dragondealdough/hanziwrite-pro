@@ -257,8 +257,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   )}
                   <div className="mt-auto flex flex-col gap-3">
                     <div className="grid grid-cols-2 gap-3">
-                      <button onClick={() => onSelectCategory(cat, 'individual')} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Practice</button>
-                      <button onClick={() => onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK)} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Speed</button>
+                      <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual'); }} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md touch-manipulation">Practice</button>
+                      <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK); }} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md touch-manipulation">Speed</button>
                     </div>
                     <button onClick={() => openPackSearch(cat.id)} className="w-full py-3 bg-emerald-500/10 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
@@ -311,8 +311,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   )}
                   <div className="mt-auto flex flex-col gap-3">
                     <div className="grid grid-cols-2 gap-3">
-                      <button onClick={() => onSelectCategory(cat, 'individual')} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Practice</button>
-                      <button onClick={() => onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK)} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Speed</button>
+                      <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual'); }} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md touch-manipulation">Practice</button>
+                      <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK); }} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md touch-manipulation">Speed</button>
                     </div>
                     {cat.author === currentName && (
                       <button onClick={() => openPackSearch(cat.id)} className="w-full py-3 bg-emerald-500/10 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2">
