@@ -105,10 +105,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Render pack card (reusable)
   const renderPackCard = (cat: Category, isPersonal: boolean) => (
-    <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 shadow-sm flex flex-col relative group hover:shadow-xl transition-all duration-300">
-      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 shadow-sm flex flex-col relative group hover:shadow-xl transition-all duration-300 touch-manipulation">
+      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         {cat.author === currentName && (
-          <button onClick={() => onTogglePackPrivacy(cat.id)} className={`p-2 ${isPersonal ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'bg-violet-50 dark:bg-violet-900/20 text-violet-600'} rounded-lg hover:opacity-80 transition-all`} title={isPersonal ? 'Share with community' : 'Make private'}>
+          <button onClick={() => onTogglePackPrivacy(cat.id)} className={`p-2 ${isPersonal ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'bg-violet-50 dark:bg-violet-900/20 text-violet-600'} rounded-lg hover:opacity-80 transition-all touch-manipulation`} title={isPersonal ? 'Share with community' : 'Make private'}>
             {isPersonal ? (
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
             ) : (
@@ -117,7 +117,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         )}
         {(cat.author === currentName || currentName.toLowerCase() === 'dale') && (
-          <button onClick={() => onDeletePack(cat.id)} className="p-2 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-lg hover:bg-rose-600 hover:text-white transition-all">
+          <button onClick={() => onDeletePack(cat.id)} className="p-2 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-lg hover:bg-rose-600 hover:text-white transition-all touch-manipulation">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
           </button>
         )}
@@ -135,9 +135,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           {(cat.characters?.length || 0) > 6 && <span className="text-[10px] text-slate-400">+{(cat.characters?.length || 0) - 6}</span>}
         </div>
       )}
-      <div className="mt-auto flex gap-2">
-        <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual'); }} className="flex-1 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all touch-manipulation">Practice</button>
-        <button onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK); }} className="flex-1 py-3 bg-rose-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all touch-manipulation">Speed</button>
+      <div className="mt-auto flex gap-2 relative z-10">
+        <button onTouchStart={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual'); }} className="flex-1 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all touch-manipulation">Practice</button>
+        <button onTouchStart={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK); }} className="flex-1 py-3 bg-rose-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all touch-manipulation">Speed</button>
       </div>
       {cat.author === currentName && (
         <button onClick={() => openPackSearch(cat.id)} className="mt-2 w-full py-2 bg-emerald-500/10 text-emerald-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1.5">
