@@ -577,6 +577,21 @@ const App: React.FC = () => {
                         <span className="text-sm">🧩</span>
                       </button>
                     )}
+                    {/* Next Character Button - visible in test modes */}
+                    {testHintMode && (
+                      <button
+                        onClick={() => {
+                          setActiveCharIndex(prev => (prev + 1) % charactersToPractice.length);
+                          setPracticeStage('GUIDED');
+                          setRetryCount(prev => prev + 1);
+                          setShowSuccess(false);
+                        }}
+                        className="p-2.5 bg-white dark:bg-slate-800 text-amber-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-amber-50 dark:hover:bg-amber-900/10 active:scale-90 transition-all ml-1"
+                        aria-label="Next character"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                      </button>
+                    )}
 
                     {/* Add to Pack Popup - Modal Overlay */}
                     {showAddToPackPopup && (
