@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Category, CharacterData, AppMode } from '../types';
+import { APP_VERSION } from '../constants';
 
 interface HomeScreenProps {
   categories: Category[];
@@ -263,7 +264,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
       <footer className="mt-32 pt-12 border-t border-slate-200/50 dark:border-slate-800 flex flex-col items-center gap-6">
         <button onClick={onExportLibrary} className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.5em] hover:text-rose-600 transition-all active:scale-95">Full Library Backup</button>
-        <p className="text-[10px] text-slate-300 dark:text-slate-700 font-bold uppercase tracking-[0.3em]">Built for Language Mastery · 2024</p>
+        <p className="text-[10px] text-slate-300 dark:text-slate-700 font-bold uppercase tracking-[0.3em]">Built for Language Mastery · v{APP_VERSION} · 2024</p>
       </footer>
 
       {/* Pack Search Modal */}

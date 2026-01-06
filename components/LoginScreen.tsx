@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { registerOrLogin, AuthResult } from '../services/firebaseService';
+import { APP_VERSION } from '../constants';
 
 interface LoginScreenProps {
   onLogin: (name: string, pin: string, displayName: string) => void;
@@ -119,6 +120,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
         <div className="mt-16 flex flex-col items-center gap-2">
           <p className="text-slate-300 dark:text-slate-800 text-[10px] font-bold uppercase tracking-[0.2em]">🔒 Cloud Synced</p>
+          <p className="text-slate-200 dark:text-slate-900 text-[9px] font-bold uppercase tracking-widest opacity-50">v{APP_VERSION}</p>
         </div>
       </div>
     </div>

@@ -559,15 +559,14 @@ const App: React.FC = () => {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
                     </button>
                     {/* Add to Custom Pack Button */}
-                    {!testHintMode && (
-                      <button
-                        onClick={() => setShowAddToPackPopup(!showAddToPackPopup)}
-                        className={`p-2.5 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm active:scale-90 transition-all ml-1 ${showAddToPackPopup ? 'bg-rose-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}
-                        aria-label="Add to custom pack"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                      </button>
-                    )}
+                    {/* Add to Custom Pack Button */}
+                    <button
+                      onClick={() => setShowAddToPackPopup(!showAddToPackPopup)}
+                      className={`p-2.5 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm active:scale-90 transition-all ml-1 ${showAddToPackPopup ? 'bg-rose-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}
+                      aria-label="Add to custom pack"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                    </button>
                     {/* Hide component popup in test mode */}
                     {!testHintMode && activeCharData?.components && activeCharData.components.length > 0 && (
                       <button
@@ -580,7 +579,7 @@ const App: React.FC = () => {
                     )}
 
                     {/* Add to Pack Popup */}
-                    {showAddToPackPopup && !testHintMode && (
+                    {showAddToPackPopup && (
                       <div className="absolute top-full left-0 mt-3 w-64 bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2">
                         <div className="flex justify-between items-center px-3 py-2 mb-1">
                           <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>

@@ -1,5 +1,7 @@
 import { Category } from './types';
 
+export const APP_VERSION = "1.0.1";
+
 export const CATEGORIES: Category[] = [
   {
     id: 'homework-group',
