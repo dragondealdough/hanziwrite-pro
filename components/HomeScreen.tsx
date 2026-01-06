@@ -218,7 +218,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 mb-16">
             {/* Homework Packs */}
             {homeworkCategory && (
-              <button onClick={() => onSelectCategory(homeworkCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left">
+              <button onClick={() => onSelectCategory(homeworkCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Homework</h3>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Class assignments</p>
@@ -227,7 +227,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
             {/* Test Packs */}
             {testCategory && (
-              <button onClick={() => onSelectCategory(testCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left">
+              <button onClick={() => onSelectCategory(testCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📋</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Test Packs</h3>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Exam preparation</p>
@@ -235,14 +235,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             )}
 
             {/* Personal Packs */}
-            <button onClick={() => setSubView('personal')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left">
+            <button onClick={() => setSubView('personal')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
               <div className="w-14 h-14 bg-violet-100 dark:bg-violet-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🔒</div>
               <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Personal</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{personalPacks.length} packs · Private</p>
             </button>
 
             {/* Community Packs */}
-            <button onClick={() => setSubView('community')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left">
+            <button onClick={() => setSubView('community')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
               <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🌐</div>
               <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Community</h3>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{communityPacks.length} packs · Shared</p>
@@ -250,7 +250,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
             {/* HSK 1 */}
             {hsk1Category && (
-              <button onClick={() => onSelectCategory(hsk1Category, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left">
+              <button onClick={() => onSelectCategory(hsk1Category, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center text-2xl font-black text-rose-600 mb-4 group-hover:scale-110 transition-transform">1</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">HSK 1</h3>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{hsk1Category.characters?.length || 0} characters</p>
