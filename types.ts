@@ -35,6 +35,7 @@ export interface Category {
   isSpecial?: boolean;
   isCustom?: boolean;
   isShared?: boolean;
+  isPrivate?: boolean; // If true, only visible to the owner
   sequences?: NameSequence[];
 }
 

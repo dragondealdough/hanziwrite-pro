@@ -210,7 +210,7 @@ const App: React.FC = () => {
       icon: '📦',
       characters: [],
       isCustom: true,
-      isShared: true
+      isPrivate: true // Default to private
     };
     savePacks([...customPacks, newPack]);
   };
@@ -222,6 +222,17 @@ const App: React.FC = () => {
       savePacks(customPacks.filter(p => p.id !== id));
     } else {
       alert(`Permission denied. Only ${pack.author} can delete this.`);
+    }
+  };
+
+  const togglePackPrivacy = (id: string) => {
+    const pack = customPacks.find(p => p.id === id);
+    if (!pack) return;
+    if (pack.author === currentName && pack.authorPin === currentPin) {
+      const updated = customPacks.map(p =>
+        p.id === id ? { ...p, isPrivate: !p.isPrivate } : p
+      );
+      savePacks(updated);
     }
   };
 
@@ -395,6 +406,7 @@ const App: React.FC = () => {
           onImportPack={importPack}
           onExportLibrary={exportLibrary}
           onAddCharToPack={toggleCharInPack}
+          onTogglePackPrivacy={togglePackPrivacy}
           currentName={currentName}
           currentPin={currentPin}
           onLogout={handleLogout}
@@ -618,7 +630,7 @@ const App: React.FC = () => {
                                 icon: '📦',
                                 characters: [activeCharData!],
                                 isCustom: true,
-                                isShared: true
+                                isPrivate: true // Default to private
                               };
                               savePacks([...customPacks, newPack]);
                               input.value = '';

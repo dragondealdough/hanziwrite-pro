@@ -13,6 +13,7 @@ interface HomeScreenProps {
   onImportPack: (json: string) => void;
   onExportLibrary: () => void;
   onAddCharToPack: (packId: string, char: CharacterData) => void;
+  onTogglePackPrivacy: (packId: string) => void;
   currentName: string;
   currentPin: string;
   onLogout: () => void;
@@ -31,6 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   onImportPack,
   onExportLibrary,
   onAddCharToPack,
+  onTogglePackPrivacy,
   currentName,
   onLogout,
   isDarkMode,
@@ -87,7 +89,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const standardCats = categories.filter(c => !c.isCustom);
   const customCats = categories.filter(c => c.isCustom);
-  const filteredCustom = customCats.filter(c => !authorFilter || c.author?.toLowerCase().includes(authorFilter.toLowerCase()));
+  // Personal = user's private packs
+  const personalPacks = customCats.filter(c => c.isPrivate && c.author === currentName);
+  // Community = shared packs (not private, or owned by others)
+  const communityPacks = customCats.filter(c => !c.isPrivate);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-5 py-8 md:py-16 pb-32">
@@ -177,11 +182,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Social/Shared Section */}
+      {/* Custom Packs Section */}
       <section>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8 mb-12">
           <div className="flex items-center gap-5 flex-1">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 dark:text-slate-600 whitespace-nowrap">Peer Repositories</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 dark:text-slate-600 whitespace-nowrap">Custom Packs</span>
             <div className="h-px flex-1 bg-slate-200/50 dark:bg-slate-800" />
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
@@ -220,45 +225,106 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           </form>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {filteredCustom.map((cat) => (
-            <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[3rem] border border-slate-200/50 dark:border-slate-800 p-8 shadow-sm flex flex-col h-full relative group hover:shadow-xl transition-all duration-300">
-              <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                {cat.author === currentName && (
-                  <button onClick={() => onDeletePack(cat.id)} className="p-2.5 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-xl hover:bg-rose-600 hover:text-white transition-all"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
-                )}
-              </div>
-              <div className="w-14 h-14 bg-slate-100 dark:bg-[#0d0f12] rounded-2xl flex items-center justify-center text-2xl mb-8 font-black text-rose-600 shadow-inner">
-                {cat.characters?.length || 0}
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 tracking-tight">{cat.name}</h3>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded">@{cat.author}</span>
-                <button onClick={() => { navigator.clipboard.writeText(JSON.stringify(cat)); alert('Code Copied!'); }} className="text-[10px] font-black text-slate-400 hover:text-rose-600 uppercase tracking-widest border-b border-dotted border-slate-300 transition-colors">Copy Code</button>
-              </div>
-              {/* Show character previews */}
-              {(cat.characters?.length || 0) > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-6">
-                  {cat.characters.slice(0, 8).map(c => (
-                    <span key={c.char} className="text-lg brush-font text-slate-600 dark:text-slate-400">{c.char}</span>
-                  ))}
-                  {(cat.characters?.length || 0) > 8 && <span className="text-xs text-slate-400">+{(cat.characters?.length || 0) - 8}</span>}
+        {/* Personal Section */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-violet-600">🔒 Personal</span>
+            <span className="text-[9px] font-medium text-slate-400">visible only to you</span>
+          </div>
+          {personalPacks.length === 0 ? (
+            <div className="text-sm text-slate-400 dark:text-slate-600 italic py-4">No personal packs yet. Create one above!</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {personalPacks.map((cat) => (
+                <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[3rem] border border-slate-200/50 dark:border-slate-800 p-8 shadow-sm flex flex-col h-full relative group hover:shadow-xl transition-all duration-300">
+                  <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => onTogglePackPrivacy(cat.id)} className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all" title="Share with community">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                    </button>
+                    <button onClick={() => onDeletePack(cat.id)} className="p-2.5 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-xl hover:bg-rose-600 hover:text-white transition-all"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                  </div>
+                  <div className="w-14 h-14 bg-slate-100 dark:bg-[#0d0f12] rounded-2xl flex items-center justify-center text-2xl mb-8 font-black text-rose-600 shadow-inner">
+                    {cat.characters?.length || 0}
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 tracking-tight">{cat.name}</h3>
+                  {(cat.characters?.length || 0) > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {cat.characters.slice(0, 8).map(c => (
+                        <span key={c.char} className="text-lg brush-font text-slate-600 dark:text-slate-400">{c.char}</span>
+                      ))}
+                      {(cat.characters?.length || 0) > 8 && <span className="text-xs text-slate-400">+{(cat.characters?.length || 0) - 8}</span>}
+                    </div>
+                  )}
+                  <div className="mt-auto flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <button onClick={() => onSelectCategory(cat, 'individual')} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Practice</button>
+                      <button onClick={() => onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK)} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Speed</button>
+                    </div>
+                    <button onClick={() => openPackSearch(cat.id)} className="w-full py-3 bg-emerald-500/10 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                      Add Words
+                    </button>
+                  </div>
                 </div>
-              )}
-              <div className="mt-auto flex flex-col gap-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => onSelectCategory(cat, 'individual')} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Practice</button>
-                  <button onClick={() => onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK)} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Speed</button>
-                </div>
-                {cat.author === currentName && (
-                  <button onClick={() => openPackSearch(cat.id)} className="w-full py-3 bg-emerald-500/10 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                    Add Words
-                  </button>
-                )}
-              </div>
+              ))}
             </div>
-          ))}
+          )}
+        </div>
+
+        {/* Community Section */}
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-600">🌐 Community</span>
+            <span className="text-[9px] font-medium text-slate-400">visible to everyone</span>
+          </div>
+          {communityPacks.length === 0 ? (
+            <div className="text-sm text-slate-400 dark:text-slate-600 italic py-4">No community packs yet.</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {communityPacks.map((cat) => (
+                <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[3rem] border border-slate-200/50 dark:border-slate-800 p-8 shadow-sm flex flex-col h-full relative group hover:shadow-xl transition-all duration-300">
+                  <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {cat.author === currentName && (
+                      <>
+                        <button onClick={() => onTogglePackPrivacy(cat.id)} className="p-2.5 bg-violet-50 dark:bg-violet-900/20 text-violet-600 rounded-xl hover:bg-violet-600 hover:text-white transition-all" title="Make private">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </button>
+                        <button onClick={() => onDeletePack(cat.id)} className="p-2.5 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-xl hover:bg-rose-600 hover:text-white transition-all"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                      </>
+                    )}
+                  </div>
+                  <div className="w-14 h-14 bg-slate-100 dark:bg-[#0d0f12] rounded-2xl flex items-center justify-center text-2xl mb-8 font-black text-rose-600 shadow-inner">
+                    {cat.characters?.length || 0}
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 tracking-tight">{cat.name}</h3>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded">@{cat.author}</span>
+                    <button onClick={() => { navigator.clipboard.writeText(JSON.stringify(cat)); alert('Code Copied!'); }} className="text-[10px] font-black text-slate-400 hover:text-rose-600 uppercase tracking-widest border-b border-dotted border-slate-300 transition-colors">Copy Code</button>
+                  </div>
+                  {(cat.characters?.length || 0) > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {cat.characters.slice(0, 8).map(c => (
+                        <span key={c.char} className="text-lg brush-font text-slate-600 dark:text-slate-400">{c.char}</span>
+                      ))}
+                      {(cat.characters?.length || 0) > 8 && <span className="text-xs text-slate-400">+{(cat.characters?.length || 0) - 8}</span>}
+                    </div>
+                  )}
+                  <div className="mt-auto flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <button onClick={() => onSelectCategory(cat, 'individual')} className="py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Practice</button>
+                      <button onClick={() => onSelectCategory(cat, 'individual', undefined, AppMode.TIME_ATTACK)} className="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-md">Speed</button>
+                    </div>
+                    {cat.author === currentName && (
+                      <button onClick={() => openPackSearch(cat.id)} className="w-full py-3 bg-emerald-500/10 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                        Add Words
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
