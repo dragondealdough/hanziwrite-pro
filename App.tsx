@@ -48,6 +48,8 @@ const App: React.FC = () => {
   const [showComponentPopup, setShowComponentPopup] = useState(false);
   const [testHintMode, setTestHintMode] = useState<TestHintMode | null>(null);
 
+  const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
+
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
     // Sync to cloud if logged in
@@ -463,7 +465,7 @@ const App: React.FC = () => {
                       {testHintMode || effectiveMode === AppMode.TEST ? '?' : activeCharData?.char}
                     </h1>
                   </div>
-                  <div className="flex items-center gap-2.5 mt-4">
+                  <div className="flex items-center gap-2.5 mt-4 relative">
                     {/* Show pinyin only if not in test mode OR if audio-pinyin mode selected */}
                     {(!testHintMode || testHintMode === 'audio-pinyin') && (
                       <span className="px-5 py-2 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg shadow-rose-200 dark:shadow-none">{activeCharData?.pinyin}</span>
@@ -479,6 +481,16 @@ const App: React.FC = () => {
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
                     </button>
+                    {/* Add to Custom Pack Button */}
+                    {!testHintMode && (
+                      <button
+                        onClick={() => setShowAddToPackPopup(!showAddToPackPopup)}
+                        className={`p-2.5 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm active:scale-90 transition-all ml-1 ${showAddToPackPopup ? 'bg-rose-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}
+                        aria-label="Add to custom pack"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                      </button>
+                    )}
                     {/* Hide component popup in test mode */}
                     {!testHintMode && activeCharData?.components && activeCharData.components.length > 0 && (
                       <button
@@ -488,6 +500,39 @@ const App: React.FC = () => {
                       >
                         <span className="text-sm">🧩</span>
                       </button>
+                    )}
+
+                    {/* Add to Pack Popup */}
+                    {showAddToPackPopup && !testHintMode && (
+                      <div className="absolute top-full left-0 mt-3 w-64 bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex justify-between items-center px-3 py-2 mb-1">
+                          <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
+                          <button onClick={() => setShowAddToPackPopup(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        </div>
+                        <div className="max-h-60 overflow-y-auto">
+                          {customPacks.filter(p => p.isCustom).length === 0 ? (
+                            <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-4 text-center italic">
+                              No custom packs.<br />Create one in Home.
+                            </div>
+                          ) : (
+                            customPacks.filter(p => p.isCustom).map(pack => {
+                              const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
+                              return (
+                                <button
+                                  key={pack.id}
+                                  onClick={() => toggleCharInPack(pack.id, activeCharData!)}
+                                  className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                                >
+                                  <span className="truncate flex-1 mr-2">{pack.name}</span>
+                                  {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                                </button>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>

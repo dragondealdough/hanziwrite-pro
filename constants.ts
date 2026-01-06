@@ -186,6 +186,37 @@ export const CATEGORIES: Category[] = [
           // 晚安
           { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'] },
         ]
+      },
+      {
+        id: 'test-2',
+        name: 'Test Pack 2',
+        characters: [
+          // Page 1
+          { char: '要', pinyin: 'yào', zhuyin: 'ㄧㄠˋ', meaning: 'want / need', difficulty: 2 },
+          { char: '末', pinyin: 'mò', zhuyin: 'ㄇㄛˋ', meaning: 'end / last', difficulty: 2, components: ['木', '一'] },
+          { char: '週', pinyin: 'zhōu', zhuyin: 'ㄓㄡ', meaning: 'week', difficulty: 2, components: ['辶', '周'] },
+          { char: '昨', pinyin: 'zuó', zhuyin: 'ㄗㄨㄛˊ', meaning: 'yesterday', difficulty: 2 },
+          { char: '明', pinyin: 'míng', zhuyin: 'ㄇㄧㄥˊ', meaning: 'bright / tomorrow', difficulty: 2 },
+          { char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 2, components: ['一', '大'] },
+          // Page 2
+          { char: '快', pinyin: 'kuài', zhuyin: 'ㄎㄨㄞˋ', meaning: 'fast', difficulty: 1, components: ['忄', '夬'] },
+          { char: '日', pinyin: 'rì', zhuyin: 'ㄖˋ', meaning: 'sun / day', difficulty: 1, components: ['日'] },
+          { char: '生', pinyin: 'shēng', zhuyin: 'ㄕㄥ', meaning: 'student / life', difficulty: 2 },
+          { char: '的', pinyin: 'de', zhuyin: 'ㄉㄜ˙', meaning: 'possessive particle', difficulty: 1 },
+          { char: '啊', pinyin: 'a', zhuyin: 'ㄚ˙', meaning: 'particle', difficulty: 1, components: ['口', '阿'] },
+          { char: '來', pinyin: 'lái', zhuyin: 'ㄌㄞˊ', meaning: 'to come', difficulty: 2 },
+          // Page 3
+          { char: '題', pinyin: 'tí', zhuyin: 'ㄊㄧˊ', meaning: 'topic / problem', difficulty: 3, components: ['是', '頁'] },
+          { char: '問', pinyin: 'wèn', zhuyin: 'ㄨㄣˋ', meaning: 'to ask', difficulty: 3, components: ['門', '口'] },
+          { char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not have / no', difficulty: 2, components: ['氵', '殳'] },
+          { char: '上', pinyin: 'shàng', zhuyin: 'ㄕㄤˋ', meaning: 'up / on / above', difficulty: 1, components: ['上'] },
+          { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'] },
+          { char: '樂', pinyin: 'lè', zhuyin: 'ㄌㄜˋ', meaning: 'happy / music', difficulty: 2, components: ['白', '幺', '木'] },
+          // Page 4
+          { char: '熱', pinyin: 'rè', zhuyin: 'ㄖㄜˋ', meaning: 'hot', difficulty: 3 },
+          { char: '見', pinyin: 'jiàn', zhuyin: 'ㄐㄧㄢˋ', meaning: 'to see / meet', difficulty: 2 },
+          { char: '再', pinyin: 'zài', zhuyin: 'ㄗㄞˋ', meaning: 'again / goodbye', difficulty: 2 },
+        ]
       }
     ]
   },
