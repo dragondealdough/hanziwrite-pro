@@ -11,11 +11,12 @@ interface WritingCanvasProps {
   canvasSize?: number;
   isDarkMode?: boolean;
   leniency?: number; // 1.0 = strict, 1.5 = normal, 2.0 = lenient
+  roundAccuracy?: number; // Round accuracy percentage
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5 }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -285,9 +286,9 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         </div>
         <div className="w-px h-8 bg-slate-800 mx-1" />
         <div className="flex flex-col items-end">
-          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 mb-0.5">Accuracy</span>
+          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 mb-0.5">Round</span>
           <span className={`${isSmall ? 'text-lg' : 'text-2xl'} font-black ${mistakes === 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
-            {Math.max(0, 100 - mistakes * 5)}%
+            {roundAccuracy !== undefined ? `${roundAccuracy}%` : `${Math.max(0, 100 - mistakes * 5)}%`}
           </span>
         </div>
       </div>

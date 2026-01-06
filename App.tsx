@@ -881,6 +881,9 @@ const App: React.FC = () => {
                       setRetryCount(prev => prev + 1);
                     } : undefined}
                     isDarkMode={isDarkMode}
+                    roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
+                      ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
+                      : undefined}
                   />
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
