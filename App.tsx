@@ -55,6 +55,18 @@ const App: React.FC = () => {
     return saved ? parseFloat(saved) : 1.5;
   });
 
+  // Smart Learning State
+  interface CharProgress {
+    char: string;
+    mistakesThisRound: number;
+    perfectRounds: number;
+    mastered: boolean;
+  }
+  const [charProgress, setCharProgress] = useState<CharProgress[]>([]);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [roundQueue, setRoundQueue] = useState<string[]>([]);
+  const [showSessionSummary, setShowSessionSummary] = useState(false);
+
   // Achievement System
   const ACHIEVEMENT_DEFS: Achievement[] = [
     { id: 'streak_10', name: 'Perfect 10', description: '10 chars without mistakes', icon: '🔥' },
@@ -232,11 +244,21 @@ const App: React.FC = () => {
     setActiveCategory(category);
     setQuizType(type);
 
-    if (sequenceChars) {
-      setSessionCharacters(sequenceChars);
-    } else {
-      const shuffled = [...category.characters].sort(() => Math.random() - 0.5);
-      setSessionCharacters(shuffled);
+    const chars = sequenceChars || category.characters;
+    // Round 1: Sequential order
+    setSessionCharacters([...chars]);
+
+    // Initialize smart learning for practice mode
+    if (initialMode === AppMode.PRACTICE) {
+      setCharProgress(chars.map(c => ({
+        char: c.char,
+        mistakesThisRound: 0,
+        perfectRounds: 0,
+        mastered: false
+      })));
+      setCurrentRound(1);
+      setRoundQueue(chars.map(c => c.char));
+      setShowSessionSummary(false);
     }
 
     setActiveCharIndex(0);
@@ -368,6 +390,15 @@ const App: React.FC = () => {
       setPracticeStage('GUIDED');
       setRetryCount(prev => prev + 1);
       setTimeout(() => setFeedbackMessage(null), 2500);
+
+      // Track mistake for smart learning
+      if (activeCharData) {
+        setCharProgress(prev => prev.map(cp =>
+          cp.char === activeCharData.char
+            ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
+            : cp
+        ));
+      }
     }
     // Reset streaks on mistake
     setUserStats(prev => ({
@@ -375,7 +406,7 @@ const App: React.FC = () => {
       perfectStreak: 0,
       testPerfectStreak: testHintMode ? 0 : prev.testPerfectStreak
     }));
-  }, [mode, practiceStage, testHintMode]);
+  }, [mode, practiceStage, testHintMode, activeCharData]);
 
   const handleCompleteIndividual = useCallback((result: QuizResult) => {
     if (mode === AppMode.PRACTICE) {
@@ -412,7 +443,47 @@ const App: React.FC = () => {
         return newStats;
       });
     }
-  }, [playAudio, mode, practiceStage, activeCharData]);
+  }, [playAudio, mode, practiceStage, activeCharData, testHintMode, checkAchievements]);
+
+  // Smart Learning: Start next round
+  const startNextRound = useCallback(() => {
+    const remaining = charProgress.filter(cp => !cp.mastered);
+    if (remaining.length === 0) {
+      setShowSessionSummary(true);
+      return;
+    }
+
+    // Update progress: chars with 0 mistakes get perfectRounds++, reset mistakesThisRound
+    const updatedProgress = charProgress.map(cp => {
+      if (cp.mastered) return cp;
+      const wasPerfect = cp.mistakesThisRound === 0;
+      const newPerfectRounds = wasPerfect ? cp.perfectRounds + 1 : 0;
+      const nowMastered = newPerfectRounds >= 2;
+      return { ...cp, mistakesThisRound: 0, perfectRounds: newPerfectRounds, mastered: nowMastered };
+    });
+    setCharProgress(updatedProgress);
+
+    // Get chars that aren't mastered yet
+    const nextChars = updatedProgress.filter(cp => !cp.mastered).map(cp => cp.char);
+    if (nextChars.length === 0) {
+      setShowSessionSummary(true);
+      return;
+    }
+
+    // Shuffle for round 2+
+    const shuffled = [...nextChars].sort(() => Math.random() - 0.5);
+    setRoundQueue(shuffled);
+    setCurrentRound(prev => prev + 1);
+    setActiveCharIndex(0);
+
+    // Update sessionCharacters to match queue
+    const allChars = sessionCharacters || [];
+    const orderedChars = shuffled.map(c => allChars.find(ch => ch.char === c)!).filter(Boolean);
+    setSessionCharacters(orderedChars);
+
+    setShowSuccess(false);
+    setRetryCount(prev => prev + 1);
+  }, [charProgress, sessionCharacters]);
 
   const handleCompleteCombined = useCallback((result: QuizResult) => {
     setResults(prev => ({ ...prev, [result.character]: result.score }));
@@ -806,10 +877,33 @@ const App: React.FC = () => {
                 {showSuccess && (
                   <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
                     <div className="text-center p-8">
-                      <div className="text-rose-600 font-black text-6xl md:text-7xl mb-10 tracking-tighter brush-font">Mastered</div>
+                      <div className="text-rose-600 font-black text-6xl md:text-7xl mb-6 tracking-tighter brush-font">
+                        {charProgress.find(cp => cp.char === activeCharData?.char)?.perfectRounds === 1 ? '🏆 Mastered!' : 'Great!'}
+                      </div>
+                      {mode === AppMode.PRACTICE && (
+                        <div className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                          Round {currentRound} • {charProgress.filter(cp => !cp.mastered).length} remaining
+                        </div>
+                      )}
                       <div className="flex flex-col gap-4 max-w-xs mx-auto">
                         <button onClick={() => { setShowSuccess(false); setRetryCount(r => r + 1); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-all">Redraw</button>
-                        <button onClick={() => { setActiveCharIndex(prev => (prev + 1) % charactersToPractice.length); setShowSuccess(false); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">Next Target</button>
+                        <button onClick={() => {
+                          const nextIdx = activeCharIndex + 1;
+                          if (mode === AppMode.PRACTICE && nextIdx >= charactersToPractice.length) {
+                            // End of round - start next round
+                            startNextRound();
+                          } else {
+                            // Check if next char was perfect last round (skip guided)
+                            const nextChar = charactersToPractice[nextIdx % charactersToPractice.length];
+                            const nextProgress = charProgress.find(cp => cp.char === nextChar?.char);
+                            const skipGuided = mode === AppMode.PRACTICE && currentRound > 1 && nextProgress?.perfectRounds > 0;
+                            setActiveCharIndex(nextIdx % charactersToPractice.length);
+                            setShowSuccess(false);
+                            setPracticeStage(skipGuided ? 'MEMORY' : 'GUIDED');
+                          }
+                        }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
+                          {mode === AppMode.PRACTICE && activeCharIndex + 1 >= charactersToPractice.length ? 'Next Round →' : 'Next Target'}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -843,6 +937,29 @@ const App: React.FC = () => {
           )}
         </div>
       </main>
+
+      {/* Smart Learning Session Summary */}
+      {showSessionSummary && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-sm w-full mx-4 shadow-2xl animate-in zoom-in-95 text-center">
+            <div className="text-5xl mb-4">🎉</div>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Session Complete!</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+              All {charProgress.length} characters mastered in {currentRound} rounds
+            </p>
+            <div className="grid grid-cols-6 gap-2 mb-6">
+              {charProgress.map(cp => (
+                <div key={cp.char} className="aspect-square flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-lg brush-font text-emerald-700 dark:text-emerald-400">
+                  {cp.char}
+                </div>
+              ))}
+            </div>
+            <button onClick={() => { setShowSessionSummary(false); goHome(); }} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">
+              Done
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Achievement Unlock Toast */}
       {newAchievement && (
