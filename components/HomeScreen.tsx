@@ -99,18 +99,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 shadow-sm flex flex-col relative group hover:shadow-xl transition-all duration-300">
       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         {cat.author === currentName && (
-          <>
-            <button onClick={() => onTogglePackPrivacy(cat.id)} className={`p-2 ${isPersonal ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'bg-violet-50 dark:bg-violet-900/20 text-violet-600'} rounded-lg hover:opacity-80 transition-all`} title={isPersonal ? 'Share with community' : 'Make private'}>
-              {isPersonal ? (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              )}
-            </button>
-            <button onClick={() => onDeletePack(cat.id)} className="p-2 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-lg hover:bg-rose-600 hover:text-white transition-all">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-            </button>
-          </>
+          <button onClick={() => onTogglePackPrivacy(cat.id)} className={`p-2 ${isPersonal ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'bg-violet-50 dark:bg-violet-900/20 text-violet-600'} rounded-lg hover:opacity-80 transition-all`} title={isPersonal ? 'Share with community' : 'Make private'}>
+            {isPersonal ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            )}
+          </button>
+        )}
+        {(cat.author === currentName || currentName.toLowerCase() === 'dale') && (
+          <button onClick={() => onDeletePack(cat.id)} className="p-2 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-lg hover:bg-rose-600 hover:text-white transition-all">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </button>
         )}
       </div>
       <div className="flex items-center gap-3 mb-4">

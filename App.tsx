@@ -218,7 +218,9 @@ const App: React.FC = () => {
   const deletePack = (id: string) => {
     const pack = customPacks.find(p => p.id === id);
     if (!pack) return;
-    if (pack.author === currentName && pack.authorPin === currentPin) {
+    const isAdmin = currentName.toLowerCase() === 'dale';
+    const isOwner = pack.author === currentName && pack.authorPin === currentPin;
+    if (isAdmin || isOwner) {
       savePacks(customPacks.filter(p => p.id !== id));
     } else {
       alert(`Permission denied. Only ${pack.author} can delete this.`);
