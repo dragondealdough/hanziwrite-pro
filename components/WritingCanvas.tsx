@@ -10,11 +10,12 @@ interface WritingCanvasProps {
   onSkipTracing?: () => void;
   canvasSize?: number;
   isDarkMode?: boolean;
+  leniency?: number; // 1.0 = strict, 1.5 = normal, 2.0 = lenient
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -58,7 +59,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
     if (!writerRef.current) return;
     writerRef.current.quiz({
       quizStartStrokeNum: currentStrokeRef.current,
-      leniency: 2.0, // Very forgiving for tricky strokes like 吃's last stroke
+      leniency: leniency, // User configurable stroke leniency
       acceptBackwardsStrokes: true, // Accept strokes drawn in reverse direction
       onCorrectStroke: () => {
         const nextIndex = currentStrokeRef.current + 1;

@@ -50,6 +50,10 @@ const App: React.FC = () => {
 
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [showModeMenu, setShowModeMenu] = useState(false);
+  const [strokeLeniency, setStrokeLeniency] = useState<number>(() => {
+    const saved = localStorage.getItem('hanziwrite_stroke_leniency');
+    return saved ? parseFloat(saved) : 1.5;
+  });
 
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
@@ -414,6 +418,11 @@ const App: React.FC = () => {
           onLogout={handleLogout}
           isDarkMode={isDarkMode}
           onToggleTheme={toggleTheme}
+          strokeLeniency={strokeLeniency}
+          onSetStrokeLeniency={(value) => {
+            setStrokeLeniency(value);
+            localStorage.setItem('hanziwrite_stroke_leniency', value.toString());
+          }}
         />
       </div>
     );
@@ -675,11 +684,12 @@ const App: React.FC = () => {
                 </div>
 
                 <WritingCanvas
-                  key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}`}
+                  key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
                   character={activeCharData?.char}
                   mode={effectiveMode}
                   onComplete={handleCompleteIndividual}
                   onMistake={handleCanvasMistake}
+                  leniency={strokeLeniency}
                   onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
                     setPracticeStage('MEMORY');
                     setRetryCount(prev => prev + 1);
