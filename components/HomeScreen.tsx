@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Category, CharacterData, AppMode } from '../types';
+import { Category, CharacterData, AppMode, Achievement } from '../types';
 import { APP_VERSION } from '../constants';
 
 interface HomeScreenProps {
@@ -21,6 +21,8 @@ interface HomeScreenProps {
   onToggleTheme: () => void;
   strokeLeniency: number;
   onSetStrokeLeniency: (value: number) => void;
+  achievements: Achievement[];
+  allAchievements: Achievement[];
 }
 
 type SubView = 'main' | 'personal' | 'community';
@@ -42,7 +44,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   isDarkMode,
   onToggleTheme,
   strokeLeniency,
-  onSetStrokeLeniency
+  onSetStrokeLeniency,
+  achievements,
+  allAchievements
 }) => {
   const [query, setQuery] = useState('');
   const [newPackName, setNewPackName] = useState('');
@@ -344,6 +348,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   onClick={() => onSetStrokeLeniency(2.0)}
                   className={`py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${strokeLeniency === 2.0 ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                 >Lenient</button>
+              </div>
+            </div>
+
+            {/* Achievements */}
+            <div className="mb-6">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 block">Achievements ({achievements.length}/{allAchievements.length})</label>
+              <div className="grid grid-cols-5 gap-2">
+                {allAchievements.map(ach => {
+                  const unlocked = achievements.some(a => a.id === ach.id);
+                  return (
+                    <div key={ach.id} className={`aspect-square flex items-center justify-center rounded-xl text-2xl ${unlocked ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-slate-100 dark:bg-slate-800 grayscale opacity-40'}`} title={unlocked ? `${ach.name}: ${ach.description}` : '???'}>
+                      {unlocked ? ach.icon : '🔒'}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

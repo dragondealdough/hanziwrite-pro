@@ -54,3 +54,20 @@ export interface AIInsight {
   breakdown: string;
   usage: string;
 }
+
+export interface UserStats {
+  totalCharsWritten: number;
+  perfectStreak: number;
+  bestPerfectStreak: number;
+  testPerfectStreak: number;
+  bestTestStreak: number;
+  packsCreated: number;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt?: number; // timestamp when unlocked
+}

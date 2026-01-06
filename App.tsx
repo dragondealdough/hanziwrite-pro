@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { CATEGORIES } from './constants';
-import { AppMode, QuizResult, ViewState, Category, CharacterData } from './types';
+import { AppMode, QuizResult, ViewState, Category, CharacterData, UserStats, Achievement } from './types';
 import Sidebar from './components/Sidebar';
 import WritingCanvas from './components/WritingCanvas';
 import FreeCanvas from './components/FreeCanvas';
@@ -55,6 +55,39 @@ const App: React.FC = () => {
     return saved ? parseFloat(saved) : 1.5;
   });
 
+  // Achievement System
+  const ACHIEVEMENT_DEFS: Achievement[] = [
+    { id: 'streak_10', name: 'Perfect 10', description: '10 chars without mistakes', icon: '🔥' },
+    { id: 'streak_25', name: 'Quarter Century', description: '25 chars without mistakes', icon: '💪' },
+    { id: 'streak_50', name: 'Half Century', description: '50 chars without mistakes', icon: '🏆' },
+    { id: 'test_streak_10', name: 'Test Ace', description: '10 test chars perfect', icon: '📝' },
+    { id: 'test_streak_25', name: 'Test Master', description: '25 test chars perfect', icon: '🎓' },
+    { id: 'total_10', name: 'First Steps', description: '10 characters written', icon: '👶' },
+    { id: 'total_100', name: 'Century', description: '100 characters written', icon: '💯' },
+    { id: 'total_500', name: 'Dedicated', description: '500 characters written', icon: '⭐' },
+    { id: 'pack_created', name: 'Creator', description: 'Created first pack', icon: '📦' },
+    { id: 'pack_5', name: 'Curator', description: '5 packs created', icon: '🗂️' },
+  ];
+
+  const [userStats, setUserStats] = useState<UserStats>(() => {
+    try {
+      const saved = localStorage.getItem('hanziwrite_stats');
+      return saved ? JSON.parse(saved) : {
+        totalCharsWritten: 0, perfectStreak: 0, bestPerfectStreak: 0,
+        testPerfectStreak: 0, bestTestStreak: 0, packsCreated: 0
+      };
+    } catch { return { totalCharsWritten: 0, perfectStreak: 0, bestPerfectStreak: 0, testPerfectStreak: 0, bestTestStreak: 0, packsCreated: 0 }; }
+  });
+
+  const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>(() => {
+    try {
+      const saved = localStorage.getItem('hanziwrite_achievements');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
+
   useEffect(() => {
     localStorage.setItem('hanziwrite_results', JSON.stringify(results));
     // Sync to cloud if logged in
@@ -62,6 +95,43 @@ const App: React.FC = () => {
       saveUserProgress(currentName, results);
     }
   }, [results, currentName]);
+
+  // Persist stats and achievements
+  useEffect(() => {
+    localStorage.setItem('hanziwrite_stats', JSON.stringify(userStats));
+  }, [userStats]);
+
+  useEffect(() => {
+    localStorage.setItem('hanziwrite_achievements', JSON.stringify(unlockedAchievements));
+  }, [unlockedAchievements]);
+
+  const checkAchievements = useCallback((stats: UserStats) => {
+    const checks: { id: string; condition: boolean }[] = [
+      { id: 'streak_10', condition: stats.bestPerfectStreak >= 10 },
+      { id: 'streak_25', condition: stats.bestPerfectStreak >= 25 },
+      { id: 'streak_50', condition: stats.bestPerfectStreak >= 50 },
+      { id: 'test_streak_10', condition: stats.bestTestStreak >= 10 },
+      { id: 'test_streak_25', condition: stats.bestTestStreak >= 25 },
+      { id: 'total_10', condition: stats.totalCharsWritten >= 10 },
+      { id: 'total_100', condition: stats.totalCharsWritten >= 100 },
+      { id: 'total_500', condition: stats.totalCharsWritten >= 500 },
+      { id: 'pack_created', condition: stats.packsCreated >= 1 },
+      { id: 'pack_5', condition: stats.packsCreated >= 5 },
+    ];
+
+    for (const { id, condition } of checks) {
+      if (condition && !unlockedAchievements.some(a => a.id === id)) {
+        const def = ACHIEVEMENT_DEFS.find(d => d.id === id);
+        if (def) {
+          const unlocked = { ...def, unlockedAt: Date.now() };
+          setUnlockedAchievements(prev => [...prev, unlocked]);
+          setNewAchievement(unlocked);
+          setTimeout(() => setNewAchievement(null), 4000);
+          break; // Show one at a time
+        }
+      }
+    }
+  }, [unlockedAchievements, ACHIEVEMENT_DEFS]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -217,6 +287,12 @@ const App: React.FC = () => {
       isPrivate: true // Default to private
     };
     savePacks([...customPacks, newPack]);
+    // Track pack creation for achievements
+    setUserStats(prev => {
+      const newStats = { ...prev, packsCreated: prev.packsCreated + 1 };
+      checkAchievements(newStats);
+      return newStats;
+    });
   };
 
   const deletePack = (id: string) => {
@@ -293,7 +369,13 @@ const App: React.FC = () => {
       setRetryCount(prev => prev + 1);
       setTimeout(() => setFeedbackMessage(null), 2500);
     }
-  }, [mode, practiceStage]);
+    // Reset streaks on mistake
+    setUserStats(prev => ({
+      ...prev,
+      perfectStreak: 0,
+      testPerfectStreak: testHintMode ? 0 : prev.testPerfectStreak
+    }));
+  }, [mode, practiceStage, testHintMode]);
 
   const handleCompleteIndividual = useCallback((result: QuizResult) => {
     if (mode === AppMode.PRACTICE) {
@@ -308,6 +390,28 @@ const App: React.FC = () => {
     setResults(prev => ({ ...prev, [result.character]: result.score }));
     setShowSuccess(true);
     if (result.completed) playAudio(result.character, activeCharData?.pinyin);
+
+    // Track stats for achievements
+    if (result.completed && result.mistakes === 0) {
+      setUserStats(prev => {
+        const newStats = {
+          ...prev,
+          totalCharsWritten: prev.totalCharsWritten + 1,
+          perfectStreak: prev.perfectStreak + 1,
+          bestPerfectStreak: Math.max(prev.bestPerfectStreak, prev.perfectStreak + 1),
+          testPerfectStreak: testHintMode ? prev.testPerfectStreak + 1 : prev.testPerfectStreak,
+          bestTestStreak: testHintMode ? Math.max(prev.bestTestStreak, prev.testPerfectStreak + 1) : prev.bestTestStreak,
+        };
+        checkAchievements(newStats);
+        return newStats;
+      });
+    } else if (result.completed) {
+      setUserStats(prev => {
+        const newStats = { ...prev, totalCharsWritten: prev.totalCharsWritten + 1, perfectStreak: 0 };
+        checkAchievements(newStats);
+        return newStats;
+      });
+    }
   }, [playAudio, mode, practiceStage, activeCharData]);
 
   const handleCompleteCombined = useCallback((result: QuizResult) => {
@@ -423,6 +527,8 @@ const App: React.FC = () => {
             setStrokeLeniency(value);
             localStorage.setItem('hanziwrite_stroke_leniency', value.toString());
           }}
+          achievements={unlockedAchievements}
+          allAchievements={ACHIEVEMENT_DEFS}
         />
       </div>
     );
@@ -737,6 +843,20 @@ const App: React.FC = () => {
           )}
         </div>
       </main>
+
+      {/* Achievement Unlock Toast */}
+      {newAchievement && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-8 fade-in duration-500">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+            <span className="text-3xl">{newAchievement.icon}</span>
+            <div>
+              <div className="text-xs font-black uppercase tracking-widest opacity-80">Achievement Unlocked!</div>
+              <div className="text-lg font-black">{newAchievement.name}</div>
+              <div className="text-xs opacity-90">{newAchievement.description}</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Component Breakdown Popup */}
       <ComponentPopup
