@@ -578,17 +578,17 @@ const App: React.FC = () => {
                       </button>
                     )}
 
-                    {/* Add to Pack Popup */}
+                    {/* Add to Pack Popup - Modal Overlay */}
                     {showAddToPackPopup && (
-                      <div className="absolute top-full left-0 mt-3 w-64 bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2">
-                        <div className="flex justify-between items-center px-3 py-2 mb-1">
-                          <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
-                          <button onClick={() => setShowAddToPackPopup(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                          </button>
-                        </div>
-                        {/* Quick Create New Pack */}
-                        <div className="px-2 mb-2">
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddToPackPopup(false)}>
+                        <div className="bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-2xl w-72 max-w-[90vw] p-4 animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex justify-between items-center px-2 py-2 mb-2">
+                            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
+                            <button onClick={() => setShowAddToPackPopup(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </div>
+                          {/* Quick Create New Pack */}
                           <form onSubmit={(e) => {
                             e.preventDefault();
                             const input = e.currentTarget.querySelector('input') as HTMLInputElement;
@@ -608,37 +608,37 @@ const App: React.FC = () => {
                               savePacks([...customPacks, newPack]);
                               input.value = '';
                             }
-                          }} className="flex gap-2">
+                          }} className="flex gap-2 mb-3">
                             <input
                               type="text"
                               placeholder="New pack name..."
-                              className="flex-1 px-3 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 ring-rose-500/20 outline-none"
+                              className="flex-1 min-w-0 px-3 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-emerald-500/20 outline-none"
                             />
-                            <button type="submit" className="px-3 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all">
+                            <button type="submit" className="px-3 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all shrink-0">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
                             </button>
                           </form>
-                        </div>
-                        <div className="max-h-60 overflow-y-auto">
-                          {customPacks.filter(p => p.isCustom).length === 0 ? (
-                            <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-2 text-center italic">
-                              No packs yet. Create one above!
-                            </div>
-                          ) : (
-                            customPacks.filter(p => p.isCustom).map(pack => {
-                              const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
-                              return (
-                                <button
-                                  key={pack.id}
-                                  onClick={() => toggleCharInPack(pack.id, activeCharData!)}
-                                  className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-                                >
-                                  <span className="truncate flex-1 mr-2">{pack.name}</span>
-                                  {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
-                                </button>
-                              );
-                            })
-                          )}
+                          <div className="max-h-48 overflow-y-auto">
+                            {customPacks.filter(p => p.isCustom).length === 0 ? (
+                              <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-3 text-center italic">
+                                No packs yet. Create one above!
+                              </div>
+                            ) : (
+                              customPacks.filter(p => p.isCustom).map(pack => {
+                                const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
+                                return (
+                                  <button
+                                    key={pack.id}
+                                    onClick={() => toggleCharInPack(pack.id, activeCharData!)}
+                                    className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                                  >
+                                    <span className="truncate flex-1 mr-2">{pack.name}</span>
+                                    {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                                  </button>
+                                );
+                              })
+                            )}
+                          </div>
                         </div>
                       </div>
                     )}
