@@ -24,7 +24,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
       <header className="mb-16">
         <button
           onClick={onBack}
-          className="group flex items-center gap-2 mb-8 text-slate-400 hover:text-rose-600 transition-colors"
+          className="group flex items-center gap-2 mb-8 text-slate-400 hover:text-rose-600 transition-colors touch-manipulation"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           <span className="font-black text-[10px] uppercase tracking-[0.2em]">Return to Hub</span>
@@ -53,7 +53,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
             role="button"
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && (isTestPack ? setSelectedSequence({ id: seq.id, chars: seq.characters }) : handleLaunch(seq.characters))}
-            className="group bg-white dark:bg-[#16191e] border border-slate-200/50 dark:border-slate-800 rounded-[3rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full cursor-pointer outline-none focus:ring-4 ring-rose-600/10"
+            className="group bg-white dark:bg-[#16191e] border border-slate-200/50 dark:border-slate-800 rounded-[3rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full cursor-pointer outline-none focus:ring-4 ring-rose-600/10 touch-manipulation"
           >
             <div className="mb-8">
               <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight group-hover:text-rose-600 transition-colors">
@@ -96,7 +96,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
             <div className="flex flex-col gap-4">
               <button
                 onClick={() => handleLaunch(selectedSequence.chars, 'audio-only')}
-                className="group w-full py-6 px-6 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-between"
+                className="group w-full py-6 px-6 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-between touch-manipulation"
               >
                 <div className="flex items-center gap-4">
                   <span className="text-2xl">🔊</span>
@@ -110,7 +110,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
 
               <button
                 onClick={() => handleLaunch(selectedSequence.chars, 'audio-pinyin')}
-                className="group w-full py-6 px-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-between"
+                className="group w-full py-6 px-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-between touch-manipulation"
               >
                 <div className="flex items-center gap-4">
                   <span className="text-2xl">🔊📝</span>
@@ -124,7 +124,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
 
               <button
                 onClick={() => handleLaunch(selectedSequence.chars)}
-                className="group w-full py-5 px-6 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-[0.98] transition-all flex items-center justify-between"
+                className="group w-full py-5 px-6 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-[0.98] transition-all flex items-center justify-between touch-manipulation"
               >
                 <div className="flex items-center gap-4">
                   <span className="text-xl">👁️</span>
@@ -139,7 +139,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
 
             <button
               onClick={() => setSelectedSequence(null)}
-              className="mt-6 w-full py-3 text-slate-400 dark:text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+              className="mt-6 w-full py-3 text-slate-400 dark:text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors touch-manipulation"
             >
               Cancel
             </button>

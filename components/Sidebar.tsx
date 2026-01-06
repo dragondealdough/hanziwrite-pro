@@ -15,14 +15,14 @@ interface SidebarProps {
   onToggleCharInPack: (packId: string, charData: CharacterData) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  characters, 
-  activeChar, 
-  mode, 
-  onSelect, 
-  onGoHome, 
-  results, 
-  isOpen, 
+const Sidebar: React.FC<SidebarProps> = ({
+  characters,
+  activeChar,
+  mode,
+  onSelect,
+  onGoHome,
+  results,
+  isOpen,
   onClose,
   customPacks,
   onToggleCharInPack
@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/40 z-40 lg:hidden backdrop-blur-md transition-opacity duration-300"
           onClick={onClose}
         />
@@ -40,14 +40,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-[#0d0f12] border-r border-slate-200/60 dark:border-slate-800 transform transition-transform duration-500 ease-out lg:relative lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} flex flex-col shadow-2xl lg:shadow-none`}>
         <div className="p-8 border-b border-slate-100 dark:border-slate-800/50">
-          <button 
+          <button
             onClick={onGoHome}
-            className="group flex items-center gap-2 mb-8 text-slate-400 hover:text-rose-600 transition-colors"
+            className="group flex items-center gap-2 mb-8 text-slate-400 hover:text-rose-600 transition-colors touch-manipulation"
           >
-             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-             <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Hub</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Hub</span>
           </button>
-          
+
           <div className="flex items-center gap-3 select-none">
             <span className="brush-font text-5xl text-rose-600 leading-none pt-1">墨</span>
             <div className="flex flex-col">
@@ -56,27 +56,26 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="flex-1 p-4 space-y-2.5 overflow-y-auto hide-scrollbar">
           <div className="text-[10px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-[0.4em] px-3 mb-6">Unit Syllabus</div>
           {characters.map((item) => {
             const score = results[item.char];
             const isCompleted = score !== undefined;
             const isMenuOpen = activePackMenu === item.char;
-            
+
             return (
               <div key={item.char} className="relative">
-                <div className={`w-full flex items-center gap-4 p-4 rounded-[1.5rem] transition-all duration-300 ${
-                  activeChar === item.char 
-                    ? 'bg-rose-600 text-white shadow-xl shadow-rose-200 dark:shadow-none' 
+                <div className={`w-full flex items-center gap-4 p-4 rounded-[1.5rem] transition-all duration-300 ${activeChar === item.char
+                    ? 'bg-rose-600 text-white shadow-xl shadow-rose-200 dark:shadow-none'
                     : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border-transparent'
-                }`}>
+                  }`}>
                   <button
                     onClick={() => {
                       onSelect(item.char);
                       if (window.innerWidth < 1024) onClose();
                     }}
-                    className="flex flex-1 items-center gap-4"
+                    className="flex flex-1 items-center gap-4 touch-manipulation"
                   >
                     <div className={`text-4xl w-10 text-center brush-font pt-1 ${activeChar === item.char ? 'text-white' : 'text-slate-900 dark:text-slate-100'}`}>
                       {mode === AppMode.TEST ? '?' : item.char}
@@ -92,15 +91,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                   <div className="flex flex-col items-center gap-1.5">
                     {isCompleted && (
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black shrink-0 ${
-                        activeChar === item.char 
-                          ? 'bg-white text-rose-600' 
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black shrink-0 ${activeChar === item.char
+                          ? 'bg-white text-rose-600'
                           : score > 80 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30'
-                      }`}>
+                        }`}>
                         {score}%
                       </div>
                     )}
-                    <button 
+                    <button
                       onClick={() => setActivePackMenu(isMenuOpen ? null : item.char)}
                       className={`p-2 rounded-xl transition-all ${isMenuOpen ? (activeChar === item.char ? 'bg-white text-rose-600' : 'bg-rose-600 text-white') : (activeChar === item.char ? 'text-rose-100 hover:bg-rose-500' : 'text-slate-300 dark:text-slate-700 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30')}`}
                     >
@@ -144,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
           <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
-            <div 
+            <div
               className="h-full bg-rose-600 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(225,29,72,0.4)]"
               style={{ width: `${(Object.keys(results).filter(k => characters.some(c => c.char === k)).length / Math.max(1, characters.length)) * 100}%` }}
             />

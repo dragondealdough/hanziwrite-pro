@@ -102,7 +102,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-5 bg-slate-900 dark:bg-rose-600 text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.4em] shadow-2xl hover:bg-rose-600 dark:hover:bg-rose-700 active:scale-95 transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            className="w-full py-5 bg-slate-900 dark:bg-rose-600 text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.4em] shadow-2xl hover:bg-rose-600 dark:hover:bg-rose-700 active:scale-95 transition-all duration-300 mt-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 touch-manipulation"
           >
             {loading ? (
               <>
