@@ -9,6 +9,7 @@ import HomeScreen from './components/HomeScreen';
 import HomeworkMenu, { TestHintMode } from './components/HomeworkMenu';
 import LoginScreen from './components/LoginScreen';
 import ComponentPopup from './components/ComponentPopup';
+import PinyinQuiz from './components/PinyinQuiz';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
 import { saveUserProgress, getUserProgress, saveSharedPacks, getSharedPacks } from './services/firebaseService';
 
@@ -35,7 +36,7 @@ const App: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [practiceStage, setPracticeStage] = useState<'GUIDED' | 'MEMORY'>('GUIDED');
+  const [practiceStage, setPracticeStage] = useState<'GUIDED' | 'MEMORY' | 'PINYIN'>('GUIDED');
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   const [currentName, setCurrentName] = useState<string | null>(localStorage.getItem('hanziwrite_login_name'));
@@ -414,6 +415,13 @@ const App: React.FC = () => {
         setFeedbackMessage("Perfect! Now try from memory.");
         setPracticeStage('MEMORY');
         setRetryCount(prev => prev + 1);
+        setTimeout(() => setFeedbackMessage(null), 2500);
+        return;
+      }
+      if (practiceStage === 'MEMORY') {
+        // After memory success, go to pinyin quiz
+        setFeedbackMessage("Great! Now test your pinyin.");
+        setPracticeStage('PINYIN');
         setTimeout(() => setFeedbackMessage(null), 2500);
         return;
       }
@@ -860,19 +868,44 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                <WritingCanvas
-                  key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
-                  character={activeCharData?.char}
-                  mode={effectiveMode}
-                  onComplete={handleCompleteIndividual}
-                  onMistake={handleCanvasMistake}
-                  leniency={strokeLeniency}
-                  onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
-                    setPracticeStage('MEMORY');
-                    setRetryCount(prev => prev + 1);
-                  } : undefined}
-                  isDarkMode={isDarkMode}
-                />
+                {practiceStage !== 'PINYIN' ? (
+                  <WritingCanvas
+                    key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
+                    character={activeCharData?.char}
+                    mode={effectiveMode}
+                    onComplete={handleCompleteIndividual}
+                    onMistake={handleCanvasMistake}
+                    leniency={strokeLeniency}
+                    onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
+                      setPracticeStage('MEMORY');
+                      setRetryCount(prev => prev + 1);
+                    } : undefined}
+                    isDarkMode={isDarkMode}
+                  />
+                ) : (
+                  <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
+                    <PinyinQuiz
+                      character={activeCharData?.char || ''}
+                      correctPinyin={activeCharData?.pinyin || ''}
+                      onCorrect={() => {
+                        setShowSuccess(true);
+                        playAudio(activeCharData?.char || '', activeCharData?.pinyin);
+                      }}
+                      onIncorrect={() => {
+                        // Track mistake for smart learning
+                        if (activeCharData) {
+                          setCharProgress(prev => prev.map(cp =>
+                            cp.char === activeCharData.char
+                              ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
+                              : cp
+                          ));
+                        }
+                        setShowSuccess(true);
+                      }}
+                      isDarkMode={isDarkMode}
+                    />
+                  </div>
+                )}
 
                 {showSuccess && (
                   <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
