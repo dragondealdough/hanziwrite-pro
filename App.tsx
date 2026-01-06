@@ -587,10 +587,42 @@ const App: React.FC = () => {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                           </button>
                         </div>
+                        {/* Quick Create New Pack */}
+                        <div className="px-2 mb-2">
+                          <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const input = e.currentTarget.querySelector('input') as HTMLInputElement;
+                            if (input.value.trim() && currentName && currentPin) {
+                              const newPackId = `pack-${Date.now()}`;
+                              const newPack: Category = {
+                                id: newPackId,
+                                name: input.value.trim(),
+                                author: currentName,
+                                authorPin: currentPin,
+                                description: 'Custom classmate collection.',
+                                icon: '📦',
+                                characters: [activeCharData!],
+                                isCustom: true,
+                                isShared: true
+                              };
+                              savePacks([...customPacks, newPack]);
+                              input.value = '';
+                            }
+                          }} className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder="New pack name..."
+                              className="flex-1 px-3 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 ring-rose-500/20 outline-none"
+                            />
+                            <button type="submit" className="px-3 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                            </button>
+                          </form>
+                        </div>
                         <div className="max-h-60 overflow-y-auto">
                           {customPacks.filter(p => p.isCustom).length === 0 ? (
-                            <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-4 text-center italic">
-                              No custom packs.<br />Create one in Home.
+                            <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-2 text-center italic">
+                              No packs yet. Create one above!
                             </div>
                           ) : (
                             customPacks.filter(p => p.isCustom).map(pack => {
