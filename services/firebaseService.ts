@@ -162,3 +162,23 @@ export async function getSharedPacks(): Promise<any[]> {
     }
     return [];
 }
+
+/**
+ * Get all users (admin only)
+ */
+export async function getAllUsers(): Promise<{ username: string; displayName: string; createdAt: number }[]> {
+    try {
+        const snapshot = await get(ref(db, 'users'));
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            return Object.entries(users).map(([username, data]: [string, any]) => ({
+                username,
+                displayName: data.displayName,
+                createdAt: data.createdAt
+            })).sort((a, b) => b.createdAt - a.createdAt); // Most recent first
+        }
+    } catch (error) {
+        console.error('Failed to load users:', error);
+    }
+    return [];
+}

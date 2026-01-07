@@ -1,6 +1,6 @@
 import { Category } from './types';
 
-export const APP_VERSION = "1.1.15";
+export const APP_VERSION = "1.1.16";
 
 export const CATEGORIES: Category[] = [
   {

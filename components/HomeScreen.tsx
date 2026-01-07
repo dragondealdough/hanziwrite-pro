@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Category, CharacterData, AppMode, Achievement } from '../types';
 import { APP_VERSION } from '../constants';
+import { getAllUsers } from '../services/firebaseService';
 
 interface HomeScreenProps {
   categories: Category[];
@@ -55,6 +56,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   const [showImportForm, setShowImportForm] = useState(false);
   const [subView, setSubView] = useState<SubView>('main');
   const [showSettings, setShowSettings] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [adminUsers, setAdminUsers] = useState<{ username: string; displayName: string; createdAt: number }[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // Admin: Check if current user is admin (you can change this)
+  const isAdmin = currentName.toLowerCase() === 'dale';
+
+  const loadAdminUsers = async () => {
+    setLoadingUsers(true);
+    const users = await getAllUsers();
+    setAdminUsers(users);
+    setLoadingUsers(false);
+  };
 
   // Pack search modal state
   const [searchingPackId, setSearchingPackId] = useState<string | null>(null);
@@ -366,7 +380,56 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
             </div>
 
+            {/* Admin Panel Button (only for admin) */}
+            {isAdmin && (
+              <div className="mb-6">
+                <button
+                  onClick={() => { setShowSettings(false); setShowAdminPanel(true); loadAdminUsers(); }}
+                  className="w-full py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all"
+                >
+                  👑 View All Users
+                </button>
+              </div>
+            )}
+
             <button onClick={() => setShowSettings(false)} className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest">Done</button>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Panel Modal */}
+      {showAdminPanel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setShowAdminPanel(false)}>
+          <div className="bg-white dark:bg-[#16191e] rounded-[2rem] p-6 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-black text-slate-900 dark:text-white">👑 Registered Users</h2>
+              <button onClick={() => setShowAdminPanel(false)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {loadingUsers ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin h-8 w-8 border-4 border-rose-600 border-t-transparent rounded-full" />
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto space-y-2">
+                <div className="text-xs font-bold text-slate-400 dark:text-slate-500 mb-4">{adminUsers.length} user{adminUsers.length !== 1 ? 's' : ''} registered</div>
+                {adminUsers.map((user) => (
+                  <div key={user.username} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl">
+                    <div>
+                      <div className="font-black text-slate-900 dark:text-white">{user.displayName}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-slate-500">@{user.username}</div>
+                    </div>
+                    <div className="text-[10px] text-slate-400 dark:text-slate-600">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button onClick={() => setShowAdminPanel(false)} className="mt-4 w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest">Close</button>
           </div>
         </div>
       )}
