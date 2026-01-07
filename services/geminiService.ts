@@ -57,13 +57,20 @@ export async function searchMandarin(query: string): Promise<CharacterData[]> {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `The user wants to practice writing Traditional Chinese characters (Taiwan standard) based on the search query: "${query}".
   Return a JSON array of CharacterData objects for each character in the word.
-  Each object must have: char (Traditional), pinyin, zhuyin, meaning, difficulty (1-5).
+  Each object must have:
+  - char (Traditional Chinese character)
+  - pinyin (with tone marks)
+  - zhuyin (Bopomofo)
+  - meaning (English meaning)
+  - difficulty (1-5)
+  - exampleSentence (a short example sentence in Traditional Chinese using this character)
+  - exampleTranslation (English translation of the example sentence)
   Do not include markdown.`;
 
   try {
     return await fetchWithRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.5-flash-preview-05-20",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
@@ -103,13 +110,13 @@ async function decodeAudioData(data: Uint8Array, ctx: AudioContext, sampleRate: 
 export async function playMandarinAudio(text: string, pinyin?: string): Promise<void> {
   // Use Browser SpeechSynthesis as a reliable fallback immediately if API_KEY is missing or if previous errors occurred.
   // However, we default to Gemini for high quality.
-  
+
   const performFallback = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-TW';
-      utterance.rate = 0.8; 
+      utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -120,7 +127,7 @@ export async function playMandarinAudio(text: string, pinyin?: string): Promise<
     if (ctx.state === 'suspended') await ctx.resume();
 
     // Adding Pinyin to the prompt significantly improves pronunciation accuracy for single characters
-    const instruction = pinyin 
+    const instruction = pinyin
       ? `Pronounce the Traditional Chinese character "${text}" clearly with the pronunciation matching the Pinyin "${pinyin}". Do not say anything else.`
       : `Pronounce the Traditional Chinese character "${text}" clearly. Do not say anything else.`;
 

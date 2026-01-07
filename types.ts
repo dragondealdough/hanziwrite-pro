@@ -15,6 +15,8 @@ export interface CharacterData {
   meaning: string;
   difficulty: number;
   components?: string[]; // Radical/component breakdown, e.g., ['口', '乞'] for 吃
+  exampleSentence?: string; // Example sentence featuring this character
+  exampleTranslation?: string; // English translation of the example
 }
 
 export interface NameSequence {
