@@ -55,17 +55,25 @@ export async function getCharacterInsights(character: string): Promise<AIInsight
 
 export async function searchMandarin(query: string): Promise<CharacterData[]> {
   const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
-  const prompt = `The user wants to practice writing Traditional Chinese characters (Taiwan standard) based on the search query: "${query}".
-  Return a JSON array of CharacterData objects for each character in the word.
-  Each object must have:
-  - char (Traditional Chinese character)
-  - pinyin (with tone marks)
-  - zhuyin (Bopomofo)
-  - meaning (English meaning)
-  - difficulty (1-5)
-  - exampleSentence (a short example sentence in Traditional Chinese using this character)
-  - exampleTranslation (English translation of the example sentence)
-  Do not include markdown.`;
+  const prompt = `Find Traditional Chinese characters (Taiwan standard) that match the query: "${query}".
+
+IMPORTANT: If the query is pinyin (like "men", "ma", "shi"), return characters with EXACTLY that pinyin pronunciation (ignoring tones).
+- "men" should return 門 (mén), 們 (men), etc. - NOT 男 (nán)
+- "ma" should return 嗎, 媽, 馬, etc.
+
+If the query is already a Chinese character or word, return those characters.
+If the query is English, find relevant Chinese characters.
+
+Return a JSON array with 1-5 CharacterData objects. Each must have:
+- char (Traditional Chinese character)
+- pinyin (with tone marks, must match the query if query was pinyin)
+- zhuyin (Bopomofo)
+- meaning (English meaning)
+- difficulty (1-5)
+- exampleSentence (short example in Traditional Chinese)
+- exampleTranslation (English translation)
+
+Do not include markdown. Return only the JSON array.`;
 
   try {
     return await fetchWithRetry(async () => {
