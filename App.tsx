@@ -414,7 +414,7 @@ const App: React.FC = () => {
       if (practiceStage === 'GUIDED') {
         setFeedbackMessage("Perfect! Now try from memory.");
         setPracticeStage('MEMORY');
-        // Do NOT increment retryCount here - this prevents canvas from resetting
+        // Do NOT increment retryCount here - prevents canvas from resetting
         setTimeout(() => setFeedbackMessage(null), 2500);
         return;
       }
@@ -849,154 +849,154 @@ const App: React.FC = () => {
                     </div>
                   )}
 
-                {/* Add to Pack Popup - Modal Overlay */}
-                {showAddToPackPopup && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddToPackPopup(false)}>
-                    <div className="bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-2xl w-72 max-w-[90vw] p-4 animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex justify-between items-center px-2 py-2 mb-2">
-                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
-                        <button onClick={() => setShowAddToPackPopup(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
-                      </div>
-                      {/* Quick Create New Pack */}
-                      <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const input = e.currentTarget.querySelector('input') as HTMLInputElement;
-                        if (input.value.trim() && currentName && currentPin) {
-                          const newPackId = `pack-${Date.now()}`;
-                          const newPack: Category = {
-                            id: newPackId,
-                            name: input.value.trim(),
-                            author: currentName,
-                            authorPin: currentPin,
-                            description: 'Custom classmate collection.',
-                            icon: '📦',
-                            characters: [activeCharData!],
-                            isCustom: true,
-                            isPrivate: true // Default to private
-                          };
-                          savePacks([...customPacks, newPack]);
-                          input.value = '';
-                        }
-                      }} className="flex gap-2 mb-3">
-                        <input
-                          type="text"
-                          placeholder="New pack name..."
-                          className="flex-1 min-w-0 px-3 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-emerald-500/20 outline-none"
-                        />
-                        <button type="submit" className="px-3 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all shrink-0">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                        </button>
-                      </form>
-                      <div className="max-h-48 overflow-y-auto">
-                        {customPacks.filter(p => p.isCustom).length === 0 ? (
-                          <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-3 text-center italic">
-                            No packs yet. Create one above!
+                    {/* Add to Pack Popup - Modal Overlay */}
+                    {showAddToPackPopup && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddToPackPopup(false)}>
+                        <div className="bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-2xl w-72 max-w-[90vw] p-4 animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex justify-between items-center px-2 py-2 mb-2">
+                            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
+                            <button onClick={() => setShowAddToPackPopup(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
                           </div>
-                        ) : (
-                          customPacks.filter(p => p.isCustom).map(pack => {
-                            const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
-                            return (
-                              <button
-                                key={pack.id}
-                                onClick={() => toggleCharInPack(pack.id, activeCharData!)}
-                                className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-                              >
-                                <span className="truncate flex-1 mr-2">{pack.name}</span>
-                                {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
-                              </button>
-                            );
-                          })
-                        )}
+                          {/* Quick Create New Pack */}
+                          <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const input = e.currentTarget.querySelector('input') as HTMLInputElement;
+                            if (input.value.trim() && currentName && currentPin) {
+                              const newPackId = `pack-${Date.now()}`;
+                              const newPack: Category = {
+                                id: newPackId,
+                                name: input.value.trim(),
+                                author: currentName,
+                                authorPin: currentPin,
+                                description: 'Custom classmate collection.',
+                                icon: '📦',
+                                characters: [activeCharData!],
+                                isCustom: true,
+                                isPrivate: true // Default to private
+                              };
+                              savePacks([...customPacks, newPack]);
+                              input.value = '';
+                            }
+                          }} className="flex gap-2 mb-3">
+                            <input
+                              type="text"
+                              placeholder="New pack name..."
+                              className="flex-1 min-w-0 px-3 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-emerald-500/20 outline-none"
+                            />
+                            <button type="submit" className="px-3 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all shrink-0">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                            </button>
+                          </form>
+                          <div className="max-h-48 overflow-y-auto">
+                            {customPacks.filter(p => p.isCustom).length === 0 ? (
+                              <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-3 text-center italic">
+                                No packs yet. Create one above!
+                              </div>
+                            ) : (
+                              customPacks.filter(p => p.isCustom).map(pack => {
+                                const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
+                                return (
+                                  <button
+                                    key={pack.id}
+                                    onClick={() => toggleCharInPack(pack.id, activeCharData!)}
+                                    className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                                  >
+                                    <span className="truncate flex-1 mr-2">{pack.name}</span>
+                                    {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                                  </button>
+                                );
+                              })
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {practiceStage !== 'PINYIN' ? (
+                  <WritingCanvas
+                    key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
+                    character={activeCharData?.char}
+                    mode={effectiveMode}
+                    onComplete={handleCompleteIndividual}
+                    onMistake={handleCanvasMistake}
+                    leniency={strokeLeniency}
+                    onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
+                      setPracticeStage('MEMORY');
+                      setRetryCount(prev => prev + 1);
+                    } : undefined}
+                    isDarkMode={isDarkMode}
+                    roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
+                      ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
+                      : undefined}
+                  />
+                ) : (
+                  <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
+                    <PinyinQuiz
+                      character={activeCharData?.char || ''}
+                      correctPinyin={activeCharData?.pinyin || ''}
+                      onCorrect={() => {
+                        setShowSuccess(true);
+                        playAudio(activeCharData?.char || '', activeCharData?.pinyin);
+                      }}
+                      onIncorrect={() => {
+                        // Track mistake for smart learning
+                        if (activeCharData) {
+                          setCharProgress(prev => prev.map(cp =>
+                            cp.char === activeCharData.char
+                              ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
+                              : cp
+                          ));
+                        }
+                        setShowSuccess(true);
+                      }}
+                      isDarkMode={isDarkMode}
+                    />
+                  </div>
+                )}
+
+                {showSuccess && (
+                  <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
+                    <div className="text-center p-8">
+                      <div className="text-rose-600 font-black text-6xl md:text-7xl mb-6 tracking-tighter brush-font">
+                        {charProgress.find(cp => cp.char === activeCharData?.char)?.perfectRounds === 1 ? '🏆 Mastered!' : 'Great!'}
+                      </div>
+                      {mode === AppMode.PRACTICE && (
+                        <div className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                          Round {currentRound} • {charProgress.filter(cp => !cp.mastered).length} remaining
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-4 max-w-xs mx-auto">
+                        <button onClick={() => { setShowSuccess(false); setRetryCount(r => r + 1); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-all">Redraw</button>
+                        <button onClick={() => {
+                          const nextIdx = activeCharIndex + 1;
+                          if (mode === AppMode.PRACTICE && nextIdx >= charactersToPractice.length) {
+                            // End of round - start next round
+                            startNextRound();
+                          } else {
+                            // Check if next char was perfect last round (skip guided)
+                            const nextChar = charactersToPractice[nextIdx % charactersToPractice.length];
+                            const nextProgress = charProgress.find(cp => cp.char === nextChar?.char);
+                            const skipGuided = mode === AppMode.PRACTICE && currentRound > 1 && nextProgress?.perfectRounds > 0;
+                            setActiveCharIndex(nextIdx % charactersToPractice.length);
+                            setShowSuccess(false);
+                            setPracticeStage(skipGuided ? 'MEMORY' : 'GUIDED');
+                          }
+                        }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
+                          {mode === AppMode.PRACTICE && activeCharIndex + 1 >= charactersToPractice.length ? 'Next Round →' : 'Next Target'}
+                        </button>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-            </div>
-
-                {practiceStage !== 'PINYIN' ? (
-            <WritingCanvas
-              key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
-              character={activeCharData?.char}
-              mode={effectiveMode}
-              onComplete={handleCompleteIndividual}
-              onMistake={handleCanvasMistake}
-              leniency={strokeLeniency}
-              onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
-                setPracticeStage('MEMORY');
-                setRetryCount(prev => prev + 1);
-              } : undefined}
-              isDarkMode={isDarkMode}
-              roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
-                ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
-                : undefined}
-            />
-          ) : (
-            <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
-              <PinyinQuiz
-                character={activeCharData?.char || ''}
-                correctPinyin={activeCharData?.pinyin || ''}
-                onCorrect={() => {
-                  setShowSuccess(true);
-                  playAudio(activeCharData?.char || '', activeCharData?.pinyin);
-                }}
-                onIncorrect={() => {
-                  // Track mistake for smart learning
-                  if (activeCharData) {
-                    setCharProgress(prev => prev.map(cp =>
-                      cp.char === activeCharData.char
-                        ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
-                        : cp
-                    ));
-                  }
-                  setShowSuccess(true);
-                }}
-                isDarkMode={isDarkMode}
-              />
-            </div>
-          )}
-
-          {showSuccess && (
-            <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
-              <div className="text-center p-8">
-                <div className="text-rose-600 font-black text-6xl md:text-7xl mb-6 tracking-tighter brush-font">
-                  {charProgress.find(cp => cp.char === activeCharData?.char)?.perfectRounds === 1 ? '🏆 Mastered!' : 'Great!'}
-                </div>
-                {mode === AppMode.PRACTICE && (
-                  <div className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-                    Round {currentRound} • {charProgress.filter(cp => !cp.mastered).length} remaining
-                  </div>
-                )}
-                <div className="flex flex-col gap-4 max-w-xs mx-auto">
-                  <button onClick={() => { setShowSuccess(false); setRetryCount(r => r + 1); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-all">Redraw</button>
-                  <button onClick={() => {
-                    const nextIdx = activeCharIndex + 1;
-                    if (mode === AppMode.PRACTICE && nextIdx >= charactersToPractice.length) {
-                      // End of round - start next round
-                      startNextRound();
-                    } else {
-                      // Check if next char was perfect last round (skip guided)
-                      const nextChar = charactersToPractice[nextIdx % charactersToPractice.length];
-                      const nextProgress = charProgress.find(cp => cp.char === nextChar?.char);
-                      const skipGuided = mode === AppMode.PRACTICE && currentRound > 1 && nextProgress?.perfectRounds > 0;
-                      setActiveCharIndex(nextIdx % charactersToPractice.length);
-                      setShowSuccess(false);
-                      setPracticeStage(skipGuided ? 'MEMORY' : 'GUIDED');
-                    }
-                  }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
-                    {mode === AppMode.PRACTICE && activeCharIndex + 1 >= charactersToPractice.length ? 'Next Round →' : 'Next Target'}
-                  </button>
-                </div>
+              <div className="w-full">
+                <AIFeedback character={activeCharData?.char} />
               </div>
             </div>
-          )}
-        </div>
-        <div className="w-full">
-          <AIFeedback character={activeCharData?.char} />
-        </div>
-    </div>
         ) : (
         <div className="flex flex-col items-center gap-16 pt-6">
           <div className="flex flex-wrap justify-center gap-12 md:gap-24">
@@ -1018,9 +1018,8 @@ const App: React.FC = () => {
             </button>
           )}
         </div>
-        )
-}
-    </div >
+          )}
+    </div>
       </main >
 
   {/* Smart Learning Session Summary */ }
