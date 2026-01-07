@@ -19,7 +19,7 @@ async function fetchWithRetry<T>(fn: () => Promise<T>, retries = 3, backoff = 10
 }
 
 export async function getCharacterInsights(character: string): Promise<AIInsight> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
   const prompt = `Provide educational insights for the Traditional Chinese character (Taiwan usage) "${character}".
   Return a JSON object with exactly the following keys:
   - character: "${character}"
@@ -54,7 +54,7 @@ export async function getCharacterInsights(character: string): Promise<AIInsight
 }
 
 export async function searchMandarin(query: string): Promise<CharacterData[]> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
   const prompt = `The user wants to practice writing Traditional Chinese characters (Taiwan standard) based on the search query: "${query}".
   Return a JSON array of CharacterData objects for each character in the word.
   Each object must have:
@@ -122,7 +122,7 @@ export async function playMandarinAudio(text: string, pinyin?: string): Promise<
   };
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
     const ctx = getAudioContext();
     if (ctx.state === 'suspended') await ctx.resume();
 
