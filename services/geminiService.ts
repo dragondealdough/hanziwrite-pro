@@ -70,7 +70,7 @@ export async function searchMandarin(query: string): Promise<CharacterData[]> {
   try {
     return await fetchWithRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-preview-05-20",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
