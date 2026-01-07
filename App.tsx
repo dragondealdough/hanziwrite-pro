@@ -289,8 +289,9 @@ const App: React.FC = () => {
       } else {
         alert("No characters found.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Search failed:", error);
+      alert(`Search failed: ${error?.message || 'Unknown error'}. Please try again.`);
     } finally {
       setIsSearching(false);
     }
