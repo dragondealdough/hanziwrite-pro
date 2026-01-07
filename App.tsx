@@ -848,7 +848,6 @@ const App: React.FC = () => {
                       )}
                     </div>
                   )}
-                </div>
 
                 {/* Add to Pack Popup - Modal Overlay */}
                 {showAddToPackPopup && (
@@ -998,30 +997,30 @@ const App: React.FC = () => {
           <AIFeedback character={activeCharData?.char} />
         </div>
     </div>
-  ) : (
-    <div className="flex flex-col items-center gap-16 pt-6">
-      <div className="flex flex-wrap justify-center gap-12 md:gap-24">
-        {charactersToPractice.map((char) => (
-          <div key={char.char} className="flex flex-col items-center gap-8">
-            <WritingCanvas character={char.char} mode={mode} onComplete={handleCompleteCombined} canvasSize={240} isDarkMode={isDarkMode} />
-            {combinedProgress.has(char.char) && (
-              <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                Ready
+        ) : (
+        <div className="flex flex-col items-center gap-16 pt-6">
+          <div className="flex flex-wrap justify-center gap-12 md:gap-24">
+            {charactersToPractice.map((char) => (
+              <div key={char.char} className="flex flex-col items-center gap-8">
+                <WritingCanvas character={char.char} mode={mode} onComplete={handleCompleteCombined} canvasSize={240} isDarkMode={isDarkMode} />
+                {combinedProgress.has(char.char) && (
+                  <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                    Ready
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
-      </div>
-      {showSuccess && (
-        <button onClick={goHome} className="px-14 py-6 bg-rose-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all">
-          Sequence Mastered
-        </button>
-      )}
-    </div>
-  )
+          {showSuccess && (
+            <button onClick={goHome} className="px-14 py-6 bg-rose-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all">
+              Sequence Mastered
+            </button>
+          )}
+        </div>
+        )
 }
-        </div >
+    </div >
       </main >
 
   {/* Smart Learning Session Summary */ }
