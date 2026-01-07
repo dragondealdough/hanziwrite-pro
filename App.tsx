@@ -770,6 +770,10 @@ const App: React.FC = () => {
                     {!testHintMode && (
                       <span className="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">{activeCharData?.zhuyin}</span>
                     )}
+                    {/* Show meaning only if not in test hint mode */}
+                    {!testHintMode && activeCharData?.meaning && (
+                      <span className="px-5 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-xs font-bold">{activeCharData.meaning}</span>
+                    )}
                     <button
                       onClick={() => playAudio(activeCharData?.char, activeCharData?.pinyin)}
                       className="p-2.5 bg-white dark:bg-slate-800 text-rose-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-rose-50 dark:hover:bg-rose-900/10 active:scale-90 transition-all ml-1"

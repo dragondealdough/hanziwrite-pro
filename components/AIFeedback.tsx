@@ -54,6 +54,19 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
     </div>
   );
 
+  // Helper to bold the character in the sentence
+  const highlightCharacter = (sentence: string | undefined, char: string) => {
+    if (!sentence || !char) return sentence;
+    const parts = sentence.split(char);
+    if (parts.length === 1) return sentence;
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {part}
+        {i < parts.length - 1 && <strong className="text-rose-600 dark:text-rose-400">{char}</strong>}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <div className="space-y-4">
       {/* Example Sentence Card */}
@@ -65,7 +78,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
           <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200">Example Sentence</h3>
         </div>
         <div className="space-y-3">
-          <p className="text-xl font-bold text-slate-900 dark:text-white leading-relaxed">{insight?.exampleSentence}</p>
+          <p className="text-xl font-medium text-slate-900 dark:text-white leading-relaxed">{highlightCharacter(insight?.exampleSentence, character)}</p>
           <p className="text-sm text-rose-600 dark:text-rose-400 font-medium">{insight?.examplePinyin}</p>
           <p className="text-sm text-slate-500 dark:text-slate-400 italic">{insight?.exampleTranslation}</p>
         </div>
