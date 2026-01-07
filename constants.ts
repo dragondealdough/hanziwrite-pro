@@ -1,6 +1,6 @@
 import { Category } from './types';
 
-export const APP_VERSION = "1.1.16";
+export const APP_VERSION = "1.1.17";
 
 export const CATEGORIES: Category[] = [
   {
@@ -453,6 +453,64 @@ export const CATEGORIES: Category[] = [
           { char: '正', pinyin: 'zhèng', zhuyin: 'ㄓㄥˋ', meaning: 'just / correct', difficulty: 2 },
           { char: '認', pinyin: 'rèn', zhuyin: 'ㄖㄣˋ', meaning: 'recognize (認識)', difficulty: 3 },
           { char: '識', pinyin: 'shí', zhuyin: 'ㄕˊ', meaning: 'know (認識)', difficulty: 3 },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'zhuyin',
+    name: 'Zhuyin (注音符號)',
+    description: 'Learn Bopomofo - the Taiwanese phonetic system for pronunciation.',
+    icon: 'ㄅ',
+    characters: [],
+    sequences: [
+      {
+        id: 'zhuyin-consonants',
+        name: 'Consonants (聲母)',
+        characters: [
+          { char: 'ㄅ', pinyin: 'b', zhuyin: 'ㄅ', meaning: 'b as in "boy"', difficulty: 1 },
+          { char: 'ㄆ', pinyin: 'p', zhuyin: 'ㄆ', meaning: 'p as in "pop"', difficulty: 1 },
+          { char: 'ㄇ', pinyin: 'm', zhuyin: 'ㄇ', meaning: 'm as in "mom"', difficulty: 1 },
+          { char: 'ㄈ', pinyin: 'f', zhuyin: 'ㄈ', meaning: 'f as in "fun"', difficulty: 1 },
+          { char: 'ㄉ', pinyin: 'd', zhuyin: 'ㄉ', meaning: 'd as in "dog"', difficulty: 1 },
+          { char: 'ㄊ', pinyin: 't', zhuyin: 'ㄊ', meaning: 't as in "top"', difficulty: 1 },
+          { char: 'ㄋ', pinyin: 'n', zhuyin: 'ㄋ', meaning: 'n as in "no"', difficulty: 1 },
+          { char: 'ㄌ', pinyin: 'l', zhuyin: 'ㄌ', meaning: 'l as in "love"', difficulty: 1 },
+          { char: 'ㄍ', pinyin: 'g', zhuyin: 'ㄍ', meaning: 'g as in "go"', difficulty: 1 },
+          { char: 'ㄎ', pinyin: 'k', zhuyin: 'ㄎ', meaning: 'k as in "key"', difficulty: 1 },
+          { char: 'ㄏ', pinyin: 'h', zhuyin: 'ㄏ', meaning: 'h as in "hot"', difficulty: 1 },
+          { char: 'ㄐ', pinyin: 'j', zhuyin: 'ㄐ', meaning: 'j as in "jeep"', difficulty: 1 },
+          { char: 'ㄑ', pinyin: 'q', zhuyin: 'ㄑ', meaning: 'q (ch sound)', difficulty: 2 },
+          { char: 'ㄒ', pinyin: 'x', zhuyin: 'ㄒ', meaning: 'x (sh sound)', difficulty: 2 },
+          { char: 'ㄓ', pinyin: 'zh', zhuyin: 'ㄓ', meaning: 'zh (retroflex j)', difficulty: 2 },
+          { char: 'ㄔ', pinyin: 'ch', zhuyin: 'ㄔ', meaning: 'ch (retroflex ch)', difficulty: 2 },
+          { char: 'ㄕ', pinyin: 'sh', zhuyin: 'ㄕ', meaning: 'sh (retroflex sh)', difficulty: 2 },
+          { char: 'ㄖ', pinyin: 'r', zhuyin: 'ㄖ', meaning: 'r (retroflex r)', difficulty: 2 },
+          { char: 'ㄗ', pinyin: 'z', zhuyin: 'ㄗ', meaning: 'z as in "zoo"', difficulty: 1 },
+          { char: 'ㄘ', pinyin: 'c', zhuyin: 'ㄘ', meaning: 'c (ts sound)', difficulty: 2 },
+          { char: 'ㄙ', pinyin: 's', zhuyin: 'ㄙ', meaning: 's as in "sun"', difficulty: 1 },
+        ]
+      },
+      {
+        id: 'zhuyin-vowels',
+        name: 'Vowels (韻母)',
+        characters: [
+          { char: 'ㄚ', pinyin: 'a', zhuyin: 'ㄚ', meaning: 'a as in "father"', difficulty: 1 },
+          { char: 'ㄛ', pinyin: 'o', zhuyin: 'ㄛ', meaning: 'o as in "or"', difficulty: 1 },
+          { char: 'ㄜ', pinyin: 'e', zhuyin: 'ㄜ', meaning: 'e as in "her"', difficulty: 1 },
+          { char: 'ㄝ', pinyin: 'ê', zhuyin: 'ㄝ', meaning: 'ê as in "yeah"', difficulty: 2 },
+          { char: 'ㄞ', pinyin: 'ai', zhuyin: 'ㄞ', meaning: 'ai as in "eye"', difficulty: 1 },
+          { char: 'ㄟ', pinyin: 'ei', zhuyin: 'ㄟ', meaning: 'ei as in "way"', difficulty: 1 },
+          { char: 'ㄠ', pinyin: 'ao', zhuyin: 'ㄠ', meaning: 'ao as in "cow"', difficulty: 1 },
+          { char: 'ㄡ', pinyin: 'ou', zhuyin: 'ㄡ', meaning: 'ou as in "go"', difficulty: 1 },
+          { char: 'ㄢ', pinyin: 'an', zhuyin: 'ㄢ', meaning: 'an as in "on"', difficulty: 1 },
+          { char: 'ㄣ', pinyin: 'en', zhuyin: 'ㄣ', meaning: 'en as in "taken"', difficulty: 1 },
+          { char: 'ㄤ', pinyin: 'ang', zhuyin: 'ㄤ', meaning: 'ang as in "song"', difficulty: 1 },
+          { char: 'ㄥ', pinyin: 'eng', zhuyin: 'ㄥ', meaning: 'eng as in "sung"', difficulty: 1 },
+          { char: 'ㄦ', pinyin: 'er', zhuyin: 'ㄦ', meaning: 'er as in "are"', difficulty: 2 },
+          { char: 'ㄧ', pinyin: 'i', zhuyin: 'ㄧ', meaning: 'i as in "bee"', difficulty: 1 },
+          { char: 'ㄨ', pinyin: 'u', zhuyin: 'ㄨ', meaning: 'u as in "too"', difficulty: 1 },
+          { char: 'ㄩ', pinyin: 'ü', zhuyin: 'ㄩ', meaning: 'ü as in German "über"', difficulty: 2 },
         ]
       }
     ]
