@@ -34,7 +34,7 @@ export async function getCharacterInsights(character: string): Promise<AIInsight
   try {
     return await fetchWithRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.0-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
@@ -70,7 +70,7 @@ export async function searchMandarin(query: string): Promise<CharacterData[]> {
   try {
     return await fetchWithRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
