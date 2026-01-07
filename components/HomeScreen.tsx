@@ -106,7 +106,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   // Render pack card (reusable)
   const renderPackCard = (cat: Category, isPersonal: boolean) => (
     <div key={cat.id} className="bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 shadow-sm flex flex-col relative group hover:shadow-xl transition-all duration-300 touch-manipulation">
-      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-4 right-4 flex gap-2 z-10">
         {cat.author === currentName && (
           <button onClick={() => onTogglePackPrivacy(cat.id)} className={`p-2 ${isPersonal ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'bg-violet-50 dark:bg-violet-900/20 text-violet-600'} rounded-lg hover:opacity-80 transition-all touch-manipulation`} title={isPersonal ? 'Share with community' : 'Make private'}>
             {isPersonal ? (
