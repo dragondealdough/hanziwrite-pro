@@ -56,12 +56,20 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
 
   return (
     <div className="space-y-4">
-      <FeedbackCard
-        title="Visual Mnemonic"
-        content={insight?.mnemonic}
-        iconColor="text-rose-500"
-        icon={<svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>}
-      />
+      {/* Example Sentence Card */}
+      <div className="bg-white dark:bg-[#1a1d23] rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-500">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 rounded-xl bg-rose-500 bg-opacity-10">
+            <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+          </div>
+          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200">Example Sentence</h3>
+        </div>
+        <div className="space-y-3">
+          <p className="text-xl font-bold text-slate-900 dark:text-white leading-relaxed">{insight?.exampleSentence}</p>
+          <p className="text-sm text-rose-600 dark:text-rose-400 font-medium">{insight?.examplePinyin}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 italic">{insight?.exampleTranslation}</p>
+        </div>
+      </div>
 
       <FeedbackCard
         title="Modern Usage"

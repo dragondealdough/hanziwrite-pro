@@ -52,7 +52,9 @@ export interface AIInsight {
   character: string;
   pinyin: string;
   zhuyin: string;
-  mnemonic: string;
+  exampleSentence: string;
+  examplePinyin: string;
+  exampleTranslation: string;
   breakdown: string;
   usage: string;
 }

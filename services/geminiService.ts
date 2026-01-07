@@ -23,9 +23,11 @@ export async function getCharacterInsights(character: string): Promise<AIInsight
   const prompt = `Provide educational insights for the Traditional Chinese character (Taiwan usage) "${character}".
   Return a JSON object with exactly the following keys:
   - character: "${character}"
-  - pinyin: Pinyin for the character.
+  - pinyin: Pinyin for the character (with tone marks).
   - zhuyin: Zhuyin (Bopomofo) for the character.
-  - mnemonic: A short, memorable sentence to help remember how to write or the meaning of the character.
+  - exampleSentence: A short example sentence in Traditional Chinese using this character.
+  - examplePinyin: The pinyin for the entire example sentence (with tone marks).
+  - exampleTranslation: English translation of the example sentence.
   - breakdown: A brief explanation of the radicals or components (Traditional).
   - usage: A common word or short phrase using this character (with Pinyin and Zhuyin, Traditional Chinese).
   
@@ -46,7 +48,9 @@ export async function getCharacterInsights(character: string): Promise<AIInsight
       character: character,
       pinyin: "(unknown)",
       zhuyin: "(unknown)",
-      mnemonic: `Visualize ${character} and practice its structure to build muscle memory.`,
+      exampleSentence: `我喜歡學習${character}。`,
+      examplePinyin: `Wǒ xǐhuān xuéxí ${character}.`,
+      exampleTranslation: `I like learning ${character}.`,
       breakdown: "Detailed breakdown currently unavailable.",
       usage: `${character} (Usage unavailable)`,
     };
