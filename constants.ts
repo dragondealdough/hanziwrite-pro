@@ -133,6 +133,25 @@ export const CATEGORIES: Category[] = [
           { char: '家', pinyin: 'jiā', zhuyin: 'ㄐㄧㄚ', meaning: 'home / family', difficulty: 2, components: ['宀', '豕'] },
           { char: '人', pinyin: 'rén', zhuyin: 'ㄖㄣˊ', meaning: 'person', difficulty: 1, components: ['人'] },
         ]
+      },
+      {
+        id: 'ws-5',
+        name: 'Worksheet 5 (Jan 8)',
+        characters: [
+          // Daily activities and meals
+          { char: '做', pinyin: 'zuò', zhuyin: 'ㄗㄨㄛˋ', meaning: 'to do / to make', difficulty: 2, components: ['亻', '故'] },
+          { char: '歲', pinyin: 'suì', zhuyin: 'ㄙㄨㄟˋ', meaning: 'years old', difficulty: 3, components: ['止', '戌', '小'] },
+          { char: '起', pinyin: 'qǐ', zhuyin: 'ㄑㄧˇ', meaning: 'to rise / to get up', difficulty: 2, components: ['走', '己'] },
+          { char: '床', pinyin: 'chuáng', zhuyin: 'ㄔㄨㄤˊ', meaning: 'bed', difficulty: 2, components: ['广', '木'] },
+          { char: '午', pinyin: 'wǔ', zhuyin: 'ㄨˇ', meaning: 'noon / midday', difficulty: 2, components: ['午'] },
+          { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'] },
+          { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'] },
+          { char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'] },
+          { char: '睡', pinyin: 'shuì', zhuyin: 'ㄕㄨㄟˋ', meaning: 'to sleep', difficulty: 3, components: ['目', '垂'] },
+          { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'] },
+          { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'] },
+          { char: '累', pinyin: 'lèi', zhuyin: 'ㄌㄟˋ', meaning: 'tired', difficulty: 3, components: ['田', '糸'] },
+        ]
       }
     ]
   },
@@ -218,6 +237,25 @@ export const CATEGORIES: Category[] = [
           { char: '熱', pinyin: 'rè', zhuyin: 'ㄖㄜˋ', meaning: 'hot', difficulty: 3 },
           { char: '見', pinyin: 'jiàn', zhuyin: 'ㄐㄧㄢˋ', meaning: 'to see / meet', difficulty: 2 },
           { char: '再', pinyin: 'zài', zhuyin: 'ㄗㄞˋ', meaning: 'again / goodbye', difficulty: 2 },
+        ]
+      },
+      {
+        id: 'test-3',
+        name: 'Test Pack 3 (Jan 8)',
+        characters: [
+          // Daily activities and meals
+          { char: '做', pinyin: 'zuò', zhuyin: 'ㄗㄨㄛˋ', meaning: 'to do / to make', difficulty: 2, components: ['亻', '故'] },
+          { char: '歲', pinyin: 'suì', zhuyin: 'ㄙㄨㄟˋ', meaning: 'years old', difficulty: 3, components: ['止', '戌', '小'] },
+          { char: '起', pinyin: 'qǐ', zhuyin: 'ㄑㄧˇ', meaning: 'to rise / to get up', difficulty: 2, components: ['走', '己'] },
+          { char: '床', pinyin: 'chuáng', zhuyin: 'ㄔㄨㄤˊ', meaning: 'bed', difficulty: 2, components: ['广', '木'] },
+          { char: '午', pinyin: 'wǔ', zhuyin: 'ㄨˇ', meaning: 'noon / midday', difficulty: 2, components: ['午'] },
+          { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'] },
+          { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'] },
+          { char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'] },
+          { char: '睡', pinyin: 'shuì', zhuyin: 'ㄕㄨㄟˋ', meaning: 'to sleep', difficulty: 3, components: ['目', '垂'] },
+          { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'] },
+          { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'] },
+          { char: '累', pinyin: 'lèi', zhuyin: 'ㄌㄟˋ', meaning: 'tired', difficulty: 3, components: ['田', '糸'] },
         ]
       }
     ]
