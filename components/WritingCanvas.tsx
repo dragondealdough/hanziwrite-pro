@@ -14,14 +14,15 @@ interface WritingCanvasProps {
   roundAccuracy?: number;
   pinyin?: string;
   zhuyin?: string;
-  meaning?: string; // English translation
+  meaning?: string;
   showPinyinBelowCanvas?: boolean;
   isBlankCanvasMode?: boolean;
+  hintTier?: 'beginner' | 'intermediate' | 'advanced' | 'mastered';
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, meaning, showPinyinBelowCanvas, isBlankCanvasMode }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, meaning, showPinyinBelowCanvas, isBlankCanvasMode, hintTier = 'beginner' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -106,12 +107,25 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         setShake(true);
         setTimeout(() => setShake(false), 300);
 
-        // In blank canvas mode (memory stage), briefly flash the outline as a hint
+        // Adaptive hint based on mastery tier (only in blank canvas mode)
         if (isBlankCanvasMode && writerRef.current) {
-          writerRef.current.showOutline();
-          setTimeout(() => {
-            if (writerRef.current) writerRef.current.hideOutline();
-          }, 800);
+          const hintDurations = { beginner: 800, intermediate: 500, advanced: 600, mastered: 300 };
+          const duration = hintDurations[hintTier];
+
+          if (hintTier === 'advanced' || hintTier === 'mastered') {
+            // Advanced: show only the next required stroke
+            try {
+              writerRef.current.highlightStroke(currentStrokeRef.current);
+            } catch (e) {
+              // Fallback to outline if highlightStroke fails
+              writerRef.current.showOutline();
+              setTimeout(() => { if (writerRef.current) writerRef.current.hideOutline(); }, duration);
+            }
+          } else {
+            // Beginner/Intermediate: show full character outline
+            writerRef.current.showOutline();
+            setTimeout(() => { if (writerRef.current) writerRef.current.hideOutline(); }, duration);
+          }
         }
 
         if (onMistakeRef.current) onMistakeRef.current();

@@ -62,7 +62,36 @@ const App: React.FC = () => {
     mistakesThisRound: number;
     perfectRounds: number;
     mastered: boolean;
+    // Extended fields for adaptive hints
+    totalAttempts: number;
+    totalMistakes: number;
+    lastPracticed: number; // timestamp
   }
+
+  // Calculate mastery score (0-100) for adaptive hints
+  type HintTier = 'beginner' | 'intermediate' | 'advanced' | 'mastered';
+  const calculateMasteryScore = (cp: CharProgress): number => {
+    const accuracyRate = cp.totalAttempts > 0
+      ? ((cp.totalAttempts - cp.totalMistakes) / cp.totalAttempts) * 100
+      : 0;
+    const daysSinceLastPractice = cp.lastPracticed
+      ? Math.floor((Date.now() - cp.lastPracticed) / (1000 * 60 * 60 * 24))
+      : 0;
+    const timePenalty = Math.min(daysSinceLastPractice * 5, 25);
+
+    const score = (cp.perfectRounds * 15) + (accuracyRate * 0.5) - (cp.mistakesThisRound * 10) - timePenalty;
+    return Math.max(0, Math.min(100, score)); // Clamp 0-100
+  };
+
+  const getHintTier = (cp: CharProgress | undefined): HintTier => {
+    if (!cp) return 'beginner';
+    const score = calculateMasteryScore(cp);
+    if (score >= 86) return 'mastered';
+    if (score >= 61) return 'advanced';
+    if (score >= 31) return 'intermediate';
+    return 'beginner';
+  };
+
   const [charProgress, setCharProgress] = useState<CharProgress[]>([]);
   const [currentRound, setCurrentRound] = useState(1);
   const [roundQueue, setRoundQueue] = useState<string[]>([]);
@@ -255,7 +284,10 @@ const App: React.FC = () => {
         char: c.char,
         mistakesThisRound: 0,
         perfectRounds: 0,
-        mastered: false
+        mastered: false,
+        totalAttempts: 0,
+        totalMistakes: 0,
+        lastPracticed: Date.now()
       })));
       setCurrentRound(1);
       setRoundQueue(chars.map(c => c.char));
@@ -394,7 +426,11 @@ const App: React.FC = () => {
       if (activeCharData) {
         setCharProgress(prev => prev.map(cp =>
           cp.char === activeCharData.char
-            ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
+            ? {
+              ...cp,
+              mistakesThisRound: cp.mistakesThisRound + 1,
+              totalMistakes: cp.totalMistakes + 1
+            }
             : cp
         ));
       }
@@ -436,7 +472,17 @@ const App: React.FC = () => {
     }
     setResults(prev => ({ ...prev, [result.character]: result.score }));
     setShowSuccess(true);
-    if (result.completed) playAudio(result.character, activeCharData?.pinyin);
+    if (result.completed) {
+      playAudio(result.character, activeCharData?.pinyin);
+      // Track attempt completion for adaptive hints
+      if (mode === AppMode.PRACTICE && activeCharData) {
+        setCharProgress(prev => prev.map(cp =>
+          cp.char === activeCharData.char
+            ? { ...cp, totalAttempts: cp.totalAttempts + 1, lastPracticed: Date.now() }
+            : cp
+        ));
+      }
+    }
 
     // Track stats for achievements
     if (result.completed && result.mistakes === 0) {
@@ -473,8 +519,13 @@ const App: React.FC = () => {
     const updatedProgress = charProgress.map(cp => {
       if (cp.mastered) return cp;
       const wasPerfect = cp.mistakesThisRound === 0;
-      const newPerfectRounds = wasPerfect ? cp.perfectRounds + 1 : 0;
-      const nowMastered = newPerfectRounds >= 2;
+      const newPerfectRounds = wasPerfect ? cp.perfectRounds + 1 : 0; // Reset streak on mistake
+
+      // Calculate new score with updated stats
+      const tempCp = { ...cp, perfectRounds: newPerfectRounds };
+      const score = calculateMasteryScore(tempCp);
+      const nowMastered = score >= 86; // Mastery threshold
+
       return { ...cp, mistakesThisRound: 0, perfectRounds: newPerfectRounds, mastered: nowMastered };
     });
     setCharProgress(updatedProgress);
@@ -911,6 +962,7 @@ const App: React.FC = () => {
                     meaning={activeCharData?.meaning}
                     showPinyinBelowCanvas={!testHintMode}
                     isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
+                    hintTier={getHintTier(charProgress.find(cp => cp.char === activeCharData?.char))}
                   />
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
