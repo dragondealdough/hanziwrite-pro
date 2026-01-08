@@ -72,19 +72,15 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         currentStrokeRef.current = nextIndex;
         setCurrentStrokeIndex(nextIndex);
       },
-      onMistake: async () => {
+      onMistake: () => {
         setMistakes(prev => prev + 1);
         setShake(true);
         setTimeout(() => setShake(false), 300);
 
         // Flash the correct stroke as a hint (practice mode only)
+        // Using highlightStroke preserves user's drawn strokes
         if (mode === AppMode.PRACTICE && writerRef.current) {
-          setShowingHint(true);
-          writerRef.current.cancelQuiz();
-          await writerRef.current.animateStroke(currentStrokeRef.current);
-          setShowingHint(false);
-          // Restart quiz from current position
-          startQuiz();
+          writerRef.current.highlightStroke(currentStrokeRef.current);
         }
 
         if (onMistake) onMistake();
