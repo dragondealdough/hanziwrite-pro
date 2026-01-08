@@ -80,7 +80,13 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         // Flash the correct stroke as a hint (practice mode only)
         // Using highlightStroke preserves user's drawn strokes
         if (mode === AppMode.PRACTICE && writerRef.current) {
-          writerRef.current.highlightStroke(currentStrokeRef.current);
+          try {
+            if (typeof writerRef.current.highlightStroke === 'function') {
+              writerRef.current.highlightStroke(currentStrokeRef.current);
+            }
+          } catch (e) {
+            console.warn('highlightStroke failed:', e);
+          }
         }
 
         if (onMistake) onMistake();
