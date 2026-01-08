@@ -24,3 +24,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+vocab_temp/
+Vocabulary List (images)/
