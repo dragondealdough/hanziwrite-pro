@@ -41,55 +41,79 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
   const [showingHint, setShowingHint] = useState(false);
   const prevCharRef = useRef<string | null>(null);
 
+  // Refs to store latest callback values for stable startQuiz
+  const mistakesRef = useRef(0);
+  const onCompleteRef = useRef(onComplete);
+  const onMistakeRef = useRef(onMistake);
+
+  // Keep refs in sync
+  useEffect(() => { mistakesRef.current = mistakes; }, [mistakes]);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
+  useEffect(() => { onMistakeRef.current = onMistake; }, [onMistake]);
+
   const effectiveSize = propSize || internalSize;
 
   useEffect(() => {
     if (propSize) return;
 
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
     const updateSize = () => {
       if (outerRef.current) {
         const width = outerRef.current.offsetWidth;
-        const size = Math.max(Math.min(width - 32, 450), 200);
-        setInternalSize(size);
+        const newSize = Math.max(Math.min(width - 32, 450), 200);
+        // Only update if size changed significantly (> 10px) to prevent loops
+        setInternalSize(prev => {
+          if (prev === null || Math.abs(prev - newSize) > 10) {
+            return newSize;
+          }
+          return prev;
+        });
       }
     };
 
     updateSize();
-    const observer = new ResizeObserver(() => updateSize());
+    const observer = new ResizeObserver(() => {
+      // Debounce resize updates
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(updateSize, 100);
+    });
     if (outerRef.current) observer.observe(outerRef.current);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (debounceTimer) clearTimeout(debounceTimer);
+    };
   }, [propSize]);
 
+  // Stable startQuiz - uses refs so it doesn't need to change when callbacks change
   const startQuiz = useCallback(() => {
     if (!writerRef.current) return;
     writerRef.current.quiz({
       quizStartStrokeNum: currentStrokeRef.current,
-      leniency: leniency, // User configurable stroke leniency
-      acceptBackwardsStrokes: true, // Accept strokes drawn in reverse direction
+      leniency: leniency,
+      acceptBackwardsStrokes: true,
       onCorrectStroke: () => {
         const nextIndex = currentStrokeRef.current + 1;
         currentStrokeRef.current = nextIndex;
         setCurrentStrokeIndex(nextIndex);
       },
       onMistake: () => {
-        setMistakes(prev => prev + 1);
+        mistakesRef.current += 1;
+        setMistakes(mistakesRef.current);
         setShake(true);
         setTimeout(() => setShake(false), 300);
 
-        // Note: highlightStroke was removed as it interferes with quiz state
-        // Users can use the Hint button to see correct strokes without losing progress
-
-        if (onMistake) onMistake();
+        if (onMistakeRef.current) onMistakeRef.current();
         if (mode === AppMode.TIME_ATTACK) setTimeLeft(prev => Math.max(0, prev - 1.2));
       },
       onComplete: () => {
         if (timerRef.current) clearInterval(timerRef.current);
-        const score = Math.max(0, 100 - (mistakes * 5));
-        onComplete({ character, mistakes, completed: true, score });
+        const score = Math.max(0, 100 - (mistakesRef.current * 5));
+        onCompleteRef.current({ character, mistakes: mistakesRef.current, completed: true, score });
       }
     });
-  }, [character, mistakes, onComplete, onMistake, mode]);
+  }, [character, leniency, mode]); // Only depends on stable values
 
   useEffect(() => {
     if (mode === AppMode.TIME_ATTACK) {
@@ -122,6 +146,7 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
     // Only reset progress state on character change
     if (isCharacterChange) {
       setMistakes(0);
+      mistakesRef.current = 0;
       setCurrentStrokeIndex(0);
       currentStrokeRef.current = 0;
       setTotalStrokes(0);

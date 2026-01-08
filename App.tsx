@@ -905,7 +905,7 @@ const App: React.FC = () => {
 
                 {practiceStage !== 'PINYIN' ? (
                   <WritingCanvas
-                    key={`${activeCharData?.char}-${effectiveMode}-${retryCount}-${isDarkMode}-${strokeLeniency}`}
+                    key={`${activeCharData?.char}-${effectiveMode}-${isDarkMode}-${strokeLeniency}`}
                     character={activeCharData?.char}
                     mode={effectiveMode}
                     onComplete={handleCompleteIndividual}
