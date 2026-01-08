@@ -1,6 +1,7 @@
 import { Category } from './types';
+import { MODERN_CHINESE_VOCAB } from './modernChineseVocab';
 
-export const APP_VERSION = "1.1.21";
+export const APP_VERSION = "1.1.22";
 
 export const CATEGORIES: Category[] = [
   {
@@ -492,6 +493,11 @@ export const CATEGORIES: Category[] = [
           { char: '認', pinyin: 'rèn', zhuyin: 'ㄖㄣˋ', meaning: 'recognize (認識)', difficulty: 3 },
           { char: '識', pinyin: 'shí', zhuyin: 'ㄕˊ', meaning: 'know (認識)', difficulty: 3 },
         ]
+      },
+      {
+        id: 'hsk1-modern-chinese',
+        name: 'Modern Chinese Vocabulary',
+        characters: MODERN_CHINESE_VOCAB
       }
     ]
   },

@@ -919,6 +919,9 @@ const App: React.FC = () => {
                     roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
                       ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
                       : undefined}
+                    pinyin={activeCharData?.pinyin}
+                    zhuyin={activeCharData?.zhuyin}
+                    showPinyinBelowCanvas={!testHintMode}
                   />
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">

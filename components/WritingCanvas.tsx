@@ -12,11 +12,14 @@ interface WritingCanvasProps {
   isDarkMode?: boolean;
   leniency?: number; // 1.0 = strict, 1.5 = normal, 2.0 = lenient
   roundAccuracy?: number; // Round accuracy percentage
+  pinyin?: string; // Pinyin to display
+  zhuyin?: string; // Zhuyin to display
+  showPinyinBelowCanvas?: boolean; // Whether to show pinyin between canvas and buttons
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, showPinyinBelowCanvas }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -35,6 +38,8 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentStrokeRef = useRef(0);
+  const [showingHint, setShowingHint] = useState(false);
+  const prevCharRef = useRef<string | null>(null);
 
   const effectiveSize = propSize || internalSize;
 
@@ -67,10 +72,20 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         currentStrokeRef.current = nextIndex;
         setCurrentStrokeIndex(nextIndex);
       },
-      onMistake: () => {
+      onMistake: async () => {
         setMistakes(prev => prev + 1);
         setShake(true);
         setTimeout(() => setShake(false), 300);
+
+        // Flash the correct stroke as a hint (practice mode only)
+        if (mode === AppMode.PRACTICE && writerRef.current) {
+          setShowingHint(true);
+          writerRef.current.cancelQuiz();
+          await writerRef.current.animateStroke(currentStrokeRef.current);
+          setShowingHint(false);
+          // Restart quiz from current position
+          startQuiz();
+        }
 
         if (onMistake) onMistake();
         if (mode === AppMode.TIME_ATTACK) setTimeLeft(prev => Math.max(0, prev - 1.2));
@@ -104,11 +119,21 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
   useEffect(() => {
     if (!containerRef.current || !effectiveSize) return;
 
+    // Check if this is a character change or just a resize
+    const isCharacterChange = prevCharRef.current !== character;
+    const savedStrokeIndex = isCharacterChange ? 0 : currentStrokeRef.current;
+
+    prevCharRef.current = character;
     containerRef.current.innerHTML = '';
-    setMistakes(0);
-    setCurrentStrokeIndex(0);
-    currentStrokeRef.current = 0;
-    setTotalStrokes(0);
+
+    // Only reset progress state on character change
+    if (isCharacterChange) {
+      setMistakes(0);
+      setCurrentStrokeIndex(0);
+      currentStrokeRef.current = 0;
+      setTotalStrokes(0);
+    }
+
     setIsLooping(false);
     isLoopingRef.current = false;
     setShake(false);
@@ -124,12 +149,23 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
       outlineColor: isDarkMode ? '#21262d' : '#f1f5f9',
       drawingColor: isDarkMode ? '#ffffff' : '#1e293b',
       drawingWidth: Math.max(16, effectiveSize * 0.06),
-      // Ensure strictly correct stroke with strict leniency in quiz options
     });
 
     writerRef.current = writer;
     HanziWriter.loadCharacterData(character).then((data) => data && setTotalStrokes(data.strokes.length));
-    startQuiz();
+
+    // If preserving strokes from a resize, replay completed strokes
+    if (!isCharacterChange && savedStrokeIndex > 0) {
+      // Animate completed strokes instantly to restore state
+      (async () => {
+        for (let i = 0; i < savedStrokeIndex; i++) {
+          await writer.animateStroke(i, { strokeAnimationSpeed: 100 }); // Very fast replay
+        }
+        startQuiz();
+      })();
+    } else {
+      startQuiz();
+    }
 
     return () => {
       if (writerRef.current) writerRef.current.cancelQuiz();
@@ -305,6 +341,22 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
           <div className="absolute top-0 right-0 w-full h-full border-t border-r border-slate-900 dark:bg-slate-100 origin-top-right -rotate-45 scale-[2]" />
         </div>
       </div>
+
+      {/* Pinyin/Zhuyin display between canvas and buttons */}
+      {showPinyinBelowCanvas && (pinyin || zhuyin) && (
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          {pinyin && (
+            <span className="px-4 py-1.5 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg">
+              {pinyin}
+            </span>
+          )}
+          {zhuyin && (
+            <span className="px-4 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">
+              {zhuyin}
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-wrap justify-center gap-3 w-full">
         <button onClick={handleReset} className="flex-1 max-w-[120px] py-4 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-black text-[10px] uppercase tracking-widest rounded-2xl active:scale-95 transition-all">Reset</button>

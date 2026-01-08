@@ -91,16 +91,23 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
 
                 {/* Tone Buttons */}
                 <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((tone) => (
+                    {[
+                        { num: 1, mark: '¯' },
+                        { num: 2, mark: 'ˊ' },
+                        { num: 3, mark: 'ˇ' },
+                        { num: 4, mark: 'ˋ' },
+                        { num: 5, mark: '·' }
+                    ].map(({ num, mark }) => (
                         <button
-                            key={tone}
-                            onClick={() => setSelectedTone(selectedTone === tone ? null : tone)}
-                            className={`w-12 h-12 rounded-xl font-black text-lg transition-all active:scale-95 ${selectedTone === tone
-                                    ? 'bg-rose-600 text-white shadow-lg'
-                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            key={num}
+                            onClick={() => setSelectedTone(selectedTone === num ? null : num)}
+                            className={`w-14 h-14 rounded-xl font-bold text-sm transition-all active:scale-95 flex flex-col items-center justify-center ${selectedTone === num
+                                ? 'bg-rose-600 text-white shadow-lg'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                                 }`}
                         >
-                            {tone === 5 ? '·' : tone}
+                            <span className="text-lg leading-none">{mark}</span>
+                            <span className="text-[10px] opacity-70">{num}</span>
                         </button>
                     ))}
                 </div>
