@@ -49,10 +49,10 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
         {category.sequences?.map((seq) => (
           <div
             key={seq.id}
-            onClick={() => isTestPack ? setSelectedSequence({ id: seq.id, chars: seq.characters }) : handleLaunch(seq.characters)}
+            onClick={() => setSelectedSequence({ id: seq.id, chars: seq.characters })}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && (isTestPack ? setSelectedSequence({ id: seq.id, chars: seq.characters }) : handleLaunch(seq.characters))}
+            onKeyDown={(e) => e.key === 'Enter' && setSelectedSequence({ id: seq.id, chars: seq.characters })}
             className="group bg-white dark:bg-[#16191e] border border-slate-200/50 dark:border-slate-800 rounded-[3rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full cursor-pointer outline-none focus:ring-4 ring-rose-600/10 touch-manipulation"
           >
             <div className="mb-8">
@@ -83,8 +83,8 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
         ))}
       </div>
 
-      {/* Test Mode Selection Modal */}
-      {selectedSequence && isTestPack && (
+      {/* Mode Selection Modal - now shown for all pack types */}
+      {selectedSequence && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setSelectedSequence(null)}>
           <div
             className="bg-white dark:bg-[#16191e] rounded-[3rem] p-10 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4"
