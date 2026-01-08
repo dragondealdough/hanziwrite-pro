@@ -387,13 +387,10 @@ const App: React.FC = () => {
   };
 
   const handleCanvasMistake = useCallback(() => {
+    // In memory stage, just track the mistake - don't reset to guided stage
+    // The WritingCanvas will flash the outline as feedback
     if (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') {
-      setFeedbackMessage("Incorrect! Review the character.");
-      setPracticeStage('GUIDED');
-      setRetryCount(prev => prev + 1);
-      setTimeout(() => setFeedbackMessage(null), 2500);
-
-      // Track mistake for smart learning
+      // Track mistake for smart learning (but don't reset stage)
       if (activeCharData) {
         setCharProgress(prev => prev.map(cp =>
           cp.char === activeCharData.char
