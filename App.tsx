@@ -762,18 +762,8 @@ const App: React.FC = () => {
                     </h1>
                   </div>
                   <div className="flex items-center gap-2.5 mt-4 relative">
-                    {/* Show pinyin only if not in test mode OR if audio-pinyin mode selected */}
-                    {(!testHintMode || testHintMode === 'audio-pinyin') && (
-                      <span className="px-5 py-2 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg shadow-rose-200 dark:shadow-none">{activeCharData?.pinyin}</span>
-                    )}
-                    {/* Show zhuyin only if not in test hint mode */}
-                    {!testHintMode && (
-                      <span className="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">{activeCharData?.zhuyin}</span>
-                    )}
-                    {/* Show meaning only if not in test hint mode */}
-                    {!testHintMode && activeCharData?.meaning && (
-                      <span className="px-5 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-xs font-bold">{activeCharData.meaning}</span>
-                    )}
+                    {/* Character info relocated to below canvas */}
+
                     <button
                       onClick={() => playAudio(activeCharData?.char, activeCharData?.pinyin)}
                       className="p-2.5 bg-white dark:bg-slate-800 text-rose-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-rose-50 dark:hover:bg-rose-900/10 active:scale-90 transition-all ml-1"
