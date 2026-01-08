@@ -921,7 +921,9 @@ const App: React.FC = () => {
                       : undefined}
                     pinyin={activeCharData?.pinyin}
                     zhuyin={activeCharData?.zhuyin}
+                    meaning={activeCharData?.meaning}
                     showPinyinBelowCanvas={!testHintMode}
+                    isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
                   />
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">

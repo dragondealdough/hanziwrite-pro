@@ -10,16 +10,18 @@ interface WritingCanvasProps {
   onSkipTracing?: () => void;
   canvasSize?: number;
   isDarkMode?: boolean;
-  leniency?: number; // 1.0 = strict, 1.5 = normal, 2.0 = lenient
-  roundAccuracy?: number; // Round accuracy percentage
-  pinyin?: string; // Pinyin to display
-  zhuyin?: string; // Zhuyin to display
-  showPinyinBelowCanvas?: boolean; // Whether to show pinyin between canvas and buttons
+  leniency?: number;
+  roundAccuracy?: number;
+  pinyin?: string;
+  zhuyin?: string;
+  meaning?: string; // English translation
+  showPinyinBelowCanvas?: boolean;
+  isBlankCanvasMode?: boolean;
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, showPinyinBelowCanvas }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, meaning, showPinyinBelowCanvas, isBlankCanvasMode }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -103,6 +105,14 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         setMistakes(mistakesRef.current);
         setShake(true);
         setTimeout(() => setShake(false), 300);
+
+        // In blank canvas mode (memory stage), briefly flash the outline as a hint
+        if (isBlankCanvasMode && writerRef.current) {
+          writerRef.current.showOutline();
+          setTimeout(() => {
+            if (writerRef.current) writerRef.current.hideOutline();
+          }, 800);
+        }
 
         if (onMistakeRef.current) onMistakeRef.current();
         if (mode === AppMode.TIME_ATTACK) setTimeLeft(prev => Math.max(0, prev - 1.2));
@@ -360,8 +370,8 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         </div>
       </div>
 
-      {/* Pinyin/Zhuyin display between canvas and buttons */}
-      {showPinyinBelowCanvas && (pinyin || zhuyin) && (
+      {/* Pinyin/Zhuyin/Meaning display between canvas and buttons */}
+      {showPinyinBelowCanvas && (pinyin || zhuyin || meaning) && (
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {pinyin && (
             <span className="px-4 py-1.5 bg-rose-600 text-white rounded-full text-xs font-black tracking-widest uppercase shadow-lg">
@@ -371,6 +381,11 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
           {zhuyin && (
             <span className="px-4 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-black tracking-widest uppercase">
               {zhuyin}
+            </span>
+          )}
+          {meaning && (
+            <span className="px-4 py-1.5 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full text-xs font-bold">
+              {meaning}
             </span>
           )}
         </div>
