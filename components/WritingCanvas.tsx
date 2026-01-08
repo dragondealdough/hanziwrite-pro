@@ -77,17 +77,8 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
         setShake(true);
         setTimeout(() => setShake(false), 300);
 
-        // Flash the correct stroke as a hint (practice mode only)
-        // Using highlightStroke preserves user's drawn strokes
-        if (mode === AppMode.PRACTICE && writerRef.current) {
-          try {
-            if (typeof writerRef.current.highlightStroke === 'function') {
-              writerRef.current.highlightStroke(currentStrokeRef.current);
-            }
-          } catch (e) {
-            console.warn('highlightStroke failed:', e);
-          }
-        }
+        // Note: highlightStroke was removed as it interferes with quiz state
+        // Users can use the Hint button to see correct strokes without losing progress
 
         if (onMistake) onMistake();
         if (mode === AppMode.TIME_ATTACK) setTimeLeft(prev => Math.max(0, prev - 1.2));
