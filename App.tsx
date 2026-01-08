@@ -972,13 +972,25 @@ const App: React.FC = () => {
                       onCorrect={() => {
                         setShowSuccess(true);
                         playAudio(activeCharData?.char || '', activeCharData?.pinyin);
+                        // Track success for adaptive learning
+                        if (mode === AppMode.PRACTICE && activeCharData) {
+                          setCharProgress(prev => prev.map(cp =>
+                            cp.char === activeCharData.char
+                              ? { ...cp, totalAttempts: cp.totalAttempts + 1, lastPracticed: Date.now() }
+                              : cp
+                          ));
+                        }
                       }}
                       onIncorrect={() => {
                         // Track mistake for smart learning
                         if (activeCharData) {
                           setCharProgress(prev => prev.map(cp =>
                             cp.char === activeCharData.char
-                              ? { ...cp, mistakesThisRound: cp.mistakesThisRound + 1 }
+                              ? {
+                                ...cp,
+                                mistakesThisRound: cp.mistakesThisRound + 1,
+                                totalMistakes: cp.totalMistakes + 1
+                              }
                               : cp
                           ));
                         }

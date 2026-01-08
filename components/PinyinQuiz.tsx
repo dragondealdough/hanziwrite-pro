@@ -50,7 +50,7 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
         const userAnswer = selectedTone ? `${input.toLowerCase()}${selectedTone}` : input.toLowerCase();
         const normalized = normalizePinyin(correctPinyin);
 
-        if (userAnswer === normalized || input.toLowerCase() === correctPinyin.toLowerCase()) {
+        if (userAnswer === normalized) {
             onCorrect();
         } else {
             setShake(true);
