@@ -40,19 +40,27 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
 
   if (error) return <div className="text-[10px] font-black uppercase text-rose-500 dark:text-rose-400 p-8 text-center bg-rose-50 dark:bg-rose-900/10 rounded-[2rem] border border-rose-100 dark:border-rose-900/20">{error}</div>;
 
-  const FeedbackCard = ({ title, content, iconColor, icon }: { title: string, content: string | undefined, iconColor: string, icon: React.ReactNode }) => (
-    <div className="bg-white dark:bg-[#1a1d23] rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-500">
-      <div className="flex items-center gap-3 mb-6">
-        <div className={`p-2 rounded-xl bg-opacity-10 ${iconColor.replace('text-', 'bg-')}`}>
-          {icon}
+  const FeedbackCard = ({ title, content, iconColor, icon }: { title: string, content: string | any, iconColor: string, icon: React.ReactNode }) => {
+    // Safety check: if content is an object (e.g., {word, pinyin, zhuyin}), convert to string
+    let displayContent = content;
+    if (typeof content === 'object' && content !== null) {
+      displayContent = content.word || content.char || JSON.stringify(content);
+    }
+
+    return (
+      <div className="bg-white dark:bg-[#1a1d23] rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-500">
+        <div className="flex items-center gap-3 mb-6">
+          <div className={`p-2 rounded-xl bg-opacity-10 ${iconColor.replace('text-', 'bg-')}`}>
+            {icon}
+          </div>
+          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200">{title}</h3>
         </div>
-        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200">{title}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+          {displayContent}
+        </p>
       </div>
-      <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-        {content}
-      </p>
-    </div>
-  );
+    );
+  };
 
   // Helper to bold the character in the sentence
   const highlightCharacter = (sentence: string | undefined, char: string) => {
