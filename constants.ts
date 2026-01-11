@@ -258,6 +258,25 @@ export const CATEGORIES: Category[] = [
           { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'] },
           { char: '累', pinyin: 'lèi', zhuyin: 'ㄌㄟˋ', meaning: 'tired', difficulty: 3, components: ['田', '糸'] },
         ]
+      },
+      {
+        id: 'test-4',
+        name: 'Test Pack 4 (B1L2-3)',
+        characters: [
+          // Daily activities - from B1L2-3.pdf
+          { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'] },
+          { char: '午', pinyin: 'wǔ', zhuyin: 'ㄨˇ', meaning: 'noon / midday', difficulty: 2, components: ['午'] },
+          { char: '床', pinyin: 'chuáng', zhuyin: 'ㄔㄨㄤˊ', meaning: 'bed', difficulty: 2, components: ['广', '木'] },
+          { char: '起', pinyin: 'qǐ', zhuyin: 'ㄑㄧˇ', meaning: 'to rise / to get up', difficulty: 2, components: ['走', '己'] },
+          { char: '歲', pinyin: 'suì', zhuyin: 'ㄙㄨㄟˋ', meaning: 'years old', difficulty: 3, components: ['止', '戌', '小'] },
+          { char: '做', pinyin: 'zuò', zhuyin: 'ㄗㄨㄛˋ', meaning: 'to do / to make', difficulty: 2, components: ['亻', '故'] },
+          { char: '累', pinyin: 'lèi', zhuyin: 'ㄌㄟˋ', meaning: 'tired', difficulty: 3, components: ['田', '糸'] },
+          { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'] },
+          { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'] },
+          { char: '睡', pinyin: 'shuì', zhuyin: 'ㄕㄨㄟˋ', meaning: 'to sleep', difficulty: 3, components: ['目', '垂'] },
+          { char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'] },
+          { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'] },
+        ]
       }
     ]
   },
