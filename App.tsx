@@ -978,6 +978,7 @@ const App: React.FC = () => {
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
                     <PinyinQuiz
+                      key={`pinyin-${activeCharData?.char}-${retryCount}`}
                       character={activeCharData?.char || ''}
                       correctPinyin={activeCharData?.pinyin || ''}
                       onCorrect={() => {
@@ -1005,7 +1006,8 @@ const App: React.FC = () => {
                               : cp
                           ));
                         }
-                        setShowSuccess(true);
+                        // Stay on PinyinQuiz - increment retryCount to reset the input
+                        setRetryCount(prev => prev + 1);
                       }}
                       isDarkMode={isDarkMode}
                     />
