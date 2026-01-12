@@ -37,7 +37,7 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
     const [input, setInput] = useState('');
     const [selectedTone, setSelectedTone] = useState<number | null>(null);
     const [shake, setShake] = useState(false);
-    const [showCorrect, setShowCorrect] = useState(false);
+    const [attempts, setAttempts] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -50,15 +50,27 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
         const userAnswer = selectedTone ? `${input.toLowerCase()}${selectedTone}` : input.toLowerCase();
         const normalized = normalizePinyin(correctPinyin);
 
+        console.log('PinyinQuiz check:', { userAnswer, normalized, correctPinyin, selectedTone });
+
         if (userAnswer === normalized) {
+            console.log('Correct!');
             onCorrect();
         } else {
+            console.log('Incorrect - shaking and resetting');
+            // Track the mistake
+            onIncorrect();
+
+            // Shake animation
             setShake(true);
-            setShowCorrect(true);
+            setAttempts(prev => prev + 1);
+
+            // After shake, reset input but keep user on quiz
             setTimeout(() => {
                 setShake(false);
-                onIncorrect();
-            }, 1500);
+                setInput('');
+                setSelectedTone(null);
+                inputRef.current?.focus();
+            }, 600);
         }
     };
 
@@ -72,8 +84,10 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
 
             <div className="text-8xl brush-font text-slate-900 dark:text-white">{character}</div>
 
-            {showCorrect && (
-                <div className="text-lg font-bold text-rose-500">Correct: {correctPinyin}</div>
+            {attempts > 0 && (
+                <div className="text-sm font-bold text-amber-500">
+                    {attempts === 1 ? 'Try again! Check your tone.' : `${attempts} attempts - keep trying!`}
+                </div>
             )}
 
             <div className="flex flex-col items-center gap-4 w-full max-w-xs">
@@ -84,7 +98,7 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Type pinyin..."
-                    className="w-full px-6 py-4 bg-white dark:bg-[#0d0f12] border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-center text-2xl font-bold text-slate-900 dark:text-white focus:border-rose-500 focus:outline-none transition-colors"
+                    className={`w-full px-6 py-4 bg-white dark:bg-[#0d0f12] border-2 rounded-2xl text-center text-2xl font-bold text-slate-900 dark:text-white focus:border-rose-500 focus:outline-none transition-colors ${shake ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'}`}
                     autoComplete="off"
                     autoCapitalize="off"
                 />
@@ -125,3 +139,4 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
 };
 
 export default PinyinQuiz;
+

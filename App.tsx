@@ -1006,8 +1006,7 @@ const App: React.FC = () => {
                               : cp
                           ));
                         }
-                        // Stay on PinyinQuiz - increment retryCount to reset the input
-                        setRetryCount(prev => prev + 1);
+                        // PinyinQuiz handles its own reset internally - just track the mistake
                       }}
                       isDarkMode={isDarkMode}
                     />
