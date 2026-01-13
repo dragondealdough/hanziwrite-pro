@@ -25,6 +25,7 @@ interface HomeScreenProps {
   achievements: Achievement[];
   allAchievements: Achievement[];
   onShowStats?: () => void;
+  onOpenReferenceBook: () => void;
 }
 
 type SubView = 'main' | 'personal' | 'community';
@@ -49,7 +50,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   onSetStrokeLeniency,
   achievements,
   allAchievements,
-  onShowStats
+  onShowStats,
+  onOpenReferenceBook
 }) => {
   const [query, setQuery] = useState('');
   const [newPackName, setNewPackName] = useState('');
@@ -255,6 +257,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Exam preparation</p>
               </button>
             )}
+
+            {/* Reference Book */}
+            <button onClick={onOpenReferenceBook} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
+              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📖</div>
+              <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Reference</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Textbook PDF</p>
+            </button>
 
             {/* Personal Packs */}
             <button onClick={() => setSubView('personal')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">

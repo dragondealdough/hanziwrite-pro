@@ -10,6 +10,7 @@ import HomeworkMenu, { TestHintMode } from './components/HomeworkMenu';
 import LoginScreen from './components/LoginScreen';
 import ComponentPopup from './components/ComponentPopup';
 import PinyinQuiz from './components/PinyinQuiz';
+import PDFReader from './components/PDFReader';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
 import { saveUserProgress, getUserProgress, saveSharedPacks, getSharedPacks } from './services/firebaseService';
 
@@ -667,6 +668,7 @@ const App: React.FC = () => {
           }}
           achievements={unlockedAchievements}
           allAchievements={ACHIEVEMENT_DEFS}
+          onOpenReferenceBook={() => setView('PDF_READER')}
         />
       </div>
     );
@@ -685,6 +687,10 @@ const App: React.FC = () => {
         />
       </div>
     );
+  }
+
+  if (view === 'PDF_READER') {
+    return <PDFReader onBack={goHome} />;
   }
 
   const effectiveMode = (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') ? AppMode.TEST : mode;

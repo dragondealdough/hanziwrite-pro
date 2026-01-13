@@ -40,13 +40,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-[#0d0f12] border-r border-slate-200/60 dark:border-slate-800 transform transition-transform duration-500 ease-out lg:relative lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} flex flex-col shadow-2xl lg:shadow-none`}>
         <div className="p-8 border-b border-slate-100 dark:border-slate-800/50">
-          <button
-            onClick={onGoHome}
-            className="group flex items-center gap-2 mb-8 text-slate-400 hover:text-rose-600 transition-colors touch-manipulation"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-            <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Hub</span>
-          </button>
+          <div className="flex flex-col gap-2 mb-8">
+            <button
+              onClick={onGoHome}
+              className="group flex items-center gap-2 text-slate-400 hover:text-rose-600 transition-colors touch-manipulation"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+              <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Hub</span>
+            </button>
+          </div>
 
           <div className="flex items-center gap-3 select-none">
             <span className="brush-font text-5xl text-rose-600 leading-none pt-1">墨</span>
@@ -67,8 +69,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             return (
               <div key={item.char} className="relative">
                 <div className={`w-full flex items-center gap-4 p-4 rounded-[1.5rem] transition-all duration-300 ${activeChar === item.char
-                    ? 'bg-rose-600 text-white shadow-xl shadow-rose-200 dark:shadow-none'
-                    : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border-transparent'
+                  ? 'bg-rose-600 text-white shadow-xl shadow-rose-200 dark:shadow-none'
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border-transparent'
                   }`}>
                   <button
                     onClick={() => {
@@ -92,8 +94,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                   <div className="flex flex-col items-center gap-1.5">
                     {isCompleted && (
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black shrink-0 ${activeChar === item.char
-                          ? 'bg-white text-rose-600'
-                          : score > 80 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30'
+                        ? 'bg-white text-rose-600'
+                        : score > 80 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30'
                         }`}>
                         {score}%
                       </div>

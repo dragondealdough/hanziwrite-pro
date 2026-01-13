@@ -6,7 +6,7 @@ export enum AppMode {
   FREE_CANVAS = 'FREE_CANVAS'
 }
 
-export type ViewState = 'HOME' | 'QUIZ' | 'HOMEWORK_MENU';
+export type ViewState = 'HOME' | 'QUIZ' | 'HOMEWORK_MENU' | 'PDF_READER';
 
 export interface CharacterData {
   char: string;

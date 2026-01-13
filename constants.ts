@@ -1,7 +1,7 @@
 import { Category } from './types';
 import { MODERN_CHINESE_VOCAB } from './modernChineseVocab';
 
-export const APP_VERSION = "1.1.36";
+export const APP_VERSION = "1.1.37";
 
 export const CATEGORIES: Category[] = [
   {
@@ -152,6 +152,40 @@ export const CATEGORIES: Category[] = [
           { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'] },
           { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'] },
           { char: '累', pinyin: 'lèi', zhuyin: 'ㄌㄟˋ', meaning: 'tired', difficulty: 3, components: ['田', '糸'] },
+        ]
+      },
+      {
+        id: 'ws-6',
+        name: 'Worksheet 6 (B1L3-1)',
+        characters: [
+          // Page 1
+          { char: '個', pinyin: 'gè', zhuyin: 'ㄍㄜˋ', meaning: 'general measure word', difficulty: 1, components: ['亻', '固'] },
+          { char: '送', pinyin: 'sòng', zhuyin: 'ㄙㄨㄥˋ', meaning: 'to deliver / to send', difficulty: 2, components: ['辶', '灷'] },
+          { char: '想', pinyin: 'xiǎng', zhuyin: 'ㄒㄧㄤˇ', meaning: 'to want / to think', difficulty: 2, components: ['相', '心'] },
+          { char: '物', pinyin: 'wù', zhuyin: 'ㄨˋ', meaning: 'thing / object', difficulty: 2, components: ['牛', '勿'] },
+          { char: '禮', pinyin: 'lǐ', zhuyin: 'ㄌㄧˇ', meaning: 'gift / courtesy', difficulty: 2, components: ['礻', '豊'] },
+          { char: '買', pinyin: 'mǎi', zhuyin: 'ㄇㄞˇ', meaning: 'to buy', difficulty: 2, components: ['罒', '貝'] },
+          // Page 2
+          { char: '文', pinyin: 'wén', zhuyin: 'ㄨㄣˊ', meaning: 'language / culture', difficulty: 2, components: ['文'] },
+          { char: '中', pinyin: 'zhōng', zhuyin: 'ㄓㄨㄥ', meaning: 'middle / center', difficulty: 2, components: ['丨', '口'] },
+          { char: '本', pinyin: 'běn', zhuyin: 'ㄅㄣˇ', meaning: 'measure word for books', difficulty: 2, components: ['木', '一'] },
+          { char: '兩', pinyin: 'liǎng', zhuyin: 'ㄌㄧㄤˇ', meaning: 'two', difficulty: 1, components: ['一', '冂', '入'] },
+          { char: '書', pinyin: 'shū', zhuyin: 'ㄕㄨ', meaning: 'book', difficulty: 3, components: ['聿', '曰'] },
+          { char: '看', pinyin: 'kàn', zhuyin: 'ㄎㄢˋ', meaning: 'to read / to see', difficulty: 2, components: ['手', '目'] },
+          // Page 3
+          { char: '和', pinyin: 'hé', zhuyin: 'ㄏㄜˊ', meaning: 'and / with', difficulty: 2, components: ['禾', '口'] },
+          { char: '朵', pinyin: 'duǒ', zhuyin: 'ㄉㄨㄛˇ', meaning: 'measure word for flowers', difficulty: 2, components: ['几', '木'] },
+          { char: '花', pinyin: 'huā', zhuyin: 'ㄏㄨㄚ', meaning: 'flower', difficulty: 1, components: ['艹', '化'] },
+          { char: '些', pinyin: 'xiē', zhuyin: 'ㄒㄧㄝ', meaning: 'some / a few', difficulty: 2, components: ['此', '二'] },
+          { char: '一', pinyin: 'yī', zhuyin: 'ㄧ', meaning: 'one', difficulty: 1, components: ['一'] },
+          { char: '英', pinyin: 'yīng', zhuyin: 'ㄧㄥ', meaning: 'brave / UK', difficulty: 2, components: ['艹', '央'] },
+          // Page 4
+          { char: '啊', pinyin: 'a', zhuyin: 'ㄚ˙', meaning: 'particle', difficulty: 1, components: ['口', '阿'] },
+          { char: '起', pinyin: 'qǐ', zhuyin: 'ㄑㄧˇ', meaning: 'to rise / to start', difficulty: 2, components: ['走', '己'] },
+          { char: '糕', pinyin: 'gāo', zhuyin: 'ㄍㄠ', meaning: 'cake', difficulty: 2, components: ['米', '羔'] },
+          { char: '蛋', pinyin: 'dàn', zhuyin: 'ㄉㄢˋ', meaning: 'egg', difficulty: 1, components: ['疋', '虫'] },
+          { char: '小', pinyin: 'xiǎo', zhuyin: 'ㄒㄧㄠˇ', meaning: 'small', difficulty: 1, components: ['小'] },
+          { char: '大', pinyin: 'dà', zhuyin: 'ㄉㄚˋ', meaning: 'big', difficulty: 1, components: ['一', '人'] },
         ]
       }
     ]
