@@ -18,11 +18,12 @@ interface WritingCanvasProps {
   showPinyinBelowCanvas?: boolean;
   isBlankCanvasMode?: boolean;
   hintTier?: 'beginner' | 'intermediate' | 'advanced' | 'mastered';
+  onAskAI?: () => void;
 }
 
 const TIME_LIMIT = 10;
 
-const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, meaning, showPinyinBelowCanvas, isBlankCanvasMode, hintTier = 'beginner' }) => {
+const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComplete, onMistake, onSkipTracing, canvasSize: propSize, isDarkMode, leniency = 1.5, roundAccuracy, pinyin, zhuyin, meaning, showPinyinBelowCanvas, isBlankCanvasMode, hintTier = 'beginner', onAskAI }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
   const writerRef = useRef<HanziWriter | null>(null);
@@ -427,6 +428,14 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
                 className="flex-1 max-w-[120px] py-4 bg-violet-100 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-violet-200 dark:border-violet-800/30 active:scale-95 transition-all"
               >
                 Skip →
+              </button>
+            )}
+            {onAskAI && (
+              <button
+                onClick={onAskAI}
+                className="flex-1 max-w-[120px] py-4 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-emerald-200 dark:border-emerald-800/30 active:scale-95 transition-all flex items-center justify-center gap-1"
+              >
+                <span className="text-sm">🤖</span> Ask AI
               </button>
             )}
           </>

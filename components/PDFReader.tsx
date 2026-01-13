@@ -8,16 +8,17 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 interface PDFReaderProps {
     onBack: () => void;
+    initialPage?: number;
 }
 
 const START_PAGE = 14;
 
-const PDFReader: React.FC<PDFReaderProps> = ({ onBack }) => {
+const PDFReader: React.FC<PDFReaderProps> = ({ onBack, initialPage }) => {
     const [containerWidth, setContainerWidth] = useState<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState(START_PAGE);
+    const [pageNumber, setPageNumber] = useState(initialPage || START_PAGE);
     const [scale, setScale] = useState(1.0);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);

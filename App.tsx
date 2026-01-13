@@ -13,6 +13,7 @@ import PinyinQuiz from './components/PinyinQuiz';
 import PDFReader from './components/PDFReader';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
 import { saveUserProgress, getUserProgress, saveSharedPacks, getSharedPacks } from './services/firebaseService';
+import { aiService } from './services/aiHelpService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('HOME');
@@ -571,6 +572,55 @@ const App: React.FC = () => {
     setTestHintMode(null);
   };
 
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiQuery, setAiQuery] = useState('');
+  const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [aiStatus, setAiStatus] = useState<string>('');
+  const [pdfInitialPage, setPdfInitialPage] = useState<number | undefined>(undefined);
+
+  const handleAskAI = () => {
+    setShowAIModal(true);
+    setAiStatus('Ready to help!');
+  };
+
+  const submitAIQuery = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiQuery.trim()) return;
+
+    setIsAIProcessing(true);
+    setAiStatus('Reading the book... (this might take a moment)');
+
+    // Small delay to let UI update
+    await new Promise(r => setTimeout(r, 100));
+
+    try {
+      // Ensure index exists
+      await aiService.indexPDF('/reference_book.pdf', (curr, total) => {
+        setAiStatus(`Reading page ${curr} of ${total}...`);
+      });
+
+      setAiStatus('Optimizing search...');
+      await new Promise(r => setTimeout(r, 50)); // UI yield
+
+      setAiStatus('Thinking...');
+      const page = await aiService.search(aiQuery);
+
+      if (page) {
+        setPdfInitialPage(page);
+        setShowAIModal(false);
+        setView('PDF_READER');
+        setAiQuery('');
+      } else {
+        setAiStatus('I couldn\'t find a specific page for that. Try "Woman component" or "Tone rules".');
+      }
+    } catch (err) {
+      console.error(err);
+      setAiStatus('My brain is tired. Please try again.');
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
   const handleSwitchMode = (newHintMode: TestHintMode | null) => {
     setTestHintMode(newHintMode);
     setMode(newHintMode ? AppMode.TEST : AppMode.PRACTICE);
@@ -690,7 +740,7 @@ const App: React.FC = () => {
   }
 
   if (view === 'PDF_READER') {
-    return <PDFReader onBack={goHome} />;
+    return <PDFReader onBack={goHome} initialPage={pdfInitialPage} />;
   }
 
   const effectiveMode = (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') ? AppMode.TEST : mode;
@@ -738,6 +788,116 @@ const App: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* AI Assistant Modal */}
+        {showAIModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
+                </div>
+              </div>
+
+              <form onSubmit={submitAIQuery}>
+                <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
+                <input
+                  type="text"
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder='e.g., "Why does it have a water radical?"'
+                  disabled={isAIProcessing}
+                  className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
+                  autoFocus
+                />
+
+                {aiStatus && (
+                  <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                    {aiStatus}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAIModal(false)}
+                    disabled={isAIProcessing}
+                    className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isAIProcessing || !aiQuery.trim()}
+                    className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                  >
+                    {isAIProcessing ? 'Thinking...' : 'Find Help'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* AI Assistant Modal */}
+        {showAIModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
+                </div>
+              </div>
+
+              <form onSubmit={submitAIQuery}>
+                <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
+                <input
+                  type="text"
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder='e.g., "Why does it have a water radical?"'
+                  disabled={isAIProcessing}
+                  className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
+                  autoFocus
+                />
+
+                {aiStatus && (
+                  <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                    {aiStatus}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAIModal(false)}
+                    disabled={isAIProcessing}
+                    className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isAIProcessing || !aiQuery.trim()}
+                    className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                  >
+                    {isAIProcessing ? 'Thinking...' : 'Find Help'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Mode Switching Modal */}
         {showModeMenu && (
