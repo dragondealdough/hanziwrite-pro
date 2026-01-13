@@ -13,12 +13,42 @@ interface PDFReaderProps {
 const START_PAGE = 14;
 
 const PDFReader: React.FC<PDFReaderProps> = ({ onBack }) => {
+    const [containerWidth, setContainerWidth] = useState<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
     const [numPages, setNumPages] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState(START_PAGE);
     const [scale, setScale] = useState(1.0);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const pdfRef = useRef<any>(null);
+
+    // Initial width and ResizeObserver
+    useEffect(() => {
+        function updateWidth() {
+            if (containerRef.current) {
+                // Subtract padding (32px from p-8 = 2rem, approx 32px depending on root size, usually 1rem=16px)
+                // Actually p-8 is 2rem on all sides. 2rem * 2 = 64px total horizontal padding.
+                // Mobile layout might change padding? The CSS has "p-8".
+                const width = containerRef.current.clientWidth - 48; // 48px safety margin
+                setContainerWidth(width);
+            }
+        }
+
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+
+        // ResizeObserver for more robust element resizing
+        const observer = new ResizeObserver(updateWidth);
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => {
+            window.removeEventListener('resize', updateWidth);
+            observer.disconnect();
+        };
+    }, []);
 
     function onDocumentLoadSuccess(pdf: any) {
         setNumPages(pdf.numPages);
@@ -32,12 +62,8 @@ const PDFReader: React.FC<PDFReaderProps> = ({ onBack }) => {
         setIsSearching(true);
         try {
             const query = searchQuery.toLowerCase();
-            // Start searching from current page, wrapping around if needed
-            // But for simplicity/predictability, let's search forward from page 14
-
             let foundPage = -1;
 
-            // brute force search all allowed pages
             for (let i = START_PAGE; i <= numPages; i++) {
                 const page = await pdfRef.current.getPage(i);
                 const textContent = await page.getTextContent();
@@ -129,7 +155,7 @@ const PDFReader: React.FC<PDFReaderProps> = ({ onBack }) => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-auto flex justify-center p-8 bg-slate-200/50 dark:bg-[#0d0f12]">
+            <div className="flex-1 overflow-auto flex justify-center p-2 md:p-8 bg-slate-200/50 dark:bg-[#0d0f12]" ref={containerRef}>
                 <div className="shadow-2xl">
                     <Document
                         file="/reference_book.pdf"
@@ -140,7 +166,7 @@ const PDFReader: React.FC<PDFReaderProps> = ({ onBack }) => {
                     >
                         <Page
                             pageNumber={pageNumber}
-                            scale={scale}
+                            width={containerWidth ? Math.min(containerWidth, 800) * scale : undefined}
                             renderTextLayer={true}
                             renderAnnotationLayer={false}
                             className="bg-white"
