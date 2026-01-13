@@ -803,7 +803,7 @@ const App: React.FC = () => {
   }
 
   if (view === 'PDF_READER') {
-    return <PDFReader onBack={goHome} initialPage={pdfInitialPage} />;
+    return <PDFReader onBack={goHome} initialPage={pdfInitialPage} onAskAI={handleHomeSearchAI} />;
   }
 
   const effectiveMode = (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') ? AppMode.TEST : mode;

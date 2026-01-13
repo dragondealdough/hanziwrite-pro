@@ -9,11 +9,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 interface PDFReaderProps {
     onBack: () => void;
     initialPage?: number;
+    onAskAI: (query: string) => void;
 }
 
 const START_PAGE = 14;
 
-const PDFReader: React.FC<PDFReaderProps> = ({ onBack, initialPage }) => {
+const PDFReader: React.FC<PDFReaderProps> = ({ onBack, initialPage, onAskAI }) => {
     const [containerWidth, setContainerWidth] = useState<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +24,11 @@ const PDFReader: React.FC<PDFReaderProps> = ({ onBack, initialPage }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const pdfRef = useRef<any>(null);
+
+    // React to external page changes (e.g. from AI Search)
+    useEffect(() => {
+        if (initialPage) setPageNumber(initialPage);
+    }, [initialPage]);
 
     // Initial width and ResizeObserver
     useEffect(() => {
@@ -56,36 +62,12 @@ const PDFReader: React.FC<PDFReaderProps> = ({ onBack, initialPage }) => {
         pdfRef.current = pdf;
     }
 
-    const handleSearch = async (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (!searchQuery.trim() || !pdfRef.current) return;
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
 
-        setIsSearching(true);
-        try {
-            const query = searchQuery.toLowerCase();
-            let foundPage = -1;
-
-            for (let i = START_PAGE; i <= numPages; i++) {
-                const page = await pdfRef.current.getPage(i);
-                const textContent = await page.getTextContent();
-                const textItems = textContent.items.map((item: any) => item.str).join(' ');
-
-                if (textItems.toLowerCase().includes(query)) {
-                    foundPage = i;
-                    break;
-                }
-            }
-
-            if (foundPage !== -1) {
-                setPageNumber(foundPage);
-            } else {
-                alert('Text not found in the book.');
-            }
-        } catch (err) {
-            console.error('Search failed:', err);
-        } finally {
-            setIsSearching(false);
-        }
+        // Trigger AI Search
+        onAskAI(searchQuery);
     };
 
     return (
