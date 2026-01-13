@@ -1,7 +1,7 @@
 import { Category } from './types';
 import { MODERN_CHINESE_VOCAB } from './modernChineseVocab';
 
-export const APP_VERSION = "1.1.46";
+export const APP_VERSION = "1.1.47";
 
 export const CATEGORIES: Category[] = [
   {

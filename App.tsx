@@ -13,7 +13,7 @@ import PinyinQuiz from './components/PinyinQuiz';
 import PDFReader from './components/PDFReader';
 import { searchMandarin, playMandarinAudio } from './services/geminiService';
 import { saveUserProgress, getUserProgress, saveSharedPacks, getSharedPacks } from './services/firebaseService';
-import { aiService } from './services/aiHelpService';
+import { aiService, SearchResult } from './services/aiHelpService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('HOME');
@@ -573,7 +573,8 @@ const App: React.FC = () => {
   };
 
   const [showAIModal, setShowAIModal] = useState(false);
-  const [aiQuery, setAiQuery] = useState('');
+  const [localSearchQuery, setLocalSearchQuery] = useState('');
+  const [aiSearchResults, setAiSearchResults] = useState<SearchResult[] | null>(null);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [aiStatus, setAiStatus] = useState<string>('');
   const [pdfInitialPage, setPdfInitialPage] = useState<number | undefined>(undefined);
@@ -599,20 +600,38 @@ const App: React.FC = () => {
       setAiStatus('Optimizing search...');
       await new Promise(r => setTimeout(r, 50)); // UI yield
 
-      setAiStatus('Thinking...');
-      const page = await aiService.search(query);
+      const results = await aiService.search(query);
 
-      if (page) {
-        setPdfInitialPage(page);
-        setShowAIModal(false);
-        setView('PDF_READER');
-        setAiQuery('');
-      } else {
-        setAiStatus('I couldn\'t find a specific page for that. Try "Woman component" or "Tone rules".');
+      if (!results || results.length === 0) {
+        setAiStatus('No results found in the book.');
+        setTimeout(() => setAiStatus(''), 3000);
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      setAiStatus('My brain is tired. Please try again.');
+
+      // Smart Routing Analysis
+      const topResult = results[0];
+      const isHighConfidence = topResult.matchType === 'exact' || topResult.score > 0.65;
+      // 0.65 is empirical for "pretty good match" in semantic search without exact keywords
+
+      if (isHighConfidence) {
+        // Auto-Jump
+        setAiStatus(`Found match on page ${topResult.pageNumber}!`);
+        await new Promise(r => setTimeout(r, 800)); // Brief pause to read status
+
+        setShowAIModal(false);
+        setPdfInitialPage(topResult.pageNumber);
+        if (view !== 'PDF_READER') {
+          setView('PDF_READER');
+        }
+      } else {
+        // Show Options
+        setAiSearchResults(results);
+        setAiStatus(`I found ${results.length} possible relevant pages.`);
+      }
+
+    } catch (e) {
+      console.error(e);
+      setAiStatus('Error connecting to AI brain.');
     } finally {
       setIsAIProcessing(false);
     }
@@ -745,40 +764,85 @@ const App: React.FC = () => {
               </div>
 
               <form onSubmit={submitAIQuery}>
-                <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
-                <input
-                  type="text"
-                  value={aiQuery}
-                  onChange={(e) => setAiQuery(e.target.value)}
-                  placeholder={view === 'HOME' ? 'e.g., "Water radical meaning"' : 'e.g., "Why does it have a water radical?"'}
-                  disabled={isAIProcessing}
-                  className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
-                  autoFocus
-                />
+                {!aiSearchResults ? (
+                  <>
+                    <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
+                    <input
+                      type="text"
+                      value={aiQuery}
+                      onChange={(e) => setAiQuery(e.target.value)}
+                      placeholder={view === 'HOME' ? 'e.g., "Water radical meaning"' : 'e.g., "Why does it have a water radical?"'}
+                      disabled={isAIProcessing}
+                      className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
+                      autoFocus
+                    />
 
-                {aiStatus && (
-                  <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
-                    {aiStatus}
+                    {aiStatus && (
+                      <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                        {aiStatus}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowAIModal(false)}
+                        disabled={isAIProcessing}
+                        className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isAIProcessing || !aiQuery.trim()}
+                        className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                      >
+                        {isAIProcessing ? 'Thinking...' : 'Find Help'}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">
+                      I found {aiSearchResults.length} likely options. Which one looks right?
+                    </p>
+
+                    <div className="max-h-[300px] overflow-y-auto pr-2 space-y-2">
+                      {aiSearchResults.map((result, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setShowAIModal(false);
+                            setPdfInitialPage(result.pageNumber);
+                            if (view !== 'PDF_READER') setView('PDF_READER');
+                          }}
+                          className="w-full text-left p-4 bg-slate-50 dark:bg-[#0d0f12] hover:bg-emerald-50 dark:hover:bg-emerald-900/10 border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 rounded-xl transition-all group"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-emerald-500">Page {result.pageNumber}</span>
+                            {result.matchType === 'exact' && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Exact Match</span>}
+                          </div>
+                          <p className="text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2">
+                            "{result.snippet}"
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAiSearchResults(null);
+                        setAiQuery('');
+                        setAiStatus('');
+                      }}
+                      className="w-full py-3 text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300 font-bold text-sm"
+                    >
+                      ← Ask something else
+                    </button>
                   </div>
                 )}
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowAIModal(false)}
-                    disabled={isAIProcessing}
-                    className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isAIProcessing || !aiQuery.trim()}
-                    className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
-                  >
-                    {isAIProcessing ? 'Thinking...' : 'Find Help'}
-                  </button>
-                </div>
               </form>
             </div>
           </div>

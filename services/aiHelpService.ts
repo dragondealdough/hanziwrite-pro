@@ -87,67 +87,85 @@ class AIHelpService {
         }
     }
 
-    async search(query: string): Promise<number | null> {
-        if (this.index.length === 0) return null;
+export interface SearchResult {
+    pageNumber: number;
+    score: number;
+    snippet: string;
+    matchType: 'exact' | 'semantic';
+}
 
-        const queryEmbedding = await this.getEmbedding(query);
+    async search(query: string): Promise < SearchResult[] > {
+    if(this.index.length === 0) return [];
 
-        // Extract Chinese characters from query for "Hybrid Search"
-        const queryChars = query.match(/[\u4e00-\u9fa5]/g) || [];
-        const uniqueQueryChars = Array.from(new Set(queryChars));
-        const hasSpecificChars = uniqueQueryChars.length > 0;
+    const queryEmbedding = await this.getEmbedding(query);
 
-        let maxScore = -100;
-        let bestPage = -1;
+    // Extract Chinese characters for "Hybrid Search"
+    const queryChars = query.match(/[\u4e00-\u9fa5]/g) || [];
+    const uniqueQueryChars = Array.from(new Set(queryChars));
+    const hasSpecificChars = uniqueQueryChars.length > 0;
 
-        for (const item of this.index) {
-            // 1. Semantic Score (Cosine Similarity)
-            let score = this.cosineSimilarity(queryEmbedding, item.embedding);
+    let results: SearchResult[] = [];
 
-            // 2. Keyword/Character Boosting
-            if (hasSpecificChars) {
-                let matchCount = 0;
-                for (const char of uniqueQueryChars) {
-                    if (item.text.includes(char)) {
-                        matchCount++;
-                    }
-                }
+    for(const item of this.index) {
+    let score = this.cosineSimilarity(queryEmbedding, item.embedding);
+    let matchType: 'exact' | 'semantic' = 'semantic';
 
-                if (matchCount > 0) {
-                    // Boost based on how many of the requested characters are found
-                    // huge boost if ALL characters are found (Intersection)
-                    const coverage = matchCount / uniqueQueryChars.length;
-
-                    if (coverage === 1 && uniqueQueryChars.length > 1) {
-                        score += 0.5; // Massive boost for finding "A vs B" comparison
-                    } else if (coverage === 1) {
-                        score += 0.2; // Strong boost for finding the single char
-                    } else {
-                        score += 0.1 * coverage; // Partial match boost
-                    }
-                }
-            }
-
-            if (score > maxScore) {
-                maxScore = score;
-                bestPage = item.pageNumber;
+    // 2. Keyword/Character Boosting
+    if (hasSpecificChars) {
+        let matchCount = 0;
+        for (const char of uniqueQueryChars) {
+            if (item.text.includes(char)) {
+                matchCount++;
             }
         }
 
-        return bestPage;
+        if (matchCount > 0) {
+            const coverage = matchCount / uniqueQueryChars.length;
+
+            if (coverage === 1 && uniqueQueryChars.length > 1) {
+                score += 0.5; // Massive boost for intersection
+                matchType = 'exact';
+            } else if (coverage === 1) {
+                score += 0.2;
+                matchType = 'exact';
+            } else {
+                score += 0.1 * coverage;
+            }
+        }
+    }
+
+    // Generate snippet
+    // If exact match, try to center on the chars. Otherwise Start of text.
+    let snippet = item.text.substring(0, 120) + '...';
+    if (hasSpecificChars && matchType === 'exact') {
+        const firstCharIdx = item.text.indexOf(uniqueQueryChars[0]);
+        if (firstCharIdx !== -1) {
+            const start = Math.max(0, firstCharIdx - 40);
+            const end = Math.min(item.text.length, firstCharIdx + 80);
+            snippet = (start > 0 ? '...' : '') + item.text.substring(start, end) + '...';
+        }
+    }
+
+    if (score > 0.25) { // Threshold to cut off garbage
+        results.push({ pageNumber: item.pageNumber, score, snippet, matchType });
+    }
+}
+
+// Sort by score desc and take top 5
+return results.sort((a, b) => b.score - a.score).slice(0, 5);
     }
 
     private cosineSimilarity(a: number[], b: number[]) {
-        let dot = 0;
-        let magA = 0;
-        let magB = 0;
-        for (let i = 0; i < a.length; i++) {
-            dot += a[i] * b[i];
-            magA += a[i] * a[i];
-            magB += b[i] * b[i];
-        }
-        return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+    let dot = 0;
+    let magA = 0;
+    let magB = 0;
+    for (let i = 0; i < a.length; i++) {
+        dot += a[i] * b[i];
+        magA += a[i] * a[i];
+        magB += b[i] * b[i];
     }
+    return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+}
 }
 
 export const aiService = new AIHelpService();
