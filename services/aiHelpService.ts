@@ -92,11 +92,42 @@ class AIHelpService {
 
         const queryEmbedding = await this.getEmbedding(query);
 
-        let maxScore = -1;
+        // Extract Chinese characters from query for "Hybrid Search"
+        const queryChars = query.match(/[\u4e00-\u9fa5]/g) || [];
+        const uniqueQueryChars = Array.from(new Set(queryChars));
+        const hasSpecificChars = uniqueQueryChars.length > 0;
+
+        let maxScore = -100;
         let bestPage = -1;
 
         for (const item of this.index) {
-            const score = this.cosineSimilarity(queryEmbedding, item.embedding);
+            // 1. Semantic Score (Cosine Similarity)
+            let score = this.cosineSimilarity(queryEmbedding, item.embedding);
+
+            // 2. Keyword/Character Boosting
+            if (hasSpecificChars) {
+                let matchCount = 0;
+                for (const char of uniqueQueryChars) {
+                    if (item.text.includes(char)) {
+                        matchCount++;
+                    }
+                }
+
+                if (matchCount > 0) {
+                    // Boost based on how many of the requested characters are found
+                    // huge boost if ALL characters are found (Intersection)
+                    const coverage = matchCount / uniqueQueryChars.length;
+
+                    if (coverage === 1 && uniqueQueryChars.length > 1) {
+                        score += 0.5; // Massive boost for finding "A vs B" comparison
+                    } else if (coverage === 1) {
+                        score += 0.2; // Strong boost for finding the single char
+                    } else {
+                        score += 0.1 * coverage; // Partial match boost
+                    }
+                }
+            }
+
             if (score > maxScore) {
                 maxScore = score;
                 bestPage = item.pageNumber;
