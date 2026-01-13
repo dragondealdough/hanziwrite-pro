@@ -583,10 +583,7 @@ const App: React.FC = () => {
     setAiStatus('Ready to help!');
   };
 
-  const submitAIQuery = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!aiQuery.trim()) return;
-
+  const processAIQuery = async (query: string) => {
     setIsAIProcessing(true);
     setAiStatus('Reading the book... (this might take a moment)');
 
@@ -603,7 +600,7 @@ const App: React.FC = () => {
       await new Promise(r => setTimeout(r, 50)); // UI yield
 
       setAiStatus('Thinking...');
-      const page = await aiService.search(aiQuery);
+      const page = await aiService.search(query);
 
       if (page) {
         setPdfInitialPage(page);
@@ -619,6 +616,18 @@ const App: React.FC = () => {
     } finally {
       setIsAIProcessing(false);
     }
+  };
+
+  const handleHomeSearchAI = (query: string) => {
+    setAiQuery(query);
+    setShowAIModal(true);
+    processAIQuery(query);
+  };
+
+  const submitAIQuery = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiQuery.trim()) return;
+    await processAIQuery(aiQuery);
   };
 
   const handleSwitchMode = (newHintMode: TestHintMode | null) => {
@@ -719,6 +728,7 @@ const App: React.FC = () => {
           achievements={unlockedAchievements}
           allAchievements={ACHIEVEMENT_DEFS}
           onOpenReferenceBook={() => setView('PDF_READER')}
+          onAskAI={handleHomeSearchAI}
         />
       </div>
     );

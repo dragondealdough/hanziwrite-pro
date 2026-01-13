@@ -26,6 +26,7 @@ interface HomeScreenProps {
   allAchievements: Achievement[];
   onShowStats?: () => void;
   onOpenReferenceBook: () => void;
+  onAskAI?: (query: string) => void;
 }
 
 type SubView = 'main' | 'personal' | 'community';
@@ -51,9 +52,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   achievements,
   allAchievements,
   onShowStats,
-  onOpenReferenceBook
+  onOpenReferenceBook,
+  onAskAI
 }) => {
   const [query, setQuery] = useState('');
+  const [searchMode, setSearchMode] = useState<'CHAR' | 'AI'>('CHAR');
   const [newPackName, setNewPackName] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [importCode, setImportCode] = useState('');
@@ -82,7 +85,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim());
+    if (!query.trim()) return;
+
+    if (searchMode === 'AI' && onAskAI) {
+      onAskAI(query.trim());
+      setQuery(''); // Optional: clear after search
+    } else {
+      onSearch(query.trim());
+    }
   };
 
   const handlePackSearch = async (e: React.FormEvent) => {
@@ -224,19 +234,39 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Search */}
-          <form onSubmit={handleSearchSubmit} className="w-full max-w-lg mx-auto relative mb-16">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              disabled={isSearching}
-              placeholder="Translate or search characters..."
-              className="w-full pl-6 pr-14 py-4 bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-full shadow-lg text-slate-900 dark:text-slate-100 font-bold focus:ring-4 ring-rose-600/5 focus:outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
-            />
-            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-rose-600 text-white rounded-full shadow-lg hover:bg-rose-700 active:scale-90 transition-all">
-              {isSearching ? <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" /> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>}
-            </button>
-          </form>
+          <div className="w-full max-w-lg mx-auto mb-16 relative z-10">
+            {/* Tab Switcher */}
+            <div className="flex justify-center mb-4">
+              <div className="bg-slate-100 dark:bg-[#16191e] p-1 rounded-full border border-slate-200 dark:border-slate-800 flex gap-1 shadow-inner">
+                <button
+                  onClick={() => setSearchMode('CHAR')}
+                  className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${searchMode === 'CHAR' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
+                >
+                  Find Character
+                </button>
+                <button
+                  onClick={() => setSearchMode('AI')}
+                  className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${searchMode === 'AI' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-emerald-600'}`}
+                >
+                  🤖 Ask Book
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                disabled={isSearching}
+                placeholder={searchMode === 'AI' ? "Ask a question (e.g. 'Water radical meaning')..." : "Translate or search characters..."}
+                className={`w-full pl-6 pr-14 py-4 bg-white dark:bg-[#16191e] border rounded-full shadow-lg font-bold focus:outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 ${searchMode === 'AI' ? 'border-emerald-200 dark:border-emerald-900/30 text-emerald-900 dark:text-emerald-100 focus:ring-4 ring-emerald-500/10' : 'border-slate-200/60 dark:border-slate-800 text-slate-900 dark:text-slate-100 focus:ring-4 ring-rose-600/5'}`}
+              />
+              <button type="submit" className={`absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg active:scale-90 transition-all ${searchMode === 'AI' ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : 'bg-rose-600 hover:bg-rose-700 text-white'}`}>
+                {isSearching ? <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" /> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>}
+              </button>
+            </form>
+          </div>
 
           {/* Category Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 mb-16">
