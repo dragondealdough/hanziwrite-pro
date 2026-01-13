@@ -43,6 +43,19 @@ class AIHelpService {
                 return;
             }
 
+            // Check for pre-computed index
+            try {
+                const precomputed = await fetch('/pdf-index.json');
+                if (precomputed.ok) {
+                    this.index = await precomputed.json();
+                    localStorage.setItem('pdf_index_v1', JSON.stringify(this.index)); // Cache it too
+                    this.isIndexing = false;
+                    return;
+                }
+            } catch (e) {
+                console.warn('Pre-computed index not found, falling back to live indexing.');
+            }
+
             const pdf = await pdfjs.getDocument(url).promise;
             const totalPages = pdf.numPages;
             const newIndex: PageIndex[] = [];
