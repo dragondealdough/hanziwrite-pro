@@ -1192,6 +1192,7 @@ const App: React.FC = () => {
                     showPinyinBelowCanvas={!testHintMode}
                     isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
                     hintTier={getHintTier(charProgress.find(cp => cp.char === activeCharData?.char))}
+                    onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
                   />
                 ) : (
                   <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
@@ -1275,7 +1276,14 @@ const App: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-12 md:gap-24">
                 {charactersToPractice.map((char) => (
                   <div key={char.char} className="flex flex-col items-center gap-8">
-                    <WritingCanvas character={char.char} mode={mode} onComplete={handleCompleteCombined} canvasSize={240} isDarkMode={isDarkMode} />
+                    <WritingCanvas
+                      character={char.char}
+                      mode={mode}
+                      onComplete={handleCompleteCombined}
+                      canvasSize={240}
+                      isDarkMode={isDarkMode}
+                      onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
+                    />
                     {combinedProgress.has(char.char) && (
                       <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>

@@ -18,7 +18,7 @@ interface WritingCanvasProps {
   showPinyinBelowCanvas?: boolean;
   isBlankCanvasMode?: boolean;
   hintTier?: 'beginner' | 'intermediate' | 'advanced' | 'mastered';
-  onAskAI?: () => void;
+  onAskAI?: (query?: string) => void;
 }
 
 const TIME_LIMIT = 10;
@@ -431,12 +431,21 @@ const WritingCanvas: React.FC<WritingCanvasProps> = ({ character, mode, onComple
               </button>
             )}
             {onAskAI && (
-              <button
-                onClick={onAskAI}
-                className="flex-1 max-w-[120px] py-4 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-emerald-200 dark:border-emerald-800/30 active:scale-95 transition-all flex items-center justify-center gap-1"
-              >
-                <span className="text-sm">🤖</span> Ask AI
-              </button>
+              <>
+                <button
+                  onClick={() => onAskAI(character)}
+                  className="w-12 h-12 flex items-center justify-center bg-sky-100 dark:bg-sky-900/20 text-sky-700 dark:text-sky-400 font-black rounded-2xl border border-sky-200 dark:border-sky-800/30 active:scale-95 transition-all"
+                  title="Look up in Book"
+                >
+                  <span className="text-lg font-serif italic font-black">i</span>
+                </button>
+                <button
+                  onClick={() => onAskAI()}
+                  className="flex-1 max-w-[120px] py-4 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-emerald-200 dark:border-emerald-800/30 active:scale-95 transition-all flex items-center justify-center gap-1"
+                >
+                  <span className="text-sm">🤖</span> Ask AI
+                </button>
+              </>
             )}
           </>
         )}
