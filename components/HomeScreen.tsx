@@ -275,7 +275,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               <button onClick={() => onSelectCategory(homeworkCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Homework</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Class assignments</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Class assignments</p>
+                <div className="flex flex-wrap gap-1">
+                  {(homeworkCategory.sequences?.flatMap(s => s.characters) || []).slice(0, 8).map(c => (
+                    <span key={c.char} className="text-sm brush-font text-slate-500 dark:text-slate-400 opacity-80">{c.char}</span>
+                  ))}
+                  {(homeworkCategory.sequences?.flatMap(s => s.characters) || []).length > 8 && <span className="text-[9px] text-slate-400 self-center">...</span>}
+                </div>
               </button>
             )}
 
@@ -284,7 +290,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               <button onClick={() => onSelectCategory(testCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📋</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">Test Packs</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Exam preparation</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Exam preparation</p>
+                <div className="flex flex-wrap gap-1">
+                  {(testCategory.sequences?.flatMap(s => s.characters) || []).slice(0, 8).map(c => (
+                    <span key={c.char} className="text-sm brush-font text-slate-500 dark:text-slate-400 opacity-80">{c.char}</span>
+                  ))}
+                  {(testCategory.sequences?.flatMap(s => s.characters) || []).length > 8 && <span className="text-[9px] text-slate-400 self-center">...</span>}
+                </div>
               </button>
             )}
 
@@ -314,7 +326,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               <button onClick={() => onSelectCategory(hsk1Category, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center text-2xl font-black text-rose-600 mb-4 group-hover:scale-110 transition-transform">1</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">HSK 1</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{hsk1Category.characters?.length || 0} characters</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">{hsk1Category.characters?.length || hsk1Category.sequences?.flatMap(s => s.characters).length || 0} characters</p>
+                <div className="flex flex-wrap gap-1">
+                  {(hsk1Category.characters?.length ? hsk1Category.characters : (hsk1Category.sequences?.flatMap(s => s.characters) || [])).slice(0, 8).map(c => (
+                    <span key={c.char} className="text-sm brush-font text-slate-500 dark:text-slate-400 opacity-80">{c.char}</span>
+                  ))}
+                  {((hsk1Category.characters?.length ? hsk1Category.characters : (hsk1Category.sequences?.flatMap(s => s.characters) || [])).length) > 8 && <span className="text-[9px] text-slate-400 self-center">...</span>}
+                </div>
               </button>
             )}
 
@@ -323,7 +341,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               <button onClick={() => onSelectCategory(zhuyinCategory, 'individual')} className="group bg-white dark:bg-[#16191e] rounded-[2rem] border border-slate-200/50 dark:border-slate-800 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left touch-manipulation">
                 <div className="w-14 h-14 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">ㄅ</div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">注音符號</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Zhuyin / Bopomofo</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Zhuyin / Bopomofo</p>
+                <div className="flex flex-wrap gap-1">
+                  {(zhuyinCategory.sequences?.flatMap(s => s.characters) || []).slice(0, 8).map(c => (
+                    <span key={c.char} className="text-sm brush-font text-slate-500 dark:text-slate-400 opacity-80">{c.char}</span>
+                  ))}
+                  {(zhuyinCategory.sequences?.flatMap(s => s.characters) || []).length > 8 && <span className="text-[9px] text-slate-400 self-center">...</span>}
+                </div>
               </button>
             )}
           </div>
