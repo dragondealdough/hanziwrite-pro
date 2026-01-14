@@ -93,12 +93,12 @@ export const CATEGORIES: Category[] = [
         characters: [
           // Page 1
           {
-            char: '去', pinyin: 'qù', zhuyin: 'ㄑㄩˋ', meaning: 'to go', difficulty: 2, components: ['土', '厶'], exampleSentence: '我們去公園吧。', exampleTranslation: 'Let\\'s go to the park.' },
+            char: '去', pinyin: 'qù', zhuyin: 'ㄑㄩˋ', meaning: 'to go', difficulty: 2, components: ['土', '厶'], exampleSentence: '我們去公園吧。', exampleTranslation: 'Let\'s go to the park.' },
           { char: '在', pinyin: 'zài', zhuyin: 'ㄗㄞˋ', meaning: 'at / in / to be', difficulty: 2, components: ['才', '土'], exampleSentence: '我在家。', exampleTranslation: 'I am at home.' },
           { char: '現', pinyin: 'xiàn', zhuyin: 'ㄒㄧㄢˋ', meaning: 'now / present', difficulty: 3, components: ['王', '見'], exampleSentence: '現在幾點？', exampleTranslation: 'What time is it now?' },
           { char: '鐘', pinyin: 'zhōng', zhuyin: 'ㄓㄨㄥ', meaning: 'clock / bell', difficulty: 4, components: ['金', '中'], exampleSentence: '還有五分鐘。', exampleTranslation: 'Five minutes left.' },
           {
-            char: '點', pinyin: 'diǎn', zhuyin: 'ㄉㄧㄢˇ', meaning: 'o\'clock / point', difficulty: 3, components: ['黑', '占'], exampleSentence: '現在三點。', exampleTranslation: 'It is three o\\'clock.' },
+            char: '點', pinyin: 'diǎn', zhuyin: 'ㄉㄧㄢˇ', meaning: 'o\'clock / point', difficulty: 3, components: ['黑', '占'], exampleSentence: '現在三點。', exampleTranslation: 'It is three o\'clock.' },
           { char: '幾', pinyin: 'jǐ', zhuyin: 'ㄐㄧˇ', meaning: 'how many / which', difficulty: 3, components: ['幺', '幺', '戍'], exampleSentence: '你有幾本書？', exampleTranslation: 'How many books do you have?' },
           // Page 2
           { char: '子', pinyin: 'zǐ', zhuyin: 'ㄗˇ', meaning: 'child / suffix', difficulty: 1, components: ['子'], exampleSentence: '這是我的兒子。', exampleTranslation: 'This is my son.' },
@@ -118,7 +118,7 @@ export const CATEGORIES: Category[] = [
           // Page 4
           { char: '課', pinyin: 'kè', zhuyin: 'ㄎㄜˋ', meaning: 'class / lesson', difficulty: 4, components: ['言', '果'], exampleSentence: '我們在上課。', exampleTranslation: 'We are in class.' },
           {
-            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not have / no', difficulty: 2, components: ['氵', '殳'], exampleSentence: '我沒有錢。', exampleTranslation: 'I don\\'t have money.' },
+            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not have / no', difficulty: 2, components: ['氵', '殳'], exampleSentence: '我沒有錢。', exampleTranslation: 'I don\'t have money.' },
           { char: '有', pinyin: 'yǒu', zhuyin: 'ㄧㄡˇ', meaning: 'to have / exist', difficulty: 2, components: ['ナ', '月'], exampleSentence: '我有兩個哥哥。', exampleTranslation: 'I have two older brothers.' },
           { char: '上', pinyin: 'shàng', zhuyin: 'ㄕㄤˋ', meaning: 'up / on / above', difficulty: 1, components: ['上'], exampleSentence: '貓在桌子上。', exampleTranslation: 'The cat is on the table.' },
           { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'], exampleSentence: '早安！', exampleTranslation: 'Good morning!' },
@@ -152,7 +152,7 @@ export const CATEGORIES: Category[] = [
           { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'], exampleSentence: '早安！', exampleTranslation: 'Good morning!' },
           { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'], exampleSentence: '晚安。', exampleTranslation: 'Good night.' },
           {
-            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'], exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\\'s eat together.' },
+            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'], exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\'s eat together.' },
           { char: '睡', pinyin: 'shuì', zhuyin: 'ㄕㄨㄟˋ', meaning: 'to sleep', difficulty: 3, components: ['目', '垂'], exampleSentence: '我想睡覺。', exampleTranslation: 'I want to sleep.' },
           { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'], exampleSentence: '他在睡覺。', exampleTranslation: 'He is sleeping.' },
           { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'], exampleSentence: '爸爸工作很忙。', exampleTranslation: 'Dad is busy with work.' },
@@ -271,7 +271,7 @@ export const CATEGORIES: Category[] = [
           { char: '題', pinyin: 'tí', zhuyin: 'ㄊㄧˊ', meaning: 'topic / problem', difficulty: 3, components: ['是', '頁'] },
           { char: '問', pinyin: 'wèn', zhuyin: 'ㄨㄣˋ', meaning: 'to ask', difficulty: 3, components: ['門', '口'], exampleSentence: '我可以問一個問題嗎？', exampleTranslation: 'Can I ask a question?' },
           {
-            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not have / no', difficulty: 2, components: ['氵', '殳'], exampleSentence: '我沒有錢。', exampleTranslation: 'I don\\'t have money.' },
+            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not have / no', difficulty: 2, components: ['氵', '殳'], exampleSentence: '我沒有錢。', exampleTranslation: 'I don\'t have money.' },
           { char: '上', pinyin: 'shàng', zhuyin: 'ㄕㄤˋ', meaning: 'up / on / above', difficulty: 1, components: ['上'], exampleSentence: '貓在桌子上。', exampleTranslation: 'The cat is on the table.' },
           { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'], exampleSentence: '晚安。', exampleTranslation: 'Good night.' },
           { char: '樂', pinyin: 'lè', zhuyin: 'ㄌㄜˋ', meaning: 'happy / music', difficulty: 2, components: ['白', '幺', '木'] },
@@ -294,7 +294,7 @@ export const CATEGORIES: Category[] = [
           { char: '早', pinyin: 'zǎo', zhuyin: 'ㄗㄠˇ', meaning: 'early / morning', difficulty: 2, components: ['日', '十'], exampleSentence: '早安！', exampleTranslation: 'Good morning!' },
           { char: '晚', pinyin: 'wǎn', zhuyin: 'ㄨㄢˇ', meaning: 'evening / late', difficulty: 3, components: ['日', '免'], exampleSentence: '晚安。', exampleTranslation: 'Good night.' },
           {
-            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'], exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\\'s eat together.' },
+            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, components: ['飠', '反'], exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\'s eat together.' },
           { char: '睡', pinyin: 'shuì', zhuyin: 'ㄕㄨㄟˋ', meaning: 'to sleep', difficulty: 3, components: ['目', '垂'], exampleSentence: '我想睡覺。', exampleTranslation: 'I want to sleep.' },
           { char: '覺', pinyin: 'jiào', zhuyin: 'ㄐㄧㄠˋ', meaning: 'sleep / to feel', difficulty: 3, components: ['臼', '冖', '見'], exampleSentence: '他在睡覺。', exampleTranslation: 'He is sleeping.' },
           { char: '忙', pinyin: 'máng', zhuyin: 'ㄇㄤˊ', meaning: 'busy', difficulty: 2, components: ['忄', '亡'], exampleSentence: '爸爸工作很忙。', exampleTranslation: 'Dad is busy with work.' },
@@ -346,7 +346,7 @@ export const CATEGORIES: Category[] = [
       { char: '一', pinyin: 'yī', zhuyin: 'ㄧ', meaning: 'one', difficulty: 1, components: ['一'], exampleSentence: '第一名。', exampleTranslation: 'First place.' },
       { char: '二', pinyin: 'èr', zhuyin: 'ㄦˋ', meaning: 'two', difficulty: 1, components: ['一', '一'], exampleSentence: '二月二日。', exampleTranslation: 'February 2nd.' },
       {
-        char: '三', pinyin: 'sān', zhuyin: 'ㄙㄢ', meaning: 'three', difficulty: 1, components: ['一', '一', '一'], exampleSentence: '三點鐘。', exampleTranslation: 'Three o'clock.' },
+        char: '三', pinyin: 'sān', zhuyin: 'ㄙㄢ', meaning: 'three', difficulty: 1, components: ['一', '一', '一'], exampleSentence: '三點鐘。', exampleTranslation: 'Three o\'clock.' },
       { char: '人', pinyin: 'rén', zhuyin: 'ㄖㄣˊ', meaning: 'person', difficulty: 1, components: ['人'], exampleSentence: '這裡很多人。', exampleTranslation: 'There are many people here.' },
       { char: '口', pinyin: 'kǒu', zhuyin: 'ㄎㄡˇ', meaning: 'mouth', difficulty: 1, components: ['口'], exampleSentence: '一家三口。', exampleTranslation: 'A family of three.' },
       { char: '日', pinyin: 'rì', zhuyin: 'ㄖˋ', meaning: 'sun / day', difficulty: 1, components: ['日'], exampleSentence: '今天是星期日。', exampleTranslation: 'Today is Sunday.' },
@@ -370,13 +370,13 @@ export const CATEGORIES: Category[] = [
           { char: '一', pinyin: 'yī', zhuyin: 'ㄧ', meaning: 'one', difficulty: 1, exampleSentence: '第一名。', exampleTranslation: 'First place.' },
           { char: '二', pinyin: 'èr', zhuyin: 'ㄦˋ', meaning: 'two', difficulty: 1, exampleSentence: '二月二日。', exampleTranslation: 'February 2nd.' },
           {
-            char: '三', pinyin: 'sān', zhuyin: 'ㄙㄢ', meaning: 'three', difficulty: 1, exampleSentence: '三點鐘。', exampleTranslation: 'Three o'clock.' },
+            char: '三', pinyin: 'sān', zhuyin: 'ㄙㄢ', meaning: 'three', difficulty: 1, exampleSentence: '三點鐘。', exampleTranslation: 'Three o\'clock.' },
           { char: '四', pinyin: 'sì', zhuyin: 'ㄙˋ', meaning: 'four', difficulty: 1, exampleSentence: '四個。', exampleTranslation: 'Four.' },
           { char: '五', pinyin: 'wǔ', zhuyin: 'ㄨˇ', meaning: 'five', difficulty: 1, exampleSentence: '五天。', exampleTranslation: 'Five days.' },
           { char: '六', pinyin: 'liù', zhuyin: 'ㄌㄧㄡˋ', meaning: 'six', difficulty: 1, exampleSentence: '星期六。', exampleTranslation: 'Saturday.' },
           { char: '七', pinyin: 'qī', zhuyin: 'ㄑㄧ', meaning: 'seven', difficulty: 1, exampleSentence: '七月。', exampleTranslation: 'July.' },
           {
-            char: '八', pinyin: 'bā', zhuyin: 'ㄅㄚ', meaning: 'eight', difficulty: 1, exampleSentence: '八點。', exampleTranslation: 'Eight o'clock.' },
+            char: '八', pinyin: 'bā', zhuyin: 'ㄅㄚ', meaning: 'eight', difficulty: 1, exampleSentence: '八點。', exampleTranslation: 'Eight o\'clock.' },
           { char: '九', pinyin: 'jiǔ', zhuyin: 'ㄐㄧㄡˇ', meaning: 'nine', difficulty: 1, exampleSentence: '九個。', exampleTranslation: 'Nine.' },
           { char: '十', pinyin: 'shí', zhuyin: 'ㄕˊ', meaning: 'ten', difficulty: 1, exampleSentence: '十月。', exampleTranslation: 'October.' },
           { char: '百', pinyin: 'bǎi', zhuyin: 'ㄅㄞˇ', meaning: 'hundred', difficulty: 2, exampleSentence: '一百元。', exampleTranslation: 'One hundred yuan.' },
@@ -397,7 +397,7 @@ export const CATEGORIES: Category[] = [
           { char: '分', pinyin: 'fēn', zhuyin: 'ㄈㄣ', meaning: 'minute / divide', difficulty: 2, exampleSentence: '現在十點十分。', exampleTranslation: 'It is 10:10.' },
           { char: '鐘', pinyin: 'zhōng', zhuyin: 'ㄓㄨㄥ', meaning: 'clock', difficulty: 3, exampleSentence: '還有五分鐘。', exampleTranslation: 'Five minutes left.' },
           {
-            char: '點', pinyin: 'diǎn', zhuyin: 'ㄉㄧㄢˇ', meaning: 'o\'clock / point', difficulty: 2, exampleSentence: '現在三點。', exampleTranslation: 'It is three o\\'clock.' },
+            char: '點', pinyin: 'diǎn', zhuyin: 'ㄉㄧㄢˇ', meaning: 'o\'clock / point', difficulty: 2, exampleSentence: '現在三點。', exampleTranslation: 'It is three o\'clock.' },
           { char: '半', pinyin: 'bàn', zhuyin: 'ㄅㄢˋ', meaning: 'half', difficulty: 1, exampleSentence: '兩點半。', exampleTranslation: '2:30.' },
           { char: '上', pinyin: 'shàng', zhuyin: 'ㄕㄤˋ', meaning: 'up / above', difficulty: 1, exampleSentence: '貓在桌子上。', exampleTranslation: 'The cat is on the table.' },
           { char: '下', pinyin: 'xià', zhuyin: 'ㄒㄧㄚˋ', meaning: 'down / below', difficulty: 1, exampleSentence: '我們下課了。', exampleTranslation: 'Class is dismissed.' },
@@ -446,7 +446,7 @@ export const CATEGORIES: Category[] = [
           { char: '想', pinyin: 'xiǎng', zhuyin: 'ㄒㄧㄤˇ', meaning: 'want / think', difficulty: 2, exampleSentence: '我想喝咖啡。', exampleTranslation: 'I want to drink coffee.' },
           { char: '要', pinyin: 'yào', zhuyin: 'ㄧㄠˋ', meaning: 'want / need', difficulty: 2, exampleSentence: '我要喝水。', exampleTranslation: 'I want to drink water.' },
           {
-            char: '去', pinyin: 'qù', zhuyin: 'ㄑㄩˋ', meaning: 'to go', difficulty: 1, exampleSentence: '我們去公園吧。', exampleTranslation: 'Let\\'s go to the park.' },
+            char: '去', pinyin: 'qù', zhuyin: 'ㄑㄩˋ', meaning: 'to go', difficulty: 1, exampleSentence: '我們去公園吧。', exampleTranslation: 'Let\'s go to the park.' },
           { char: '來', pinyin: 'lái', zhuyin: 'ㄌㄞˊ', meaning: 'to come', difficulty: 2, exampleSentence: '請過來。', exampleTranslation: 'Please come here.' },
           { char: '回', pinyin: 'huí', zhuyin: 'ㄏㄨㄟˊ', meaning: 'to return', difficulty: 2, exampleSentence: '我回家了。', exampleTranslation: 'I went home.' },
           { char: '看', pinyin: 'kàn', zhuyin: 'ㄎㄢˋ', meaning: 'to look / see', difficulty: 2, exampleSentence: '看書。', exampleTranslation: 'Reading a book.' },
@@ -492,7 +492,7 @@ export const CATEGORIES: Category[] = [
           { char: '都', pinyin: 'dōu', zhuyin: 'ㄉㄡ', meaning: 'all / both', difficulty: 2, exampleSentence: '我們都是學生。', exampleTranslation: 'We are all students.' },
           { char: '不', pinyin: 'bù', zhuyin: 'ㄅㄨˋ', meaning: 'not', difficulty: 1, exampleSentence: '不要。', exampleTranslation: 'Do not want.' },
           {
-            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not / no', difficulty: 2, exampleSentence: '我沒有錢。', exampleTranslation: 'I don\\'t have money.' },
+            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not / no', difficulty: 2, exampleSentence: '我沒有錢。', exampleTranslation: 'I don\'t have money.' },
           { char: '對', pinyin: 'duì', zhuyin: 'ㄉㄨㄟˋ', meaning: 'correct / right', difficulty: 2, exampleSentence: '對不起。', exampleTranslation: 'Sorry.' },
         ]
       },
@@ -514,7 +514,7 @@ export const CATEGORIES: Category[] = [
           { char: '書', pinyin: 'shū', zhuyin: 'ㄕㄨ', meaning: 'book', difficulty: 2, exampleSentence: '這是一本書。', exampleTranslation: 'This is a book.' },
           { char: '店', pinyin: 'diàn', zhuyin: 'ㄉㄧㄢˋ', meaning: 'shop / store', difficulty: 2, exampleSentence: '書店。', exampleTranslation: 'Bookstore.' },
           {
-            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\\'s eat together.' },
+            char: '飯', pinyin: 'fàn', zhuyin: 'ㄈㄢˋ', meaning: 'rice / meal', difficulty: 2, exampleSentence: '我們一起吃飯。', exampleTranslation: 'Let\'s eat together.' },
           { char: '館', pinyin: 'guǎn', zhuyin: 'ㄍㄨㄢˇ', meaning: 'hall / restaurant', difficulty: 3, exampleSentence: '我們去圖書館。', exampleTranslation: 'We go to the library.' },
           { char: '菜', pinyin: 'cài', zhuyin: 'ㄘㄞˋ', meaning: 'vegetable / dish', difficulty: 2, exampleSentence: '做菜。', exampleTranslation: 'Cooking.' },
           { char: '茶', pinyin: 'chá', zhuyin: 'ㄔㄚˊ', meaning: 'tea', difficulty: 2, exampleSentence: '爸爸喜歡喝茶。', exampleTranslation: 'Dad likes to drink tea.' },
@@ -546,7 +546,7 @@ export const CATEGORIES: Category[] = [
           { char: '嗎', pinyin: 'ma', zhuyin: 'ㄇㄚ˙', meaning: 'question particle', difficulty: 1, exampleSentence: '好嗎？', exampleTranslation: 'Okay?' },
           { char: '呢', pinyin: 'ne', zhuyin: 'ㄋㄜ˙', meaning: 'and you? / what about', difficulty: 2, exampleSentence: '你呢？', exampleTranslation: 'How about you?' },
           {
-            char: '吧', pinyin: 'ba', zhuyin: 'ㄅㄚ˙', meaning: 'suggestion particle', difficulty: 2, exampleSentence: '走吧。', exampleTranslation: 'Let\\'s go.' },
+            char: '吧', pinyin: 'ba', zhuyin: 'ㄅㄚ˙', meaning: 'suggestion particle', difficulty: 2, exampleSentence: '走吧。', exampleTranslation: 'Let\'s go.' },
           { char: '和', pinyin: 'hé', zhuyin: 'ㄏㄜˊ', meaning: 'and / with', difficulty: 2, exampleSentence: '我和你。', exampleTranslation: 'You and me.' },
           { char: '這', pinyin: 'zhè', zhuyin: 'ㄓㄜˋ', meaning: 'this', difficulty: 2, exampleSentence: '這是什麼？', exampleTranslation: 'What is this?' },
           { char: '那', pinyin: 'nà', zhuyin: 'ㄋㄚˋ', meaning: 'that', difficulty: 1, exampleSentence: '那是什麼？', exampleTranslation: 'What is that?' },
@@ -572,9 +572,9 @@ export const CATEGORIES: Category[] = [
           { char: '對', pinyin: 'duì', zhuyin: 'ㄉㄨㄟˋ', meaning: 'correct / sorry', difficulty: 2, exampleSentence: '對不起。', exampleTranslation: 'Sorry.' },
           { char: '起', pinyin: 'qǐ', zhuyin: 'ㄑㄧˇ', meaning: 'rise (對不起)', difficulty: 2, exampleSentence: '我七點起床。', exampleTranslation: 'I get up at seven.' },
           {
-            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not (沒關係)', difficulty: 2, exampleSentence: '我沒有錢。', exampleTranslation: 'I don\\'t have money.' },
+            char: '沒', pinyin: 'méi', zhuyin: 'ㄇㄟˊ', meaning: 'not (沒關係)', difficulty: 2, exampleSentence: '我沒有錢。', exampleTranslation: 'I don\'t have money.' },
           {
-              char: '係', pinyin: 'xì', zhuyin: 'ㄒㄧˋ', meaning: 'relation (沒關係)', difficulty: 3, exampleSentence: '沒關係。', exampleTranslation: 'It\\'s okay.' },
+              char: '係', pinyin: 'xì', zhuyin: 'ㄒㄧˋ', meaning: 'relation (沒關係)', difficulty: 3, exampleSentence: '沒關係。', exampleTranslation: 'It\'s okay.' },
           { char: '現', pinyin: 'xiàn', zhuyin: 'ㄒㄧㄢˋ', meaning: 'now / appear', difficulty: 2, exampleSentence: '現在幾點？', exampleTranslation: 'What time is it now?' },
           { char: '正', pinyin: 'zhèng', zhuyin: 'ㄓㄥˋ', meaning: 'just / correct', difficulty: 2, exampleSentence: '正在。', exampleTranslation: 'Currently doing.' },
           { char: '認', pinyin: 'rèn', zhuyin: 'ㄖㄣˋ', meaning: 'recognize (認識)', difficulty: 3, exampleSentence: '認識。', exampleTranslation: 'To know.' },
