@@ -5,15 +5,34 @@ import { getCharacterInsights } from '../services/geminiService';
 
 interface AIFeedbackProps {
   character: string;
+  characterData?: CharacterData;
 }
 
-const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
+
+const AIFeedback: React.FC<AIFeedbackProps> = ({ character, characterData }) => {
   const [insight, setInsight] = useState<AIInsight | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
+      // If we have static data with an example sentence, use it immediately!
+      if (characterData?.exampleSentence) {
+        setInsight({
+          character: characterData.char || character,
+          pinyin: characterData.pinyin || '',
+          zhuyin: characterData.zhuyin || '',
+          exampleSentence: characterData.exampleSentence,
+          exampleTranslation: characterData.exampleTranslation || '',
+          examplePinyin: '', // Static data doesn't have pinyin for the sentence yet
+          breakdown: 'Static data loaded.',
+          usage: ''
+        });
+        setLoading(false);
+        setError(null);
+        return;
+      }
+
       setLoading(true);
       setError(null);
       try {
@@ -27,7 +46,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character }) => {
       }
     }
     load();
-  }, [character]);
+  }, [character, characterData]);
 
   if (loading) {
     return (

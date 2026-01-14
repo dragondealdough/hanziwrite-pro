@@ -1332,7 +1332,7 @@ const App: React.FC = () => {
                 )}
               </div>
               <div className="w-full">
-                <AIFeedback character={activeCharData?.char} />
+                <AIFeedback character={activeCharData?.char} characterData={activeCharData} />
               </div>
             </div>
           ) : (
