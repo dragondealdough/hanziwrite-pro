@@ -301,7 +301,7 @@ export const CATEGORIES: Category[] = [
           { char: '個', pinyin: 'gè', zhuyin: 'ㄍㄜˋ', meaning: 'general measure word', difficulty: 1, components: ['亻', '固'] },
           { char: '送', pinyin: 'sòng', zhuyin: 'ㄙㄨㄥˋ', meaning: 'to deliver / to send', difficulty: 2, components: ['辶', '灷'] },
           { char: '想', pinyin: 'xiǎng', zhuyin: 'ㄒㄧㄤˇ', meaning: 'to want / to think', difficulty: 2, components: ['相', '心'] },
-          { char: '物', pinyin: 'wù', zhuyin: 'ㄨˋ', meaning: 'thing / object', difficulty: 2, components: ['牛', '勿'] },
+          { char: '物', pinyin: 'wù', zhuyin: 'ㄨˋ', meaning: 'thing / object', difficulty: 2, components: ['牛', '勿'], exampleSentence: '這是我送給你的禮物', exampleTranslation: 'This is the gift I gave you.' },
           { char: '禮', pinyin: 'lǐ', zhuyin: 'ㄌㄧˇ', meaning: 'gift / courtesy', difficulty: 2, components: ['礻', '豊'] },
           { char: '買', pinyin: 'mǎi', zhuyin: 'ㄇㄞˇ', meaning: 'to buy', difficulty: 2, components: ['罒', '貝'] },
           // Page 2
