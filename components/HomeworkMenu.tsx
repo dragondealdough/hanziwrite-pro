@@ -74,12 +74,7 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
               </div>
             </div>
 
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-10 flex-1 leading-relaxed">
-              {isTestPack
-                ? `Test your mastery of ${seq.characters.length} characters. Choose your hint mode: audio only or audio with pinyin.`
-                : `Targeted practice for characters found in ${seq.name}. Focus on correct stroke order and radical structure.`
-              }
-            </p>
+
 
             <div className="mt-auto flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-600">
