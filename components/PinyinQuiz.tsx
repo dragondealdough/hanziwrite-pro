@@ -67,8 +67,7 @@ const PinyinQuiz: React.FC<PinyinQuizProps> = ({ character, correctPinyin, onCor
             // After shake, reset input but keep user on quiz
             setTimeout(() => {
                 setShake(false);
-                setInput('');
-                setSelectedTone(null);
+                // Don't reset input or tone, just let them retry
                 inputRef.current?.focus();
             }, 600);
         }
