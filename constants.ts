@@ -1,7 +1,7 @@
 import { Category } from './types';
 import { MODERN_CHINESE_VOCAB } from './modernChineseVocab';
 
-export const APP_VERSION = "1.1.49";
+export const APP_VERSION = "1.1.50";
 
 export const CATEGORIES: Category[] = [
   {
@@ -145,8 +145,8 @@ export const CATEGORIES: Category[] = [
         ]
       },
       {
-        id: 'ws-5',
-        name: 'Worksheet 5 (Jan 8)',
+        id: 'ws-b1l2-3',
+        name: 'Worksheet B1L2-3 (Jan 8)',
         characters: [
           // Daily activities and meals
           { char: '做', pinyin: 'zuò', zhuyin: 'ㄗㄨㄛˋ', meaning: 'to do / to make', difficulty: 2, components: ['亻', '故'], exampleSentence: '你在做什麼？', exampleTranslation: 'What are you doing?' },
