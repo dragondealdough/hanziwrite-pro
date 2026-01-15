@@ -860,621 +860,569 @@ const App: React.FC = () => {
       </div>
     );
   }
-                      </button >
-                    </div >
-                  </>
-                ) : (
-  <div className="space-y-3">
-    <p className="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">
-      I found {aiSearchResults.length} likely options. Which one looks right?
-    </p>
 
-    <div className="max-h-[300px] overflow-y-auto pr-2 space-y-2">
-      {aiSearchResults.map((result, idx) => (
-        <button
-          key={idx}
-          type="button"
-          onClick={() => {
-            setShowAIModal(false);
-            setPdfInitialPage(result.pageNumber);
-            if (view !== 'PDF_READER') setView('PDF_READER');
+  if (view === 'HOMEWORK_MENU' && activeCategory) {
+    return (
+      <div className="min-h-screen w-full bg-[#fcfcfc] dark:bg-[#0d0f12] transition-colors duration-500">
+        <HomeworkMenu
+          category={activeCategory}
+          onSelectAssignment={(chars, hintMode) => {
+            setTestHintMode(hintMode || null);
+            handleSelectCategory(activeCategory, 'individual', chars, hintMode ? AppMode.TEST : AppMode.PRACTICE);
           }}
-          className="w-full text-left p-4 bg-slate-50 dark:bg-[#0d0f12] hover:bg-emerald-50 dark:hover:bg-emerald-900/10 border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 rounded-xl transition-all group"
-        >
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-emerald-500">Page {result.pageNumber}</span>
-            {result.matchType === 'exact' && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Exact Match</span>}
-          </div>
-          <p className="text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2">
-            "{result.snippet}"
-          </p>
-        </button>
-      ))}
-    </div>
-
-    <button
-      type="button"
-      onClick={() => {
-        setAiSearchResults(null);
-        setAiQuery('');
-        setAiStatus('');
-      }}
-      className="w-full py-3 text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300 font-bold text-sm"
-    >
-      ← Ask something else
-    </button>
-  </div>
-)}
-              </form >
-            </div >
-          </div >
-        )}
-      </div >
+          onBack={goHome}
+        />
+      </div>
     );
   }
 
-if (view === 'HOMEWORK_MENU' && activeCategory) {
+  if (view === 'PDF_READER') {
+    return <PDFReader onBack={goHome} initialPage={pdfInitialPage} onAskAI={handleHomeSearchAI} />;
+  }
+
+  const effectiveMode = (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') ? AppMode.TEST : mode;
+
   return (
-    <div className="min-h-screen w-full bg-[#fcfcfc] dark:bg-[#0d0f12] transition-colors duration-500">
-      <HomeworkMenu
-        category={activeCategory}
-        onSelectAssignment={(chars, hintMode) => {
-          setTestHintMode(hintMode || null);
-          handleSelectCategory(activeCategory, 'individual', chars, hintMode ? AppMode.TEST : AppMode.PRACTICE);
+    <div className="flex h-screen w-full text-slate-900 dark:text-slate-100 bg-[#fcfcfc] dark:bg-[#0d0f12] overflow-hidden transition-colors duration-500">
+      <Sidebar
+        characters={charactersToPractice}
+        activeChar={activeCharData?.char}
+        mode={mode}
+        onSelect={(char) => {
+          const idx = charactersToPractice.findIndex(c => c.char === char);
+          setActiveCharIndex(idx);
+          setPracticeStage('GUIDED');
+          setRetryCount(prev => prev + 1);
+          setShowSuccess(false);
         }}
-        onBack={goHome}
+        onGoHome={goHome}
+        results={results}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        customPacks={customPacks}
+        onToggleCharInPack={toggleCharInPack}
       />
-    </div>
-  );
-}
 
-if (view === 'PDF_READER') {
-  return <PDFReader onBack={goHome} initialPage={pdfInitialPage} onAskAI={handleHomeSearchAI} />;
-}
-
-const effectiveMode = (mode === AppMode.PRACTICE && practiceStage === 'MEMORY') ? AppMode.TEST : mode;
-
-return (
-  <div className="flex h-screen w-full text-slate-900 dark:text-slate-100 bg-[#fcfcfc] dark:bg-[#0d0f12] overflow-hidden transition-colors duration-500">
-    <Sidebar
-      characters={charactersToPractice}
-      activeChar={activeCharData?.char}
-      mode={mode}
-      onSelect={(char) => {
-        const idx = charactersToPractice.findIndex(c => c.char === char);
-        setActiveCharIndex(idx);
-        setPracticeStage('GUIDED');
-        setRetryCount(prev => prev + 1);
-        setShowSuccess(false);
-      }}
-      onGoHome={goHome}
-      results={results}
-      isOpen={isSidebarOpen}
-      onClose={() => setIsSidebarOpen(false)}
-      customPacks={customPacks}
-      onToggleCharInPack={toggleCharInPack}
-    />
-
-    <main className="flex-1 overflow-y-auto flex flex-col items-center relative pb-24 lg:pb-0">
-      <div className="w-full flex justify-between items-center p-4 bg-white/90 dark:bg-[#16191e]/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-0 z-30">
-        <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
-        </button>
-
-        <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black text-rose-600 uppercase tracking-[0.25em] mb-0.5">{activeCategory?.name}</span>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">{quizType === 'combined' ? 'Flow' : `U${activeCharIndex + 1}/${charactersToPractice.length}`}</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowModeMenu(true)} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+      <main className="flex-1 overflow-y-auto flex flex-col items-center relative pb-24 lg:pb-0">
+        <div className="w-full flex justify-between items-center p-4 bg-white/90 dark:bg-[#16191e]/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-0 z-30">
+          <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <button onClick={goHome} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-          </button>
-        </div>
-      </div>
 
-      {/* AI Assistant Modal */}
-      {showAIModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
-          <div
-            className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
-              <div>
-                <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
-                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
-              </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[10px] font-black text-rose-600 uppercase tracking-[0.25em] mb-0.5">{activeCategory?.name}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">{quizType === 'combined' ? 'Flow' : `U${activeCharIndex + 1}/${charactersToPractice.length}`}</span>
             </div>
+          </div>
 
-            <form onSubmit={submitAIQuery}>
-              <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
-              <input
-                type="text"
-                value={aiQuery}
-                onChange={(e) => setAiQuery(e.target.value)}
-                placeholder='e.g., "Why does it have a water radical?"'
-                disabled={isAIProcessing}
-                className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
-                autoFocus
-              />
-
-              {aiStatus && (
-                <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
-                  {aiStatus}
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAIModal(false)}
-                  disabled={isAIProcessing}
-                  className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isAIProcessing || !aiQuery.trim()}
-                  className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
-                >
-                  {isAIProcessing ? 'Thinking...' : 'Find Help'}
-                </button>
-              </div>
-            </form>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowModeMenu(true)} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+            </button>
+            <button onClick={goHome} className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            </button>
           </div>
         </div>
-      )}
 
-      {/* AI Assistant Modal */}
-      {showAIModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
-          <div
-            className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
-              <div>
-                <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
-                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
-              </div>
-            </div>
-
-            <form onSubmit={submitAIQuery}>
-              <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
-              <input
-                type="text"
-                value={aiQuery}
-                onChange={(e) => setAiQuery(e.target.value)}
-                placeholder='e.g., "Why does it have a water radical?"'
-                disabled={isAIProcessing}
-                className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
-                autoFocus
-              />
-
-              {aiStatus && (
-                <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
-                  {aiStatus}
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAIModal(false)}
-                  disabled={isAIProcessing}
-                  className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isAIProcessing || !aiQuery.trim()}
-                  className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
-                >
-                  {isAIProcessing ? 'Thinking...' : 'Find Help'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Mode Switching Modal */}
-      {showModeMenu && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setShowModeMenu(false)}>
-          <div
-            className="bg-white dark:bg-[#16191e] rounded-[3rem] p-10 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Switch Mode</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Change how you practice right now.</p>
-
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={() => handleSwitchMode('audio-only')}
-                className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-only' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">🔊</span>
-                  <div className="text-left">
-                    <div className={testHintMode === 'audio-only' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio Only</div>
-                    <div className={testHintMode === 'audio-only' ? 'text-rose-100' : 'text-slate-400'}>Hardcore mode</div>
-                  </div>
-                </div>
-                {testHintMode === 'audio-only' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-              </button>
-
-              <button
-                onClick={() => handleSwitchMode('audio-pinyin')}
-                className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-pinyin' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">🔊📝</span>
-                  <div className="text-left">
-                    <div className={testHintMode === 'audio-pinyin' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio + Pinyin</div>
-                    <div className={testHintMode === 'audio-pinyin' ? 'text-rose-100' : 'text-slate-400'}>Standard test</div>
-                  </div>
-                </div>
-                {testHintMode === 'audio-pinyin' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-              </button>
-
-              <button
-                onClick={() => handleSwitchMode(null)}
-                className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${!testHintMode ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">👁️</span>
-                  <div className="text-left">
-                    <div className={!testHintMode ? 'text-white' : 'text-slate-900 dark:text-white'}>Practice</div>
-                    <div className={!testHintMode ? 'text-rose-100' : 'text-slate-400'}>See everything</div>
-                  </div>
-                </div>
-                {!testHintMode && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowModeMenu(false)}
-              className="mt-8 w-full py-3 text-slate-400 dark:text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+        {/* AI Assistant Modal */}
+        {showAIModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
             >
-              Close
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
+                </div>
+              </div>
+
+              <form onSubmit={submitAIQuery}>
+                <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
+                <input
+                  type="text"
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder='e.g., "Why does it have a water radical?"'
+                  disabled={isAIProcessing}
+                  className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
+                  autoFocus
+                />
+
+                {aiStatus && (
+                  <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                    {aiStatus}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAIModal(false)}
+                    disabled={isAIProcessing}
+                    className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isAIProcessing || !aiQuery.trim()}
+                    className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                  >
+                    {isAIProcessing ? 'Thinking...' : 'Find Help'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* AI Assistant Modal */}
+        {showAIModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => !isAIProcessing && setShowAIModal(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 border-2 border-slate-100 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-2xl shadow-inner">🤖</div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white leading-none">Hanzi Helper</h2>
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">Offline AI</p>
+                </div>
+              </div>
+
+              <form onSubmit={submitAIQuery}>
+                <label className="block text-sm font-bold text-slate-500 mb-2">What are you stuck on?</label>
+                <input
+                  type="text"
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder='e.g., "Why does it have a water radical?"'
+                  disabled={isAIProcessing}
+                  className="w-full p-4 bg-slate-50 dark:bg-[#0d0f12] rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold focus:border-emerald-500 outline-none transition-colors mb-4"
+                  autoFocus
+                />
+
+                {aiStatus && (
+                  <div className="mb-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">
+                    {aiStatus}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAIModal(false)}
+                    disabled={isAIProcessing}
+                    className="px-6 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isAIProcessing || !aiQuery.trim()}
+                    className="flex-1 px-6 py-3 rounded-xl font-black bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                  >
+                    {isAIProcessing ? 'Thinking...' : 'Find Help'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Mode Switching Modal */}
+        {showModeMenu && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setShowModeMenu(false)}>
+            <div
+              className="bg-white dark:bg-[#16191e] rounded-[3rem] p-10 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Switch Mode</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Change how you practice right now.</p>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => handleSwitchMode('audio-only')}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-only' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">🔊</span>
+                    <div className="text-left">
+                      <div className={testHintMode === 'audio-only' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio Only</div>
+                      <div className={testHintMode === 'audio-only' ? 'text-rose-100' : 'text-slate-400'}>Hardcore mode</div>
+                    </div>
+                  </div>
+                  {testHintMode === 'audio-only' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+
+                <button
+                  onClick={() => handleSwitchMode('audio-pinyin')}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${testHintMode === 'audio-pinyin' ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">🔊📝</span>
+                    <div className="text-left">
+                      <div className={testHintMode === 'audio-pinyin' ? 'text-white' : 'text-slate-900 dark:text-white'}>Audio + Pinyin</div>
+                      <div className={testHintMode === 'audio-pinyin' ? 'text-rose-100' : 'text-slate-400'}>Standard test</div>
+                    </div>
+                  </div>
+                  {testHintMode === 'audio-pinyin' && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+
+                <button
+                  onClick={() => handleSwitchMode(null)}
+                  className={`group w-full py-5 px-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-between ${!testHintMode ? 'bg-rose-600 text-white shadow-rose-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 hover:border-rose-200'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">👁️</span>
+                    <div className="text-left">
+                      <div className={!testHintMode ? 'text-white' : 'text-slate-900 dark:text-white'}>Practice</div>
+                      <div className={!testHintMode ? 'text-rose-100' : 'text-slate-400'}>See everything</div>
+                    </div>
+                  </div>
+                  {!testHintMode && <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowModeMenu(false)}
+                className="mt-8 w-full py-3 text-slate-400 dark:text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="w-full max-w-6xl px-4 md:px-8 py-4 lg:py-10">
+          {quizType !== 'combined' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+              {feedbackMessage && <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 dark:bg-rose-600 text-white px-8 py-3 rounded-2xl shadow-2xl z-50 font-black text-xs uppercase tracking-widest animate-in fade-in slide-in-from-top-6">{feedbackMessage}</div>}
+
+              <div className="flex flex-col items-center">
+                <div className="w-full mb-6 md:mb-10 flex flex-col items-center md:items-start">
+                  <div className="h-40 md:h-52 flex items-center justify-center">
+                    <h1 className="text-8xl md:text-[10rem] font-medium text-slate-900 dark:text-slate-50 brush-font leading-none">
+                      {testHintMode || effectiveMode === AppMode.TEST ? '?' : activeCharData?.char}
+                    </h1>
+                  </div>
+                  <div className="flex items-center gap-2.5 mt-4 relative">
+                    {/* Character info relocated to below canvas */}
+
+                    <button
+                      onClick={() => playAudio(activeCharData?.char, activeCharData?.pinyin)}
+                      className="p-2.5 bg-white dark:bg-slate-800 text-rose-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-rose-50 dark:hover:bg-rose-900/10 active:scale-90 transition-all ml-1"
+                      aria-label="Play pronunciation"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
+                    </button>
+                    {/* Add to Custom Pack Button */}
+                    {/* Add to Custom Pack Button */}
+                    <button
+                      onClick={() => setShowAddToPackPopup(!showAddToPackPopup)}
+                      className={`p-2.5 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm active:scale-90 transition-all ml-1 ${showAddToPackPopup ? 'bg-rose-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}
+                      aria-label="Add to custom pack"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                    </button>
+                    {/* Hide component popup in test mode */}
+                    {!testHintMode && activeCharData?.components && activeCharData.components.length > 0 && (
+                      <button
+                        onClick={() => setShowComponentPopup(true)}
+                        className="p-2.5 bg-white dark:bg-slate-800 text-indigo-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/10 active:scale-90 transition-all ml-1"
+                        aria-label="Show components"
+                      >
+                        <span className="text-sm">🧩</span>
+                      </button>
+                    )}
+                    {/* Next Character Button - visible in test modes */}
+                    {testHintMode && (
+                      <button
+                        onClick={() => {
+                          setActiveCharIndex(prev => (prev + 1) % charactersToPractice.length);
+                          setPracticeStage('GUIDED');
+                          setRetryCount(prev => prev + 1);
+                          setShowSuccess(false);
+                        }}
+                        className="p-2.5 bg-white dark:bg-slate-800 text-amber-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-amber-50 dark:hover:bg-amber-900/10 active:scale-90 transition-all ml-1"
+                        aria-label="Next character"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                      </button>
+                    )}
+
+                    {/* Skip Character Button */}
+                    <button
+                      onClick={() => {
+                        if (activeCharIndex < charactersToPractice.length - 1) {
+                          setActiveCharIndex(prev => prev + 1);
+                          setPracticeStage('GUIDED');
+                          setRetryCount(prev => prev + 1);
+                        } else if (mode === AppMode.PRACTICE && charProgress.length > 0) {
+                          startNextRound();
+                        } else {
+                          setView('HOME');
+                        }
+                      }}
+                      className="p-2.5 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-90 transition-all ml-1 touch-manipulation"
+                      aria-label="Skip character"
+                      title="Skip to next"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+                    </button>
+
+                    {/* Add to Pack Popup - Modal Overlay */}
+                    {showAddToPackPopup && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddToPackPopup(false)}>
+                        <div className="bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-2xl w-72 max-w-[90vw] p-4 animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex justify-between items-center px-2 py-2 mb-2">
+                            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
+                            <button onClick={() => setShowAddToPackPopup(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </div>
+                          {/* Quick Create New Pack */}
+                          <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const input = e.currentTarget.querySelector('input') as HTMLInputElement;
+                            if (input.value.trim() && currentName && currentPin) {
+                              const newPackId = `pack-${Date.now()}`;
+                              const newPack: Category = {
+                                id: newPackId,
+                                name: input.value.trim(),
+                                author: currentName,
+                                authorPin: currentPin,
+                                description: 'Custom classmate collection.',
+                                icon: '📦',
+                                characters: [activeCharData!],
+                                isCustom: true,
+                                isPrivate: true // Default to private
+                              };
+                              savePacks([...customPacks, newPack]);
+                              input.value = '';
+                            }
+                          }} className="flex gap-2 mb-3">
+                            <input
+                              type="text"
+                              placeholder="New pack name..."
+                              className="flex-1 min-w-0 px-3 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-emerald-500/20 outline-none"
+                            />
+                            <button type="submit" className="px-3 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all shrink-0">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                            </button>
+                          </form>
+                          <div className="max-h-48 overflow-y-auto">
+                            {customPacks.filter(p => p.isCustom).length === 0 ? (
+                              <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-3 text-center italic">
+                                No packs yet. Create one above!
+                              </div>
+                            ) : (
+                              customPacks.filter(p => p.isCustom).map(pack => {
+                                const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
+                                return (
+                                  <button
+                                    key={pack.id}
+                                    onClick={() => toggleCharInPack(pack.id, activeCharData!)}
+                                    className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                                  >
+                                    <span className="truncate flex-1 mr-2">{pack.name}</span>
+                                    {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                                  </button>
+                                );
+                              })
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {practiceStage !== 'PINYIN' ? (
+                  <WritingCanvas
+                    key={`${activeCharData?.char}-${effectiveMode}-${isDarkMode}-${strokeLeniency}`}
+                    character={activeCharData?.char}
+                    mode={effectiveMode}
+                    onComplete={handleCompleteIndividual}
+                    onMistake={handleCanvasMistake}
+                    leniency={strokeLeniency}
+                    onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
+                      setPracticeStage('MEMORY');
+                      setRetryCount(prev => prev + 1);
+                    } : undefined}
+                    isDarkMode={isDarkMode}
+                    roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
+                      ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
+                      : undefined}
+                    pinyin={activeCharData?.pinyin}
+                    zhuyin={activeCharData?.zhuyin}
+                    meaning={activeCharData?.meaning}
+                    showPinyinBelowCanvas={!testHintMode}
+                    isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
+                    hintTier={getHintTier(charProgress.find(cp => cp.char === activeCharData?.char))}
+                    onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
+                  />
+                ) : (
+                  <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
+                    <PinyinQuiz
+                      key={`pinyin-${activeCharData?.char}-${retryCount}`}
+                      character={activeCharData?.char || ''}
+                      correctPinyin={activeCharData?.pinyin || ''}
+                      onCorrect={() => {
+                        setShowSuccess(true);
+                        playAudio(activeCharData?.char || '', activeCharData?.pinyin);
+                        // Track success for adaptive learning
+                        if (mode === AppMode.PRACTICE && activeCharData) {
+                          setCharProgress(prev => prev.map(cp =>
+                            cp.char === activeCharData.char
+                              ? { ...cp, totalAttempts: cp.totalAttempts + 1, lastPracticed: Date.now() }
+                              : cp
+                          ));
+                        }
+                      }}
+                      onIncorrect={() => {
+                        // Track mistake for smart learning
+                        if (activeCharData) {
+                          setCharProgress(prev => prev.map(cp =>
+                            cp.char === activeCharData.char
+                              ? {
+                                ...cp,
+                                mistakesThisRound: cp.mistakesThisRound + 1,
+                                totalMistakes: cp.totalMistakes + 1
+                              }
+                              : cp
+                          ));
+                        }
+                        // PinyinQuiz handles its own reset internally - just track the mistake
+                      }}
+                      isDarkMode={isDarkMode}
+                    />
+                  </div>
+                )}
+
+                {showSuccess && (
+                  <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
+                    <div className="text-center p-8">
+                      <div className="text-rose-600 font-black text-6xl md:text-7xl mb-6 tracking-tighter brush-font">
+                        {charProgress.find(cp => cp.char === activeCharData?.char)?.perfectRounds === 1 ? '🏆 Mastered!' : 'Great!'}
+                      </div>
+                      {mode === AppMode.PRACTICE && (
+                        <div className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                          Round {currentRound} • {charProgress.filter(cp => !cp.mastered).length} remaining
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-4 max-w-xs mx-auto">
+                        <button onClick={() => { setShowSuccess(false); setRetryCount(r => r + 1); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-all">Redraw</button>
+                        <button onClick={() => {
+                          const nextIdx = activeCharIndex + 1;
+                          if (mode === AppMode.PRACTICE && nextIdx >= charactersToPractice.length) {
+                            // End of round - start next round
+                            startNextRound();
+                          } else {
+                            // Check if next char was perfect last round (skip guided)
+                            const nextChar = charactersToPractice[nextIdx % charactersToPractice.length];
+                            const nextProgress = charProgress.find(cp => cp.char === nextChar?.char);
+                            const skipGuided = mode === AppMode.PRACTICE && currentRound > 1 && nextProgress?.perfectRounds > 0;
+                            setActiveCharIndex(nextIdx % charactersToPractice.length);
+                            setShowSuccess(false);
+                            setPracticeStage(skipGuided ? 'MEMORY' : 'GUIDED');
+                          }
+                        }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
+                          {mode === AppMode.PRACTICE && activeCharIndex + 1 >= charactersToPractice.length ? 'Next Round →' : 'Next Target'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="w-full">
+                <AIFeedback character={activeCharData?.char} characterData={activeCharData} />
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-16 pt-6">
+              <div className="flex flex-wrap justify-center gap-12 md:gap-24">
+                {charactersToPractice.map((char) => (
+                  <div key={char.char} className="flex flex-col items-center gap-8">
+                    <WritingCanvas
+                      character={char.char}
+                      mode={mode}
+                      onComplete={handleCompleteCombined}
+                      canvasSize={240}
+                      isDarkMode={isDarkMode}
+                      onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
+                    />
+                    {combinedProgress.has(char.char) && (
+                      <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                        Ready
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {showSuccess && (
+                <button onClick={goHome} className="px-14 py-6 bg-rose-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all">
+                  Sequence Mastered
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Smart Learning Session Summary */}
+      {showSessionSummary && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-sm w-full mx-4 shadow-2xl animate-in zoom-in-95 text-center">
+            <div className="text-5xl mb-4">🎉</div>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Session Complete!</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+              All {charProgress.length} characters mastered in {currentRound} rounds
+            </p>
+            <div className="grid grid-cols-6 gap-2 mb-6">
+              {charProgress.map(cp => (
+                <div key={cp.char} className="aspect-square flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-lg brush-font text-emerald-700 dark:text-emerald-400">
+                  {cp.char}
+                </div>
+              ))}
+            </div>
+            <button onClick={() => { setShowSessionSummary(false); goHome(); }} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">
+              Done
             </button>
           </div>
         </div>
       )}
 
-      <div className="w-full max-w-6xl px-4 md:px-8 py-4 lg:py-10">
-        {quizType !== 'combined' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-            {feedbackMessage && <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 dark:bg-rose-600 text-white px-8 py-3 rounded-2xl shadow-2xl z-50 font-black text-xs uppercase tracking-widest animate-in fade-in slide-in-from-top-6">{feedbackMessage}</div>}
-
-            <div className="flex flex-col items-center">
-              <div className="w-full mb-6 md:mb-10 flex flex-col items-center md:items-start">
-                <div className="h-40 md:h-52 flex items-center justify-center">
-                  <h1 className="text-8xl md:text-[10rem] font-medium text-slate-900 dark:text-slate-50 brush-font leading-none">
-                    {testHintMode || effectiveMode === AppMode.TEST ? '?' : activeCharData?.char}
-                  </h1>
-                </div>
-                <div className="flex items-center gap-2.5 mt-4 relative">
-                  {/* Character info relocated to below canvas */}
-
-                  <button
-                    onClick={() => playAudio(activeCharData?.char, activeCharData?.pinyin)}
-                    className="p-2.5 bg-white dark:bg-slate-800 text-rose-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-rose-50 dark:hover:bg-rose-900/10 active:scale-90 transition-all ml-1"
-                    aria-label="Play pronunciation"
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
-                  </button>
-                  {/* Add to Custom Pack Button */}
-                  {/* Add to Custom Pack Button */}
-                  <button
-                    onClick={() => setShowAddToPackPopup(!showAddToPackPopup)}
-                    className={`p-2.5 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm active:scale-90 transition-all ml-1 ${showAddToPackPopup ? 'bg-rose-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}
-                    aria-label="Add to custom pack"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                  </button>
-                  {/* Hide component popup in test mode */}
-                  {!testHintMode && activeCharData?.components && activeCharData.components.length > 0 && (
-                    <button
-                      onClick={() => setShowComponentPopup(true)}
-                      className="p-2.5 bg-white dark:bg-slate-800 text-indigo-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/10 active:scale-90 transition-all ml-1"
-                      aria-label="Show components"
-                    >
-                      <span className="text-sm">🧩</span>
-                    </button>
-                  )}
-                  {/* Next Character Button - visible in test modes */}
-                  {testHintMode && (
-                    <button
-                      onClick={() => {
-                        setActiveCharIndex(prev => (prev + 1) % charactersToPractice.length);
-                        setPracticeStage('GUIDED');
-                        setRetryCount(prev => prev + 1);
-                        setShowSuccess(false);
-                      }}
-                      className="p-2.5 bg-white dark:bg-slate-800 text-amber-600 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-amber-50 dark:hover:bg-amber-900/10 active:scale-90 transition-all ml-1"
-                      aria-label="Next character"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                    </button>
-                  )}
-
-                  {/* Skip Character Button */}
-                  <button
-                    onClick={() => {
-                      if (activeCharIndex < charactersToPractice.length - 1) {
-                        setActiveCharIndex(prev => prev + 1);
-                        setPracticeStage('GUIDED');
-                        setRetryCount(prev => prev + 1);
-                      } else if (mode === AppMode.PRACTICE && charProgress.length > 0) {
-                        startNextRound();
-                      } else {
-                        setView('HOME');
-                      }
-                    }}
-                    className="p-2.5 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-full shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-90 transition-all ml-1 touch-manipulation"
-                    aria-label="Skip character"
-                    title="Skip to next"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
-                  </button>
-
-                  {/* Add to Pack Popup - Modal Overlay */}
-                  {showAddToPackPopup && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddToPackPopup(false)}>
-                      <div className="bg-white dark:bg-[#16191e] border border-slate-200/60 dark:border-slate-800 rounded-3xl shadow-2xl w-72 max-w-[90vw] p-4 animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex justify-between items-center px-2 py-2 mb-2">
-                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">Add to pack</div>
-                          <button onClick={() => setShowAddToPackPopup(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                          </button>
-                        </div>
-                        {/* Quick Create New Pack */}
-                        <form onSubmit={(e) => {
-                          e.preventDefault();
-                          const input = e.currentTarget.querySelector('input') as HTMLInputElement;
-                          if (input.value.trim() && currentName && currentPin) {
-                            const newPackId = `pack-${Date.now()}`;
-                            const newPack: Category = {
-                              id: newPackId,
-                              name: input.value.trim(),
-                              author: currentName,
-                              authorPin: currentPin,
-                              description: 'Custom classmate collection.',
-                              icon: '📦',
-                              characters: [activeCharData!],
-                              isCustom: true,
-                              isPrivate: true // Default to private
-                            };
-                            savePacks([...customPacks, newPack]);
-                            input.value = '';
-                          }
-                        }} className="flex gap-2 mb-3">
-                          <input
-                            type="text"
-                            placeholder="New pack name..."
-                            className="flex-1 min-w-0 px-3 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-emerald-500/20 outline-none"
-                          />
-                          <button type="submit" className="px-3 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase hover:bg-emerald-700 active:scale-95 transition-all shrink-0">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                          </button>
-                        </form>
-                        <div className="max-h-48 overflow-y-auto">
-                          {customPacks.filter(p => p.isCustom).length === 0 ? (
-                            <div className="text-[10px] font-bold text-slate-300 dark:text-slate-700 px-3 py-3 text-center italic">
-                              No packs yet. Create one above!
-                            </div>
-                          ) : (
-                            customPacks.filter(p => p.isCustom).map(pack => {
-                              const isInPack = pack.characters.some(c => c.char === activeCharData?.char);
-                              return (
-                                <button
-                                  key={pack.id}
-                                  onClick={() => toggleCharInPack(pack.id, activeCharData!)}
-                                  className={`w-full text-left px-3 py-3 rounded-xl text-xs font-bold transition-all flex justify-between items-center mb-1 last:mb-0 ${isInPack ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-                                >
-                                  <span className="truncate flex-1 mr-2">{pack.name}</span>
-                                  {isInPack && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
-                                </button>
-                              );
-                            })
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {practiceStage !== 'PINYIN' ? (
-                <WritingCanvas
-                  key={`${activeCharData?.char}-${effectiveMode}-${isDarkMode}-${strokeLeniency}`}
-                  character={activeCharData?.char}
-                  mode={effectiveMode}
-                  onComplete={handleCompleteIndividual}
-                  onMistake={handleCanvasMistake}
-                  leniency={strokeLeniency}
-                  onSkipTracing={mode === AppMode.PRACTICE && practiceStage === 'GUIDED' ? () => {
-                    setPracticeStage('MEMORY');
-                    setRetryCount(prev => prev + 1);
-                  } : undefined}
-                  isDarkMode={isDarkMode}
-                  roundAccuracy={mode === AppMode.PRACTICE && charProgress.length > 0
-                    ? Math.round((charProgress.filter(cp => cp.mistakesThisRound === 0).length / charProgress.length) * 100)
-                    : undefined}
-                  pinyin={activeCharData?.pinyin}
-                  zhuyin={activeCharData?.zhuyin}
-                  meaning={activeCharData?.meaning}
-                  showPinyinBelowCanvas={!testHintMode}
-                  isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
-                  hintTier={getHintTier(charProgress.find(cp => cp.char === activeCharData?.char))}
-                  onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
-                />
-              ) : (
-                <div className="bg-white dark:bg-[#16191e] rounded-[4rem] shadow-2xl overflow-hidden">
-                  <PinyinQuiz
-                    key={`pinyin-${activeCharData?.char}-${retryCount}`}
-                    character={activeCharData?.char || ''}
-                    correctPinyin={activeCharData?.pinyin || ''}
-                    onCorrect={() => {
-                      setShowSuccess(true);
-                      playAudio(activeCharData?.char || '', activeCharData?.pinyin);
-                      // Track success for adaptive learning
-                      if (mode === AppMode.PRACTICE && activeCharData) {
-                        setCharProgress(prev => prev.map(cp =>
-                          cp.char === activeCharData.char
-                            ? { ...cp, totalAttempts: cp.totalAttempts + 1, lastPracticed: Date.now() }
-                            : cp
-                        ));
-                      }
-                    }}
-                    onIncorrect={() => {
-                      // Track mistake for smart learning
-                      if (activeCharData) {
-                        setCharProgress(prev => prev.map(cp =>
-                          cp.char === activeCharData.char
-                            ? {
-                              ...cp,
-                              mistakesThisRound: cp.mistakesThisRound + 1,
-                              totalMistakes: cp.totalMistakes + 1
-                            }
-                            : cp
-                        ));
-                      }
-                      // PinyinQuiz handles its own reset internally - just track the mistake
-                    }}
-                    isDarkMode={isDarkMode}
-                  />
-                </div>
-              )}
-
-              {showSuccess && (
-                <div className="fixed inset-0 lg:absolute lg:inset-0 flex items-center justify-center bg-white/95 dark:bg-[#0d0f12]/95 rounded-none lg:rounded-[4rem] z-40 backdrop-blur-md animate-in fade-in zoom-in-95">
-                  <div className="text-center p-8">
-                    <div className="text-rose-600 font-black text-6xl md:text-7xl mb-6 tracking-tighter brush-font">
-                      {charProgress.find(cp => cp.char === activeCharData?.char)?.perfectRounds === 1 ? '🏆 Mastered!' : 'Great!'}
-                    </div>
-                    {mode === AppMode.PRACTICE && (
-                      <div className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-                        Round {currentRound} • {charProgress.filter(cp => !cp.mastered).length} remaining
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-4 max-w-xs mx-auto">
-                      <button onClick={() => { setShowSuccess(false); setRetryCount(r => r + 1); setPracticeStage('GUIDED'); }} className="w-full py-5 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-all">Redraw</button>
-                      <button onClick={() => {
-                        const nextIdx = activeCharIndex + 1;
-                        if (mode === AppMode.PRACTICE && nextIdx >= charactersToPractice.length) {
-                          // End of round - start next round
-                          startNextRound();
-                        } else {
-                          // Check if next char was perfect last round (skip guided)
-                          const nextChar = charactersToPractice[nextIdx % charactersToPractice.length];
-                          const nextProgress = charProgress.find(cp => cp.char === nextChar?.char);
-                          const skipGuided = mode === AppMode.PRACTICE && currentRound > 1 && nextProgress?.perfectRounds > 0;
-                          setActiveCharIndex(nextIdx % charactersToPractice.length);
-                          setShowSuccess(false);
-                          setPracticeStage(skipGuided ? 'MEMORY' : 'GUIDED');
-                        }
-                      }} className="w-full py-5 bg-rose-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl active:scale-95 transition-all">
-                        {mode === AppMode.PRACTICE && activeCharIndex + 1 >= charactersToPractice.length ? 'Next Round →' : 'Next Target'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+      {/* Achievement Unlock Toast */}
+      {newAchievement && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-8 fade-in duration-500">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+            <span className="text-3xl">{newAchievement.icon}</span>
+            <div>
+              <div className="text-xs font-black uppercase tracking-widest opacity-80">Achievement Unlocked!</div>
+              <div className="text-lg font-black">{newAchievement.name}</div>
+              <div className="text-xs opacity-90">{newAchievement.description}</div>
             </div>
-            <div className="w-full">
-              <AIFeedback character={activeCharData?.char} characterData={activeCharData} />
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-16 pt-6">
-            <div className="flex flex-wrap justify-center gap-12 md:gap-24">
-              {charactersToPractice.map((char) => (
-                <div key={char.char} className="flex flex-col items-center gap-8">
-                  <WritingCanvas
-                    character={char.char}
-                    mode={mode}
-                    onComplete={handleCompleteCombined}
-                    canvasSize={240}
-                    isDarkMode={isDarkMode}
-                    onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
-                  />
-                  {combinedProgress.has(char.char) && (
-                    <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                      Ready
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            {showSuccess && (
-              <button onClick={goHome} className="px-14 py-6 bg-rose-600 text-white rounded-[2.5rem] font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all">
-                Sequence Mastered
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </main>
-
-    {/* Smart Learning Session Summary */}
-    {showSessionSummary && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in">
-        <div className="bg-white dark:bg-[#16191e] rounded-[2rem] p-8 max-w-sm w-full mx-4 shadow-2xl animate-in zoom-in-95 text-center">
-          <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Session Complete!</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-            All {charProgress.length} characters mastered in {currentRound} rounds
-          </p>
-          <div className="grid grid-cols-6 gap-2 mb-6">
-            {charProgress.map(cp => (
-              <div key={cp.char} className="aspect-square flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-lg brush-font text-emerald-700 dark:text-emerald-400">
-                {cp.char}
-              </div>
-            ))}
-          </div>
-          <button onClick={() => { setShowSessionSummary(false); goHome(); }} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest">
-            Done
-          </button>
-        </div>
-      </div>
-    )}
-
-    {/* Achievement Unlock Toast */}
-    {newAchievement && (
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-8 fade-in duration-500">
-        <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
-          <span className="text-3xl">{newAchievement.icon}</span>
-          <div>
-            <div className="text-xs font-black uppercase tracking-widest opacity-80">Achievement Unlocked!</div>
-            <div className="text-lg font-black">{newAchievement.name}</div>
-            <div className="text-xs opacity-90">{newAchievement.description}</div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {/* Component Breakdown Popup */}
-    <ComponentPopup
-      character={activeCharData?.char || ''}
-      components={activeCharData?.components || []}
-      isOpen={showComponentPopup}
-      onClose={() => setShowComponentPopup(false)}
-    />
-  </div>
-);
+      {/* Component Breakdown Popup */}
+      <ComponentPopup
+        character={activeCharData?.char || ''}
+        components={activeCharData?.components || []}
+        isOpen={showComponentPopup}
+        onClose={() => setShowComponentPopup(false)}
+      />
+    </div>
+  );
 };
 
 export default App;
