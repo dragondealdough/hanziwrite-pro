@@ -164,6 +164,32 @@ export async function getSharedPacks(): Promise<any[]> {
 }
 
 /**
+ * Save shared test sequences to the cloud (admin only)
+ */
+export async function saveSharedTestSequences(sequences: any[]): Promise<void> {
+    try {
+        await set(ref(db, 'sharedTestSequences'), sequences);
+    } catch (error) {
+        console.error('Failed to save test sequences:', error);
+    }
+}
+
+/**
+ * Load shared test sequences from the cloud
+ */
+export async function getSharedTestSequences(): Promise<any[]> {
+    try {
+        const snapshot = await get(ref(db, 'sharedTestSequences'));
+        if (snapshot.exists()) {
+            return snapshot.val();
+        }
+    } catch (error) {
+        console.error('Failed to load test sequences:', error);
+    }
+    return [];
+}
+
+/**
  * Get all users (admin only)
  */
 export async function getAllUsers(): Promise<{ username: string; displayName: string; createdAt: number }[]> {
