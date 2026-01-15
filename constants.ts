@@ -88,6 +88,42 @@ export const CATEGORIES: Category[] = [
         ]
       },
       {
+        id: 'ws-5',
+        name: 'Worksheet 5 (Jan 14 - B1L3-2)',
+        characters: [
+          { char: '這', pinyin: 'zhè', zhuyin: 'ㄓㄜˋ', meaning: 'this', difficulty: 2 },
+          { char: '那', pinyin: 'nà', zhuyin: 'ㄋㄚˋ', meaning: 'that', difficulty: 1 },
+          { char: '種', pinyin: 'zhǒng', zhuyin: 'ㄓㄨㄥˇ', meaning: 'kind / type', difficulty: 2, exampleSentence: '這是哪種茶？', exampleTranslation: 'What kind of tea is this?' },
+          { char: '鉛', pinyin: 'qiān', zhuyin: 'ㄑㄧㄢ', meaning: 'lead (metal)', difficulty: 2, exampleSentence: '鉛筆。', exampleTranslation: 'Pencil.' },
+          { char: '筆', pinyin: 'bǐ', zhuyin: 'ㄅㄧˇ', meaning: 'pen', difficulty: 1 },
+          { char: '怎', pinyin: 'zěn', zhuyin: 'ㄗㄣˇ', meaning: 'how (怎麼)', difficulty: 2 },
+          { char: '麼', pinyin: 'me', zhuyin: 'ㄇㄜ˙', meaning: 'suffix', difficulty: 2, components: ['麻', '幺'] },
+          { char: '樣', pinyin: 'yàng', zhuyin: 'ㄧㄤˋ', meaning: 'kind / type (怎麼樣)', difficulty: 2 },
+          { char: '東', pinyin: 'dōng', zhuyin: 'ㄉㄨㄥ', meaning: 'east', difficulty: 2 },
+          { char: '西', pinyin: 'xī', zhuyin: 'ㄒㄧ', meaning: 'west / thing', difficulty: 1 },
+          { char: '隻', pinyin: 'zhī', zhuyin: 'ㄓ', meaning: 'measure word for animals', difficulty: 2, exampleSentence: '一隻狗。', exampleTranslation: 'One dog.' },
+          { char: '快', pinyin: 'kuài', zhuyin: 'ㄎㄨㄞˋ', meaning: 'fast', difficulty: 1 },
+          { char: '錢', pinyin: 'qián', zhuyin: 'ㄑㄧㄢˊ', meaning: 'money', difficulty: 1 },
+          { char: '元', pinyin: 'yuán', zhuyin: 'ㄩㄢˊ', meaning: 'dollar / yuan', difficulty: 2, exampleSentence: '五百元。', exampleTranslation: '500 yuan.' },
+          { char: '便', pinyin: 'pián', zhuyin: 'ㄆㄧㄢˊ', meaning: 'cheap (便宜)', difficulty: 2, exampleSentence: '很便宜。', exampleTranslation: 'Very cheap.' },
+          { char: '宜', pinyin: 'yí', zhuyin: 'ㄧˊ', meaning: 'suitable / cheap (便宜)', difficulty: 2, exampleSentence: '便宜。', exampleTranslation: 'Cheap.' },
+          { char: '貴', pinyin: 'guì', zhuyin: 'ㄍㄨㄟˋ', meaning: 'expensive', difficulty: 2 },
+          { char: '顏', pinyin: 'yán', zhuyin: 'ㄧㄢˊ', meaning: 'color (顏色)', difficulty: 2, exampleSentence: '什麼顏色？', exampleTranslation: 'What color?' },
+          { char: '色', pinyin: 'sè', zhuyin: 'ㄙㄜˋ', meaning: 'color (顏色)', difficulty: 1, exampleSentence: '紅色。', exampleTranslation: 'Red.' },
+          { char: '紅', pinyin: 'hóng', zhuyin: 'ㄏㄨㄥˊ', meaning: 'red', difficulty: 1 },
+          { char: '白', pinyin: 'bái', zhuyin: 'ㄅㄞˊ', meaning: 'white', difficulty: 1 },
+          { char: '都', pinyin: 'dōu', zhuyin: 'ㄉㄡ', meaning: 'all / both', difficulty: 2 },
+          { char: '好', pinyin: 'hǎo', zhuyin: 'ㄏㄠˇ', meaning: 'good', difficulty: 1 },
+          { char: '看', pinyin: 'kàn', zhuyin: 'ㄎㄢˋ', meaning: 'to look', difficulty: 1 },
+          { char: '常', pinyin: 'cháng', zhuyin: 'ㄔㄤˊ', meaning: 'often', difficulty: 1 },
+          { char: '穿', pinyin: 'chuān', zhuyin: 'ㄔㄨㄢ', meaning: 'to wear', difficulty: 1 },
+          { char: '衣', pinyin: 'yī', zhuyin: 'ㄧ', meaning: 'clothes (衣服)', difficulty: 2, exampleSentence: '穿衣服。', exampleTranslation: 'Wear clothes.' },
+          { char: '服', pinyin: 'fú', zhuyin: 'ㄈㄨˊ', meaning: 'clothes (衣服)', difficulty: 2, exampleSentence: '衣服。', exampleTranslation: 'Clothes.' },
+          { char: '件', pinyin: 'jiàn', zhuyin: 'ㄐㄧㄢˋ', meaning: 'measure word for clothes', difficulty: 2 },
+          { char: '舊', pinyin: 'jiù', zhuyin: 'ㄐㄧㄡˋ', meaning: 'old (past/used)', difficulty: 2, exampleSentence: '這是一本舊書。', exampleTranslation: 'This is an old book.' }
+        ]
+      },
+      {
         id: 'ws-4',
         name: 'Worksheet 4',
         characters: [
@@ -115,7 +151,8 @@ export const CATEGORIES: Category[] = [
           { char: '期', pinyin: 'qī', zhuyin: 'ㄑㄧ', meaning: 'period / week', difficulty: 3, components: ['其', '月'], exampleSentence: '星期日不用上課。', exampleTranslation: 'No class on Sunday.' },
           { char: '星', pinyin: 'xīng', zhuyin: 'ㄒㄧㄥ', meaning: 'star', difficulty: 3, components: ['日', '生'], exampleSentence: '天上有很多星星。', exampleTranslation: 'There are many stars in the sky.' },
           {
-            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 2, components: ['一', '大'], exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.' },
+            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 2, components: ['一', '大'], exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.'
+          },
           { char: '今', pinyin: 'jīn', zhuyin: 'ㄐㄧㄣ', meaning: 'today / now', difficulty: 2, components: ['人', '一', '丶'], exampleSentence: '今天我很忙。', exampleTranslation: 'I am busy today.' },
           // Page 4
           { char: '課', pinyin: 'kè', zhuyin: 'ㄎㄜˋ', meaning: 'class / lesson', difficulty: 4, components: ['言', '果'], exampleSentence: '我們在上課。', exampleTranslation: 'We are in class.' },
@@ -263,7 +300,8 @@ export const CATEGORIES: Category[] = [
           { char: '昨', pinyin: 'zuó', zhuyin: 'ㄗㄨㄛˊ', meaning: 'yesterday', difficulty: 2 },
           { char: '明', pinyin: 'míng', zhuyin: 'ㄇㄧㄥˊ', meaning: 'bright / tomorrow', difficulty: 2 },
           {
-            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 2, components: ['一', '大'], exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.' },
+            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 2, components: ['一', '大'], exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.'
+          },
           // Page 2
           { char: '快', pinyin: 'kuài', zhuyin: 'ㄎㄨㄞˋ', meaning: 'fast', difficulty: 1, components: ['忄', '夬'] },
           { char: '日', pinyin: 'rì', zhuyin: 'ㄖˋ', meaning: 'sun / day', difficulty: 1, components: ['日'], exampleSentence: '今天是星期日。', exampleTranslation: 'Today is Sunday.' },
@@ -398,7 +436,8 @@ export const CATEGORIES: Category[] = [
           { char: '期', pinyin: 'qī', zhuyin: 'ㄑㄧ', meaning: 'period', difficulty: 2, exampleSentence: '星期日不用上課。', exampleTranslation: 'No class on Sunday.' },
           { char: '今', pinyin: 'jīn', zhuyin: 'ㄐㄧㄣ', meaning: 'today / now', difficulty: 1, exampleSentence: '今天我很忙。', exampleTranslation: 'I am busy today.' },
           {
-            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 1, exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.' },
+            char: '天', pinyin: 'tiān', zhuyin: 'ㄊㄧㄢ', meaning: 'day / sky', difficulty: 1, exampleSentence: '今天天氣很好。', exampleTranslation: 'Also: Today\'s weather is good.'
+          },
           { char: '昨', pinyin: 'zuó', zhuyin: 'ㄗㄨㄛˊ', meaning: 'yesterday', difficulty: 2 },
           { char: '明', pinyin: 'míng', zhuyin: 'ㄇㄧㄥˊ', meaning: 'bright / tomorrow', difficulty: 2 },
           { char: '時', pinyin: 'shí', zhuyin: 'ㄕˊ', meaning: 'time / hour', difficulty: 2, exampleSentence: '時間。', exampleTranslation: 'Time.' },
