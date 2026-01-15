@@ -59,10 +59,18 @@ const HomeworkMenu: React.FC<HomeworkMenuProps> = ({ category, onSelectAssignmen
               <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight group-hover:text-rose-600 transition-colors">
                 {seq.name}
               </h3>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest">
                   {seq.characters.length} Targets
                 </span>
+              </div>
+
+              {/* Character Preview */}
+              <div className="flex flex-wrap gap-1 mb-4">
+                {(seq.characters || []).slice(0, 8).map((c, idx) => (
+                  <span key={`${seq.id}-${c.char}-${idx}`} className="text-sm brush-font text-slate-500 dark:text-slate-400 opacity-80">{c.char}</span>
+                ))}
+                {(seq.characters || []).length > 8 && <span className="text-[9px] text-slate-400 self-center">...</span>}
               </div>
             </div>
 
