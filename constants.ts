@@ -1,7 +1,7 @@
 import { Category } from './types';
 import { MODERN_CHINESE_VOCAB } from './modernChineseVocab';
 
-export const APP_VERSION = "1.1.50";
+export const APP_VERSION = "1.1.51";
 
 export const CATEGORIES: Category[] = [
   {
@@ -145,8 +145,8 @@ export const CATEGORIES: Category[] = [
         ]
       },
       {
-        id: 'ws-b1l2-3',
-        name: 'Worksheet B1L2-3 (Jan 8)',
+        id: 'ws-5',
+        name: 'Worksheet 5 (Jan 8 - B1L2-3)',
         characters: [
           // Daily activities and meals
           { char: '做', pinyin: 'zuò', zhuyin: 'ㄗㄨㄛˋ', meaning: 'to do / to make', difficulty: 2, components: ['亻', '故'], exampleSentence: '你在做什麼？', exampleTranslation: 'What are you doing?' },
@@ -200,8 +200,8 @@ export const CATEGORIES: Category[] = [
         ]
       },
       {
-        id: 'ws-5',
-        name: 'Worksheet 5 (Jan 14 - B1L3-2)',
+        id: 'ws-7',
+        name: 'Worksheet 7 (Jan 14 - B1L3-2)',
         characters: [
           { char: '這', pinyin: 'zhè', zhuyin: 'ㄓㄜˋ', meaning: 'this', difficulty: 2 },
           { char: '那', pinyin: 'nà', zhuyin: 'ㄋㄚˋ', meaning: 'that', difficulty: 1 },
