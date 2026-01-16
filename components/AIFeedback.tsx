@@ -6,10 +6,11 @@ import { getCharacterInsights } from '../services/geminiService';
 interface AIFeedbackProps {
   character: string;
   characterData?: CharacterData;
+  maskCharacter?: boolean;
 }
 
 
-const AIFeedback: React.FC<AIFeedbackProps> = ({ character, characterData }) => {
+const AIFeedback: React.FC<AIFeedbackProps> = ({ character, characterData, maskCharacter }) => {
   const [insight, setInsight] = useState<AIInsight | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +90,11 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ character, characterData }) => 
     return parts.map((part, i) => (
       <React.Fragment key={i}>
         {part}
-        {i < parts.length - 1 && <strong className="text-rose-600 dark:text-rose-400">{char}</strong>}
+        {i < parts.length - 1 && (
+          maskCharacter
+            ? <span className="inline-block w-8 h-4 bg-slate-200 dark:bg-slate-700 rounded mx-1 align-middle" />
+            : <strong className="text-rose-600 dark:text-rose-400">{char}</strong>
+        )}
       </React.Fragment>
     ));
   };

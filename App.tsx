@@ -66,6 +66,7 @@ const App: React.FC = () => {
     char: string;
     mistakesThisRound: number;
     perfectRounds: number;
+    perfectMemoryCount: number; // Cumulative perfect memory rounds in session
     mastered: boolean;
     // Extended fields for adaptive hints
     totalAttempts: number;
@@ -307,6 +308,7 @@ const App: React.FC = () => {
         char: c.char,
         mistakesThisRound: 0,
         perfectRounds: 0,
+        perfectMemoryCount: 0,
         mastered: false,
         totalAttempts: 0,
         totalMistakes: 0,
@@ -542,14 +544,19 @@ const App: React.FC = () => {
     const updatedProgress = charProgress.map(cp => {
       if (cp.mastered) return cp;
       const wasPerfect = cp.mistakesThisRound === 0;
-      const newPerfectRounds = wasPerfect ? cp.perfectRounds + 1 : 0; // Reset streak on mistake
+      const newPerfectRounds = wasPerfect ? cp.perfectRounds + 1 : 0; // Streak (kept for score)
+      const newPerfectMemoryCount = cp.perfectMemoryCount + (wasPerfect ? 1 : 0); // Cumulative
 
-      // Calculate new score with updated stats
-      const tempCp = { ...cp, perfectRounds: newPerfectRounds };
-      const score = calculateMasteryScore(tempCp);
-      const nowMastered = score >= 86; // Mastery threshold
+      // Simple Mastery Rule: 2 perfect memory rounds (cumulative)
+      const nowMastered = newPerfectMemoryCount >= 2;
 
-      return { ...cp, mistakesThisRound: 0, perfectRounds: newPerfectRounds, mastered: nowMastered };
+      return {
+        ...cp,
+        mistakesThisRound: 0,
+        perfectRounds: newPerfectRounds,
+        perfectMemoryCount: newPerfectMemoryCount,
+        mastered: nowMastered
+      };
     });
     setCharProgress(updatedProgress);
 
@@ -1263,7 +1270,7 @@ const App: React.FC = () => {
                     pinyin={activeCharData?.pinyin}
                     zhuyin={activeCharData?.zhuyin}
                     meaning={activeCharData?.meaning}
-                    showPinyinBelowCanvas={!testHintMode}
+                    showPinyinBelowCanvas={!testHintMode || testHintMode === 'audio-pinyin'}
                     isBlankCanvasMode={mode === AppMode.PRACTICE && practiceStage === 'MEMORY'}
                     hintTier={getHintTier(charProgress.find(cp => cp.char === activeCharData?.char))}
                     onAskAI={(q) => q ? handleHomeSearchAI(q) : handleAskAI()}
@@ -1342,7 +1349,11 @@ const App: React.FC = () => {
                 )}
               </div>
               <div className="w-full">
-                <AIFeedback character={activeCharData?.char} characterData={activeCharData} />
+                <AIFeedback
+                  character={activeCharData?.char}
+                  characterData={activeCharData}
+                  maskCharacter={!!testHintMode}
+                />
               </div>
             </div>
           ) : (
